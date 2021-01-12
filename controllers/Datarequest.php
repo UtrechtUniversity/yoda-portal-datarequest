@@ -52,7 +52,7 @@ class Datarequest extends MY_Controller
         $isReviewer     = $this->api->call('datarequest_is_reviewer', ['request_id' => $requestId])->data;
 
         # If the user is neither of the above, return a 403
-        if (!$isBoardMember && !$isDatamanager && !$isDMCMember && !$isRequestOwner) {
+        if (!$isBoardMember && !$isDatamanager && !$isDMCMember && !$isRequestOwner && !$isReviewer) {
             $this->output->set_status_header('403');
             return;
         }
