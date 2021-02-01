@@ -18,9 +18,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         // data request will become a resubmission) and prefill data request
         // form
         if (typeof previousRequestId !== 'undefined') {
-            fetch("/datarequest/datarequest/data/" + previousRequestId)
-            .then(async response => {
-                let datarequestFormData = await response.json();
+            var datarequestFormData = {};
+
+            Yoda.call('datarequest_get',
+                {request_id: previousRequestId},
+                {errorPrefix: "Could not get datarequest"})
+            .then(previousDatarequest => {
+                datarequestFormData = JSON.parse(previousDatarequest.requestJSON);
 
                 render(<Container schema={datarequestSchema}
                                   uiSchema={datarequestUiSchema}
