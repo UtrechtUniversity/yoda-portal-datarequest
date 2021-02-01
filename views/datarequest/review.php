@@ -77,11 +77,11 @@
                 </h5>
             </div>
             <div class="card-body">
-                    <div id="form" class="metadata-form"
-                         data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
-                         data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
-                        <p>Loading metadata <i class="fa fa-spinner fa-spin fa-fw"></i></p>
-                    </div>
+                <div id="form" class="metadata-form"
+                     data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
+                     data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
+                    <p>Loading metadata <i class="fa fa-spinner fa-spin fa-fw"></i></p>
+                </div>
             </div>
         </div>
     </div>

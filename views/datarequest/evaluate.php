@@ -65,22 +65,20 @@
 
 <div class="row">
     <div class="col-md-6">
-        <div class="row">
-            <div class="card ">
-                <div class="card-header clearfix">
-                    <h5 class="card-header float-left">Data request <?php echo html_escape($requestId) ?></h5>
-                </div>
-                <div class="card-body">
-                    <div id="datarequest" class="metadata-form"
-                         data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
-                         data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
-                        <p>Loading metadata <i class="fa fa-spinner fa-spin fa-fw"></i></p>
-                    </div>
+        <div class="card">
+            <div class="card-header clearfix">
+                <h5 class="card-header float-left">Data request <?php echo html_escape($requestId) ?></h5>
+            </div>
+            <div class="card-body">
+                <div id="datarequest" class="metadata-form"
+                     data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
+                     data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
+                    <p>Loading metadata <i class="fa fa-spinner fa-spin fa-fw"></i></p>
                 </div>
             </div>
         </div>
     </div>
-    <div id="reviews"></div>
+    <div class="col-md-6" id="reviews"></div>
 </div>
 
 <script src="/datarequest/static/js/datarequest/evaluate.js" type="text/javascript"></script>
