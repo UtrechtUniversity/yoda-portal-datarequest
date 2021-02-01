@@ -136,20 +136,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     .then(() => {
         var reviews = reviewFormData.map((line, i) => {
           return(
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="panel panel-default">
-                        <div class="panel-heading clearfix">
-                            <h3 class="panel-title pull-left">
-                                Review by {reviewFormData[i].username}
-                            </h3>
-                        </div>
-                        <div class="panel-body">
-                      <ContainerReadonly schema={reviewSchema}
-                                         uiSchema={reviewUiSchema}
-                                         formData={reviewFormData[i]} />
-                        </div>
-                    </div>
+            <div class="card">
+                <div class="card-header clearfix">
+                    <h5 class="card-header float-left">
+                        Review by {reviewFormData[i].username}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ContainerReadonly schema={reviewSchema}
+                                       uiSchema={reviewUiSchema}
+                                       formData={reviewFormData[i]} />
                 </div>
             </div>
           );
