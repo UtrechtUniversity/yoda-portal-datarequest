@@ -268,8 +268,9 @@ class Datarequest extends MY_Controller
             return;
         }
 
-        # Load Filesystem model
+        # Load Filesystem model and PathLibrary library
         $this->load->model('filesystem');
+        $this->load->library('pathlibrary');
 
         # Replace original filename with "dta.pdf" for easier retrieval
         # later on
@@ -278,7 +279,8 @@ class Datarequest extends MY_Controller
 
         # Construct path to data request directory (in which the document will
         # be stored)
-        $filePath = '/tempZone/home/datarequests-research/' . $requestId . '/';
+        $pathStart = $this->pathlibrary->getPathStart($this->config);
+        $filePath = $pathStart . '/datarequests-research/' . $requestId . '/';
         $rodsaccount = $this->rodsuser->getRodsAccount();
 
         # Upload the document
@@ -298,11 +300,13 @@ class Datarequest extends MY_Controller
             return;
         }
 
-        # Load Filesystem model
+        # Load Filesystem model and PathLibrary library
         $this->load->model('filesystem');
+        $this->load->library('pathlibrary');
 
         $rodsaccount = $this->rodsuser->getRodsAccount();
-        $filePath = '/tempZone/home/datarequests-research/' . $requestId . '/dta.pdf';
+        $pathStart = $this->pathlibrary->getPathStart($this->config);
+        $filePath = $pathStart . '/datarequests-research/' . $requestId . '/dta.pdf';
 
         $this->filesystem->download($rodsaccount, $filePath);
     }
@@ -321,8 +325,9 @@ class Datarequest extends MY_Controller
             return;
         }
 
-        # Load Filesystem model
+        # Load Filesystem model and PathLibrary library
         $this->load->model('filesystem');
+        $this->load->library('pathlibrary');
 
         # Replace original filename with "dta_signed.pdf" for easier
         # retrieval later on
@@ -331,7 +336,8 @@ class Datarequest extends MY_Controller
 
         # Construct path to data request directory (in which the document will
         # be stored)
-        $filePath = '/tempZone/home/datarequests-research/' . $requestId . '/';
+        $pathStart = $this->pathlibrary->getPathStart($this->config);
+        $filePath = $pathStart . '/datarequests-research/' . $requestId . '/';
         $rodsaccount = $this->rodsuser->getRodsAccount();
 
         # Upload the document
@@ -357,11 +363,13 @@ class Datarequest extends MY_Controller
             return;
         }
 
-        # Load Filesystem model
+        # Load Filesystem model and PathLibrary library
         $this->load->model('filesystem');
+        $this->load->library('pathlibrary');
 
         $rodsaccount = $this->rodsuser->getRodsAccount();
-        $filePath = '/tempZone/home/datarequests-research/' . $requestId . '/dta_signed.pdf';
+        $pathStart = $this->pathlibrary->getPathStart($this->config);
+        $filePath = $pathStart . '/datarequests-research/' . $requestId . '/dta_signed.pdf';
 
         $this->filesystem->download($rodsaccount, $filePath);
     }
