@@ -338,7 +338,7 @@ const waveOptions = { 0: '20 weeks pregnancy',
                       3: 'Around 5 months',
                       4: 'Around 10 months',
                       5: 'Around 3 years',
-                      6: 'Around 6 years old',
+                      6: 'Around 6 years',
                       7: 'Around 9 years',
                       8: 'Around 12 years',
                       9: 'Around 15 years' };
