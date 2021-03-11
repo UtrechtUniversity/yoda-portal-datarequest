@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     Yoda.call("datarequest_schema_get", {schema_name: "assignment"})
     .then(response => {
         let assignSchema = response.schema;
-        let assignUiSchema = response.uiSchema;
+        let assignUiSchema = response.uischema;
 
         render(<Container schema={assignSchema}
                           uiSchema={assignUiSchema} />,

@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     Yoda.call("datarequest_schema_get", {schema_name: "datamanager_review"})
     .then(response => {
         let datamanagerReviewSchema = response.schema;
-        let datamanagerReviewUiSchema = response.uiSchema;
+        let datamanagerReviewUiSchema = response.uischema;
 
         render(<Container schema={datamanagerReviewSchema}
                           uiSchema={datamanagerReviewUiSchema} />,

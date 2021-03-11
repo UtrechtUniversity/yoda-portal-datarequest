@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     Yoda.call("datarequest_schema_get", {schema_name: "preliminary_review"})
     .then(response => {
         let preliminaryReviewSchema = response.schema;
-        let preliminaryReviewUiSchema = response.uiSchema;
+        let preliminaryReviewUiSchema = response.uischema;
 
         render(<Container schema={preliminaryReviewSchema}
                           uiSchema={preliminaryReviewUiSchema} />,
