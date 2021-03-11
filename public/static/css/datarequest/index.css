@@ -24,3 +24,7 @@
 td {
   padding: 4px 20px;
 }
+
+.nowrap {
+  white-space: nowrap;
+}
