@@ -64,6 +64,8 @@
     <a href="/datarequest/datamanagerreview/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Data manager review</a>
 <?php elseif ($requestStatus == "SUBMITTED" && $isBoardMember): ?>
     <a href="/datarequest/preliminaryreview/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Preliminary review</a>
+<?php elseif (in_array($requestStatus, array("PRELIMINARY_RESUBMIT", "RESUBMIT_AFTER_DATAMANAGER_REVIEW", "RESUBMIT")) && $isRequestOwner): ?>
+    <a href="/datarequest/add/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Resubmit</a>
 <?php endif ?>
     </div>
 </div>
