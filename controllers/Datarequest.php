@@ -82,6 +82,15 @@ class Datarequest extends MY_Controller
                 'css/datarequest/view.css'
             )
         );
+
+        # Add feedback for researcher as view param if applicable
+        if (in_array($requestStatus,
+                     array("PRELIMINARY_RESUBMIT", "RESUBMIT_AFTER_DATAMANAGER_REVIEW", "RESUBMIT",
+                           "PRELIMINARY_REJECT", "REJECTED_AFTER_DATAMANAGER_REVIEW", "REJECTED"))) {
+            $feedback = json_decode($this->api->call('datarequest_feedback_get', ['request_id' => $requestId])->data);
+            $viewParams['feedback'] = $feedback;
+        }
+
         loadView('datarequest/datarequest/view', $viewParams);
     }
 
