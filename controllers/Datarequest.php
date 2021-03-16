@@ -29,10 +29,10 @@ class Datarequest extends MY_Controller
                 'lib/datatables/js/datatables.min.js',
                 'js/datarequest/index.js',
             ),
-            'items'        => $items,
-            'activeModule' => 'datarequest',
-            'help_contact_name' => $this->config->item('help_contact_name'),
-            'help_contact_email' => $this->config->item('help_contact_email')
+            'items'              => $items,
+            'activeModule'       => 'datarequest',
+            'help_contact_name'  => $this->config->item('datarequest_help_contact_name'),
+            'help_contact_email' => $this->config->item('datarequest_help_contact_email')
         );
 
         loadView('/datarequest/index', $viewParams);
