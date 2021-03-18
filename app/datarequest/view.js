@@ -30,6 +30,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Set progress bar according to status of data request
     .then(() => {
         let datarequestStatusInt = null;
+        let datarequestRejected  = false;
+
+        // Get progress
         switch(datarequestStatus) {
             case 'SUBMITTED':
             case 'PRELIMINARY_ACCEPT':
@@ -64,11 +67,26 @@ document.addEventListener("DOMContentLoaded", async () => {
                 break;
         }
 
+        // Get rejection status
+        switch(datarequestStatus) {
+            case 'PRELIMINARY_REJECT':
+            case 'PRELIMINARY_RESUBMIT':
+            case 'REJECTED_AFTER_DATAMANAGER_REVIEW':
+            case 'RESUBMIT_AFTER_DATAMANAGER_REVIEW':
+            case 'REJECTED':
+            case 'RESUBMIT':
+                datarequestRejected = true;
+        }
+
         // Activate the appropriate steps
         for (const num of Array(datarequestStatusInt + 1).keys()) {
             let elem = document.getElementById("step-" + num);
             elem.classList.remove("disabled");
             elem.classList.add("complete");
+            // Grey out the progress overview if proposal is rejected
+            if (datarequestRejected) {
+                elem.classList.add("rejected");
+            }
         }
     })
     // Get data request schema and uischema
