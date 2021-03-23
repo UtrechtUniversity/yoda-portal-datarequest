@@ -171,9 +171,9 @@ function convertToHumanReadableStatus(status) {
         case "PRELIMINARY_ACCEPT":
             return "Preliminary accept";
         case "PRELIMINARY_REJECT":
-            return "Preliminary reject";
+            return "Rejected at preliminary review";
         case "PRELIMINARY_RESUBMIT":
-            return "Preliminary reject (resubmit)";
+            return "Rejected (resubmit) at preliminary review";
         case "DATAMANAGER_ACCEPT":
             return "Datamanager accept";
         case "DATAMANAGER_REJECT":
@@ -183,9 +183,9 @@ function convertToHumanReadableStatus(status) {
         case "UNDER_REVIEW":
             return "Under review";
         case "REJECTED_AFTER_DATAMANAGER_REVIEW":
-            return "Rejected";
+            return "Rejected after datamanager review";
         case "RESUBMIT_AFTER_DATAMANAGER_REVIEW":
-            return "Rejected (resubmit)";
+            return "Rejected (resubmit) after datamanager review";
         case "REVIEWED":
             return "Reviewed";
         case "APPROVED":
