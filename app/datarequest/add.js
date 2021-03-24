@@ -5,6 +5,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { numberFilter, textFilter, selectFilter, multiSelectFilter, Comparator } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import DataSelection, { DataSelectionTable } from "./DataSelection.js";
+import wordcount from 'wordcount';
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -28,17 +29,33 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 render(<Container schema={datarequestSchema}
                                   uiSchema={datarequestUiSchema}
-                                  formData={datarequestFormData} />,
+                                  formData={datarequestFormData}
+                                  validate={validate} />,
                        document.getElementById("form"));
             });
         // Else, render blank data request form
         } else {
             render(<Container schema={datarequestSchema}
-                              uiSchema={datarequestUiSchema} />,
+                              uiSchema={datarequestUiSchema}
+                              validate={validate} />,
                    document.getElementById("form"));
         }
     });
 });
+
+function validate(formData, errors) {
+    // Validate whether the background field contains less than 500 words
+    let background = formData.research_context.background;
+    if (typeof(background) === "string") {
+        let num_words = wordcount(background);
+        if (num_words > 500) {
+            errors.research_context.background.addError(
+                `Please use at most 500 words. You have used ${num_words} words.`);
+        }
+    }
+
+    return errors;
+}
 
 class Container extends React.Component {
     constructor(props) {
@@ -56,6 +73,7 @@ class Container extends React.Component {
           <YodaForm schema={this.props.schema}
                     uiSchema={this.props.uiSchema}
                     formData={this.props.formData}
+                    validate={this.props.validate}
                     ref={(form) => {this.form=form;}}/>
           <YodaButtons submitButton={this.submitForm}/>
         </div>
@@ -75,6 +93,7 @@ class YodaForm extends React.Component {
                   idPrefix={"yoda"}
                   uiSchema={this.props.uiSchema}
                   formData={this.props.formData}
+                  validate={this.props.validate}
                   fields={fields}
                   onSubmit={onSubmit}
                   showErrorList={false}
