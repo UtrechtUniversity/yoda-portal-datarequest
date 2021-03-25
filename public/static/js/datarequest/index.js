@@ -13,15 +13,27 @@ $( document ).ready(function() {
     if ($('#file-browser').length) {
         currentFolder = '/tempZone/home/datarequests-research';
         startBrowsing(browsePageItems);
+
+        $('#file-browser').on('xhr.dt', function(e, settings, json, xhr) {
+            // This condition prevents an infinite loop, because the draw action triggers an
+            // XHR event, apparently.
+            if (settings.aiDisplay.length == 0) {
+                delayedColumnAdjust();
+            }
+        })
     }
 });
+
+// This silly function only works with a slight timeout.
+function delayedColumnAdjust() {
+    setTimeout(function() {$('#file-browser').DataTable().columns.adjust().draw();}, 1);
+}
 
 function buildFileBrowser() {
     let fileBrowser = $('#file-browser').DataTable();
     getFolderContents.dropCache();
     fileBrowser.ajax.reload();
 
-    setTimeout(function () {$('#file-browser').DataTable().columns.adjust().draw();}, 2000);
     return true;
 }
 
