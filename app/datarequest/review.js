@@ -91,10 +91,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     var assignUiSchema = {};
     var assignFormData = {};
 
-    // Get data manager review
+    // Get data assignment
     Yoda.call("datarequest_assignment_get",
               {request_id: requestId},
-              {errorPrefix: "Could not get datamanager review"})
+              {errorPrefix: "Could not get assignment"})
     .then(response => {
         assignFormData = JSON.parse(response);
     })
