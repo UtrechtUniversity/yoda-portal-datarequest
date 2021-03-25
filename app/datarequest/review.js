@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     var datarequestFormData = {};
 
     // Get data request
-    Yoda.call('datarequest_get',
+    await Yoda.call('datarequest_get',
         {request_id: requestId},
         {errorPrefix: "Could not get datarequest"})
     .then(datarequest => {
@@ -120,8 +120,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         let reviewSchema = response.schema;
         let reviewUiSchema = response.uischema;
 
+        // If biological material is requested, set the biological samples field
+        // to save the reviewer some time
+        let reviewFormData = {};
+        let datasetsRequested = datarequestFormData.datarequest.data.selectedRows;
+        for(var dataset of datasetsRequested) {
+            if(dataset.expType == 0) {
+                reviewFormData = {"biological_samples": "Yes"};
+                break;
+            }
+        }
+
         render(<Container schema={reviewSchema}
-                          uiSchema={reviewUiSchema} />,
+                          uiSchema={reviewUiSchema}
+                          formData={reviewFormData} />,
                document.getElementById("form"));
     });
 });
@@ -141,6 +153,7 @@ class Container extends React.Component {
         <div>
           <YodaForm schema={this.props.schema}
                     uiSchema={this.props.uiSchema}
+                    formData={this.props.formData}
                     ref={(form) => {this.form=form;}}/>
           <YodaButtons submitButton={this.submitForm}/>
         </div>
@@ -170,6 +183,7 @@ class YodaForm extends React.Component {
             <Form className="form"
                   schema={this.props.schema}
                   uiSchema={this.props.uiSchema}
+                  formData={this.props.formData}
                   idPrefix={"yoda"}
                   onSubmit={onSubmit}
                   showErrorList={false}
