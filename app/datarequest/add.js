@@ -43,10 +43,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 });
 
+// Validate whether the background field contains less than 500 words
 function validate(formData, errors) {
-    // Validate whether the background field contains less than 500 words
-    let background = formData.research_context.background;
-    if (typeof(background) === "string") {
+    
+    // First confirm that the background field is present, as this isn't
+    // necessarily the case
+    let background = getNested(formData, 'research_context', 'background');
+    if (typeof(background) !== 'undefined') {
+        // Then validate number of words
         let num_words = wordcount(background);
         if (num_words > 500) {
             errors.research_context.background.addError(
@@ -161,4 +165,9 @@ function submitData(data)
         // Re-enable submit button if submission failed
         $('button:submit').attr("disabled", false);
     });
+}
+
+// https://stackoverflow.com/a/2631198
+function getNested(obj, ...args) {
+  return args.reduce((obj, level) => obj && obj[level], obj)
 }

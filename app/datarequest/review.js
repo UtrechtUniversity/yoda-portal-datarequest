@@ -119,14 +119,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     .then(response => {
         let reviewSchema = response.schema;
         let reviewUiSchema = response.uischema;
+        let reviewFormData = {};
+
+        // If it is a data request for data assessment only, hide irrelevant
+        // fields
+        reviewFormData.for_publishing = datarequestFormData.datarequest.purpose
+                                        ===
+                                        'Analyses in order to publish'
 
         // If biological material is requested, set the biological samples field
         // to save the reviewer some time
-        let reviewFormData = {};
         let datasetsRequested = datarequestFormData.datarequest.data.selectedRows;
         for(var dataset of datasetsRequested) {
             if(dataset.expType == 0) {
-                reviewFormData = {"biological_samples": "Yes"};
+                reviewFormData.biological_samples = true;
                 break;
             }
         }
@@ -265,4 +271,9 @@ function submitData(data)
         // Re-enable submit button if submission failed
         $("button:submit").attr("disabled", false);
    });
+}
+
+// https://stackoverflow.com/a/2631198
+function getNested(obj, ...args) {
+  return args.reduce((obj, level) => obj && obj[level], obj)
 }
