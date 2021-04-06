@@ -377,7 +377,7 @@ const columns = [
   text: 'ID'
 }, {
   dataField: 'expName',
-  text: 'Experiment name',
+  text: 'Name',
   filter: textFilter()
 }, {
   dataField: 'expType',
@@ -417,7 +417,7 @@ const cartColumns = [
     text: 'ID'
   }, {
     dataField: 'expName',
-    text: 'Experiment name'
+    text: 'Name'
   }, {
     dataField: 'expType',
     text: 'Type',
