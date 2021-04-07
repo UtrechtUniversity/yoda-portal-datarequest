@@ -24,12 +24,12 @@ class Datarequest extends MY_Controller
         $isDatamanager  = $this->api->call('datarequest_is_datamanager')->data;
 
         $viewParams = array(
-            'styleIncludes' => array(
+            'styleIncludes'      => array(
                 'lib/datatables/css/datatables.min.css',
                 'lib/font-awesome/css/font-awesome.css',
                 'css/datarequest/index.css'
             ),
-            'scriptIncludes' => array(
+            'scriptIncludes'     => array(
                 'lib/datatables/js/datatables.min.js',
                 'js/datarequest/index.js',
             ),
