@@ -2,11 +2,13 @@
     var browsePageItems = <?php echo $items; ?>;
 </script>
 
+<?php if (!$isDatamanager && !$isBoardMember): ?>
 <div class="row">
     <div class="col-md-12">
         <a href="/datarequest/datarequest/add" class="btn btn-primary mb-3 float-right" role="button">Submit data request</a>
     </div>
 </div>
+<?php endif ?>
 
 <div class="row">
     <div class="col-md-12">

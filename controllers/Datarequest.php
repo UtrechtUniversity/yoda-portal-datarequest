@@ -19,6 +19,10 @@ class Datarequest extends MY_Controller
         $this->config->load('config');
         $items = $this->config->item('browser-items-per-page');
 
+        # Check user group memberships
+        $isBoardMember  = $this->api->call('datarequest_is_bod_member')->data;
+        $isDatamanager  = $this->api->call('datarequest_is_datamanager')->data;
+
         $viewParams = array(
             'styleIncludes' => array(
                 'lib/datatables/css/datatables.min.css',
@@ -31,6 +35,8 @@ class Datarequest extends MY_Controller
             ),
             'items'              => $items,
             'activeModule'       => 'datarequest',
+            'isBoardMember'      => $isBoardMember,
+            'isDatamanager'      => $isDatamanager,
             'help_contact_name'  => $this->config->item('datarequest_help_contact_name'),
             'help_contact_email' => $this->config->item('datarequest_help_contact_email')
         );
