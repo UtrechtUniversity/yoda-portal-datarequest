@@ -358,9 +358,10 @@ class Datarequest extends MY_Controller
     }
 
     public function download_signed_dta($requestId) {
-        # Check if user is a data manager. If not, return a 403
+        # Check if user is a data manager or bod member. If not, return a 403
+        $isBoardMember = $this->api->call('datarequest_is_bod_member')->data;
         $isDatamanager = $this->api->call('datarequest_is_datamanager')->data;
-        if (!$isDatamanager) {
+        if (!$isDatamanager && !$isBoardMember) {
             $this->output->set_status_header('403');
         }
 
