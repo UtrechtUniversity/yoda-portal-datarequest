@@ -43,9 +43,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 });
 
-// Validate whether the background field contains less than 500 words
+// Some validations that cannot be done in the schema itself
 function validate(formData, errors) {
     
+    // Validate whether the background field contains less than 500 words
+    //
     // First confirm that the background field is present, as this isn't
     // necessarily the case
     let background = getNested(formData, 'research_context', 'background');
@@ -56,6 +58,24 @@ function validate(formData, errors) {
             errors.research_context.background.addError(
                 `Please use at most 500 words. You have used ${num_words} words.`);
         }
+    }
+
+    // Validate whether CC email addresses are valid
+    //
+    // First check whether any CC email addresses have been entered
+    let cc_email_addresses = getNested(formData, 'contact', 'cc_email_addresses');
+    if (typeof(cc_email_addresses) !== 'undefined') {
+        // Then remove all spaces
+        cc_email_addresses = cc_email_addresses.replace(/\s+/g, '');
+        // Then check if they look like valid email addresses
+        let cc_split = cc_email_addresses.split(",");
+        for (const address of cc_split) {
+            if (!isEmailAddress(address)) {
+                errors.contact.cc_email_addresses.addError(
+                    "One or more of the entered email addresses is invalid.");
+                break;
+            }
+        };
     }
 
     return errors;
@@ -170,4 +190,9 @@ function submitData(data)
 // https://stackoverflow.com/a/2631198
 function getNested(obj, ...args) {
   return args.reduce((obj, level) => obj && obj[level], obj)
+}
+
+// https://stackoverflow.com/a/9204568
+function isEmailAddress(address) {
+    return address.match(/^[^\s@]+@[^\s@]+$/) !== null
 }
