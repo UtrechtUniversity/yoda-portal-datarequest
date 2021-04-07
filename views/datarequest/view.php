@@ -47,8 +47,8 @@
 <div class="row">
     <div class=col-md-12>
 <?php if ($requestStatus == "DTA_SIGNED" && $isDatamanager): ?>
-        <a href="/datarequest/download_signed_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right">Download signed DTA</a>
-        <a href="/datarequest/data_ready/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Data ready</a>
+    <a href="/datarequest/download_signed_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right">Download signed DTA</a>
+    <a href="/datarequest/data_ready/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Data ready</a>
 <?php elseif ($requestStatus == "DTA_SIGNED" && $isBoardMember): ?>
     <a href="/datarequest/download_signed_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right">Download signed DTA</a>
 <?php elseif ($requestStatus == "DTA_READY" && $isRequestOwner): ?>
