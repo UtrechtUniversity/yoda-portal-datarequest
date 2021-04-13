@@ -290,11 +290,6 @@ class Datarequest extends MY_Controller
         $this->load->model('filesystem');
         $this->load->library('pathlibrary');
 
-        # Replace original filename with "dta.pdf" for easier retrieval
-        # later on
-        $new_filename = "dta.pdf";
-        $_FILES["file"]["name"] = $new_filename;
-
         # Construct path to data request directory (in which the document will
         # be stored)
         $pathStart = $this->pathlibrary->getPathStart($this->config);
@@ -307,7 +302,8 @@ class Datarequest extends MY_Controller
 
         # Perform post-upload actions
         $result = $this->api->call('datarequest_dta_post_upload_actions',
-                                  ['request_id' => $requestId]);
+                                   ['request_id' => $requestId,
+                                    'filename' => $_FILES["file"]["name"]]);
     }
 
     public function download_dta($requestId) {
@@ -318,13 +314,17 @@ class Datarequest extends MY_Controller
             return;
         }
 
+        # Get filename
+        $filename = $this->api->call('datarequest_filename_get',
+                                     ['request_id' => $requestId, 'key' => 'dta'])->data;
+
         # Load Filesystem model and PathLibrary library
         $this->load->model('filesystem');
         $this->load->library('pathlibrary');
 
         $rodsaccount = $this->rodsuser->getRodsAccount();
         $pathStart = $this->pathlibrary->getPathStart($this->config);
-        $filePath = $pathStart . '/datarequests-research/' . $requestId . '/dta.pdf';
+        $filePath = $pathStart . '/datarequests-research/' . $requestId . '/' . $filename;
 
         $this->filesystem->download($rodsaccount, $filePath);
     }
@@ -347,11 +347,6 @@ class Datarequest extends MY_Controller
         $this->load->model('filesystem');
         $this->load->library('pathlibrary');
 
-        # Replace original filename with "dta_signed.pdf" for easier
-        # retrieval later on
-        $new_filename = "dta_signed.pdf";
-        $_FILES["file"]["name"] = $new_filename;
-
         # Construct path to data request directory (in which the document will
         # be stored)
         $pathStart = $this->pathlibrary->getPathStart($this->config);
@@ -364,7 +359,8 @@ class Datarequest extends MY_Controller
 
         # Perform post-upload actions
         $result = $this->api->call('datarequest_signed_dta_post_upload_actions',
-                                  ['request_id' => $requestId]);
+                                   ['request_id' => $requestId,
+                                    'filename' => $_FILES["file"]["name"]]);
     }
 
     public function download_signed_dta($requestId) {
@@ -382,13 +378,17 @@ class Datarequest extends MY_Controller
             return;
         }
 
+        # Get filename
+        $filename = $this->api->call('datarequest_filename_get',
+                                     ['request_id' => $requestId, 'key' => 'dta_signed'])->data;
+
         # Load Filesystem model and PathLibrary library
         $this->load->model('filesystem');
         $this->load->library('pathlibrary');
 
         $rodsaccount = $this->rodsuser->getRodsAccount();
         $pathStart = $this->pathlibrary->getPathStart($this->config);
-        $filePath = $pathStart . '/datarequests-research/' . $requestId . '/dta_signed.pdf';
+        $filePath = $pathStart . '/datarequests-research/' . $requestId . '/' . $filename;
 
         $this->filesystem->download($rodsaccount, $filePath);
     }
