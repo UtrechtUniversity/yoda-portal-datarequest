@@ -297,8 +297,7 @@ class Datarequest extends MY_Controller
         $rodsaccount = $this->rodsuser->getRodsAccount();
 
         # Upload the document
-        $output = $this->filesystem->upload($rodsaccount, $filePath,
-                                            $_FILES["file"]);
+        $this->filesystem->upload($rodsaccount, $filePath, $_FILES["file"]);
 
         # Perform post-upload actions
         $result = $this->api->call('datarequest_dta_post_upload_actions',
@@ -354,8 +353,7 @@ class Datarequest extends MY_Controller
         $rodsaccount = $this->rodsuser->getRodsAccount();
 
         # Upload the document
-        $output = $this->filesystem->upload($rodsaccount, $filePath,
-                                            $_FILES["file"]);
+        $this->filesystem->upload($rodsaccount, $filePath, $_FILES["file"]);
 
         # Perform post-upload actions
         $result = $this->api->call('datarequest_signed_dta_post_upload_actions',
