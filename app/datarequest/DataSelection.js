@@ -672,6 +672,14 @@ class DataSelectionTable extends React.Component {
       onSelect:      this.selectRow
     };
 
+    const selectRowCart = {
+      mode:          "checkbox",
+      clickToSelect: true,
+      hideSelectAll: true,
+      selected:      this.getSelectedRowIds(),
+      onSelect:      this.selectRow
+    };
+
     return (
       <div>
         <BootstrapTable ref        = { n => this.node = n }
@@ -686,6 +694,7 @@ class DataSelectionTable extends React.Component {
         <BootstrapTable data             = { this.state.selectedRows }
                         columns          = { cartColumns }
                         expandRow        = { expandRow }
+                        selectRow        = { selectRowCart }
                         keyField         = 'expId'
                         noDataIndication = { 'No data sets selected yet.' } />
       </div>
