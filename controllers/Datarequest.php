@@ -248,7 +248,7 @@ class Datarequest extends MY_Controller
 
 	# Check if request status is appropriate
         $requestStatus = $this->datarequestStatus($requestId);
-        if ($requestStatus !== "REVIEWED") {
+        if (!in_array($requestStatus, ["DAO_SUBMITTED", "REVIEWED"])) {
             $this->output->set_status_header('403');
             return;
         }
@@ -264,7 +264,11 @@ class Datarequest extends MY_Controller
             'requestId'        => $requestId
         );
 
-        loadView('/datarequest/evaluate', $viewParams);
+        if ($requestStatus === "DAO_SUBMITTED") {
+            loadView('/datarequest/dao_evaluate', $viewParams);
+        } else {
+            loadView('/datarequest/evaluate', $viewParams);
+        }
     }
 
     public function upload_dta($requestId) {

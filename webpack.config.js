@@ -11,7 +11,8 @@ var config = {
             'datarequest/datamanagerreview': APP_DIR + '/datarequest/datamanagerreview.js',
             'datarequest/assign': APP_DIR + '/datarequest/assign.js',
             'datarequest/review': APP_DIR + '/datarequest/review.js',
-            'datarequest/evaluate': APP_DIR + '/datarequest/evaluate.js'},
+            'datarequest/evaluate': APP_DIR + '/datarequest/evaluate.js',
+            'datarequest/dao_evaluate': APP_DIR + '/datarequest/dao_evaluate.js'},
     output: {
         path: BUILD_DIR,
         filename: '[name].js'

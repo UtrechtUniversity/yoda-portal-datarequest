@@ -56,7 +56,7 @@
     <button type="button" class="btn btn-primary mb-3 float-right upload_signed_dta" data-path="">Upload signed DTA</button>
 <?php elseif ($requestStatus == "APPROVED" && $isDatamanager): ?>
     <button type="button" class="btn btn-primary mb-3 float-right upload_dta" data-path="">Upload DTA</button>
-<?php elseif ($requestStatus == "REVIEWED" && $isBoardMember): ?>
+<?php elseif (in_array($requestStatus, ["DAO_SUBMITTED", "REVIEWED"]) && $isBoardMember): ?>
     <a href="/datarequest/evaluate/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Evaluate data request</a>
 <?php elseif ($requestStatus == "UNDER_REVIEW" && $isReviewer): ?>
     <a href="/datarequest/review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Review data request</a>
