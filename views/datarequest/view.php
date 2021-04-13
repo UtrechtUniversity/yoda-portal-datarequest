@@ -61,7 +61,7 @@
 <?php elseif ($requestStatus == "UNDER_REVIEW" && $isReviewer): ?>
     <a href="/datarequest/review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Review data request</a>
 <?php elseif (in_array($requestStatus, array("DATAMANAGER_ACCEPT", "DATAMANAGER_RESUBMIT", "DATAMANAGER_REJECT")) && $isBoardMember): ?>
-    <a href="/datarequest/assign/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Assign</a>
+    <a href="/datarequest/assign/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Assign (or reject/resubmit)</a>
 <?php elseif ($requestStatus == "PRELIMINARY_ACCEPT" && $isDatamanager): ?>
     <a href="/datarequest/datamanagerreview/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Data manager review</a>
 <?php elseif ($requestStatus == "SUBMITTED" && $isBoardMember): ?>
