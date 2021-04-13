@@ -154,6 +154,7 @@ const fields = {
 function submitData(data)
 {
     // Disable submit button
+    $("button:submit").text("Submitting...")
     $("button:submit").attr("disabled", "disabled");
 
     // Submit form and redirect to view/

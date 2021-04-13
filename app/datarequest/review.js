@@ -255,6 +255,7 @@ const fields = {
 function submitData(data)
 {
     // Disable submit button
+    $("button:submit").text("Submitting...")
     $("button:submit").attr("disabled", "disabled");
 
     // Append username to data
