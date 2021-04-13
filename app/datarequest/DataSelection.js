@@ -664,30 +664,30 @@ class DataSelectionTable extends React.Component {
 
   render() {
     const selectRow = {
-      mode: "checkbox",
+      mode:          "checkbox",
       clickToSelect: true,
       hideSelectAll: true,
-      selected: this.getSelectedRowIds(),
-      style: { backgroundColor: '#c8e6c9' },
-      onSelect: this.selectRow
+      selected:      this.getSelectedRowIds(),
+      style:         { backgroundColor: '#c8e6c9' },
+      onSelect:      this.selectRow
     };
 
     return (
       <div>
-        <BootstrapTable ref={ n => this.node = n }
-                        keyField='expId'
-                        data={ data }
-                        columns={ columns }
-                        expandRow={ expandRow }
-                        selectRow={ selectRow }
-                        pagination={ paginationFactory(paginationOptions) }
-                        filter={ filterFactory() } />
+        <BootstrapTable ref        = { n => this.node = n }
+                        keyField   = 'expId'
+                        data       = { data }
+                        columns    = { columns }
+                        expandRow  = { expandRow }
+                        selectRow  = { selectRow }
+                        pagination = { paginationFactory(paginationOptions) }
+                        filter     = { filterFactory() } />
         <h2>🛒</h2>
-        <BootstrapTable data = { this.state.selectedRows }
-                        columns = { cartColumns }
-                        expandRow = { expandRow }
-                        keyField = 'expId'
-                        noDataIndication={ 'No data sets selected yet.' } />
+        <BootstrapTable data             = { this.state.selectedRows }
+                        columns          = { cartColumns }
+                        expandRow        = { expandRow }
+                        keyField         = 'expId'
+                        noDataIndication = { 'No data sets selected yet.' } />
       </div>
     );
   }
