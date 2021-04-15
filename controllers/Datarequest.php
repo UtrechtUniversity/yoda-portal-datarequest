@@ -117,6 +117,21 @@ class Datarequest extends MY_Controller
         loadView('/datarequest/add', $viewParams);
     }
 
+    public function add_from_draft($draftRequestId) {
+        // Load CSRF token
+        $tokenName = $this->security->get_csrf_token_name();
+        $tokenHash = $this->security->get_csrf_hash();
+
+        $viewParams = array(
+            'tokenName'        => $tokenName,
+            'tokenHash'        => $tokenHash,
+            'draftRequestId'   => $draftRequestId,
+            'activeModule'     => 'datarequest'
+        );
+
+        loadView('/datarequest/add', $viewParams);
+    }
+
     public function preliminaryReview($requestId) {
         // Check if user is board of directors member. If not, return a 403
         $isBoardMember = $this->api->call('datarequest_is_bod_member')->data;

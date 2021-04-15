@@ -178,6 +178,8 @@ function startBrowsing(items)
 
 function convertToHumanReadableStatus(status) {
     switch(status) {
+        case "DRAFT":
+            return "In draft";
         case "DAO_SUBMITTED":
             return "Submitted (data assessment)";
         case "SUBMITTED":
