@@ -21,7 +21,6 @@ function buildFileBrowser() {
     getFolderContents.dropCache();
     fileBrowser.ajax.reload();
 
-    setTimeout(function () {$('#file-browser').DataTable().columns.adjust().draw();}, 2000);
     return true;
 }
 
@@ -150,9 +149,6 @@ function startBrowsing(items)
                     {render: tableRenderer.title,  orderable: false, data: 'title'},
                     {render: tableRenderer.date,   data: 'create_time'},
                     {render: tableRenderer.status, orderable: false, data: 'status'}],
-        'columnDefs': [
-            { "className": "nowrap", "targets": [3,4] }
-        ],
         "ajax": getFolderContents,
         "processing": true,
         "serverSide": true,
