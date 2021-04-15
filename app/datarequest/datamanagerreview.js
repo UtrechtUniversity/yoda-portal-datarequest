@@ -89,8 +89,8 @@ class Container extends React.Component {
         <div>
           <YodaForm schema={this.props.schema}
                     uiSchema={this.props.uiSchema}
-                    ref={(form) => {this.form=form;}}/>
-          <YodaButtons submitButton={this.submitForm}/>
+                    ref={(form) => {this.form=form;}} />
+          <YodaButtons submitButton={this.submitForm} />
         </div>
         );
     }

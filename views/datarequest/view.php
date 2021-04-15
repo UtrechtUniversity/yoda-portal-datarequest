@@ -47,13 +47,13 @@
 <div class="row">
     <div class=col-md-12>
 <?php if ($requestStatus == "DTA_SIGNED" && $isDatamanager): ?>
-    <a href="/datarequest/download_signed_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right">Download signed DTA</a>
-    <a href="/datarequest/data_ready/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Data ready</a>
+    <a href="/datarequest/download_signed_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 mr-1 float-right">Download signed DTA</a>
+    <a href="/datarequest/data_ready/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 mr-1 float-right" role="button">Data ready</a>
 <?php elseif ($requestStatus == "DTA_SIGNED" && $isBoardMember): ?>
     <a href="/datarequest/download_signed_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right">Download signed DTA</a>
 <?php elseif ($requestStatus == "DTA_READY" && $isRequestOwner): ?>
-    <a href="/datarequest/download_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right">Download DTA</a>
-    <button type="button" class="btn btn-primary mb-3 float-right upload_signed_dta" data-path="">Upload signed DTA</button>
+    <a href="/datarequest/download_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 mr-1 float-right">Download DTA</a>
+    <button type="button" class="btn btn-primary mb-3 mr-1 float-right upload_signed_dta" data-path="">Upload signed DTA</button>
 <?php elseif ($requestStatus == "APPROVED" && $isDatamanager): ?>
     <button type="button" class="btn btn-primary mb-3 float-right upload_dta" data-path="">Upload DTA</button>
 <?php elseif (in_array($requestStatus, ["DAO_SUBMITTED", "REVIEWED"]) && $isBoardMember): ?>
