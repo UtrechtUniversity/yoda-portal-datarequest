@@ -106,9 +106,9 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
         $viewParams = array(
-            'tokenName'        => $tokenName,
-            'tokenHash'        => $tokenHash,
-            'activeModule'     => 'datarequest'
+            'tokenName'    => $tokenName,
+            'tokenHash'    => $tokenHash,
+            'activeModule' => 'datarequest'
         );
         if ($previousRequestId) {
             $viewParams['previousRequestId'] = $previousRequestId;
@@ -123,10 +123,10 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
         $viewParams = array(
-            'tokenName'        => $tokenName,
-            'tokenHash'        => $tokenHash,
-            'draftRequestId'   => $draftRequestId,
-            'activeModule'     => 'datarequest'
+            'tokenName'      => $tokenName,
+            'tokenHash'      => $tokenHash,
+            'draftRequestId' => $draftRequestId,
+            'activeModule'   => 'datarequest'
         );
 
         loadView('/datarequest/add', $viewParams);
@@ -152,10 +152,10 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
         $viewParams = array(
-            'tokenName'        => $tokenName,
-            'tokenHash'        => $tokenHash,
-            'activeModule'     => 'datarequest',
-            'requestId'        => $requestId
+            'tokenName'    => $tokenName,
+            'tokenHash'    => $tokenHash,
+            'activeModule' => 'datarequest',
+            'requestId'    => $requestId
         );
 
         loadView('/datarequest/preliminaryreview', $viewParams);
@@ -173,7 +173,7 @@ class Datarequest extends MY_Controller
 	# Check if request status is appropriate
         $requestStatus = $this->datarequestStatus($requestId);
         if (!in_array($requestStatus, ["PRELIMINARY_ACCEPT", "PRELIMINARY_REJECT",
-                                      "PRELIMINARY_RESUBMIT"])) {
+                                       "PRELIMINARY_RESUBMIT"])) {
             $this->output->set_status_header('403');
             return;
         }
@@ -183,10 +183,10 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
         $viewParams = array(
-            'tokenName'        => $tokenName,
-            'tokenHash'        => $tokenHash,
-            'activeModule'     => 'datarequest',
-            'requestId'        => $requestId
+            'tokenName'    => $tokenName,
+            'tokenHash'    => $tokenHash,
+            'activeModule' => 'datarequest',
+            'requestId'    => $requestId
         );
 
         loadView('/datarequest/datamanagerreview', $viewParams);
@@ -213,10 +213,10 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
         $viewParams = array(
-            'tokenName'        => $tokenName,
-            'tokenHash'        => $tokenHash,
-            'activeModule'     => 'datarequest',
-            'requestId'        => $requestId
+            'tokenName'    => $tokenName,
+            'tokenHash'    => $tokenHash,
+            'activeModule' => 'datarequest',
+            'requestId'    => $requestId
         );
 
         loadView('/datarequest/assign', $viewParams);
@@ -243,11 +243,11 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
         $viewParams = array(
-            'username'         => $this->rodsuser->getUserInfo()['name'],
-            'tokenName'        => $tokenName,
-            'tokenHash'        => $tokenHash,
-            'activeModule'     => 'datarequest',
-            'requestId'        => $requestId
+            'username'     => $this->rodsuser->getUserInfo()['name'],
+            'tokenName'    => $tokenName,
+            'tokenHash'    => $tokenHash,
+            'activeModule' => 'datarequest',
+            'requestId'    => $requestId
         );
 
         loadView('/datarequest/review', $viewParams);
@@ -273,10 +273,10 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
         $viewParams = array(
-            'tokenName'        => $tokenName,
-            'tokenHash'        => $tokenHash,
-            'activeModule'     => 'datarequest',
-            'requestId'        => $requestId
+            'tokenName'    => $tokenName,
+            'tokenHash'    => $tokenHash,
+            'activeModule' => 'datarequest',
+            'requestId'    => $requestId
         );
 
         if ($requestStatus === "DAO_SUBMITTED") {
@@ -307,8 +307,8 @@ class Datarequest extends MY_Controller
 
         # Construct path to data request directory (in which the document will
         # be stored)
-        $pathStart = $this->pathlibrary->getPathStart($this->config);
-        $filePath = $pathStart . '/datarequests-research/' . $requestId . '/';
+        $pathStart   = $this->pathlibrary->getPathStart($this->config);
+        $filePath    = $pathStart . '/datarequests-research/' . $requestId . '/';
         $rodsaccount = $this->rodsuser->getRodsAccount();
 
         # Upload the document
@@ -337,8 +337,8 @@ class Datarequest extends MY_Controller
         $this->load->library('pathlibrary');
 
         $rodsaccount = $this->rodsuser->getRodsAccount();
-        $pathStart = $this->pathlibrary->getPathStart($this->config);
-        $filePath = $pathStart . '/datarequests-research/' . $requestId . '/' . $filename;
+        $pathStart   = $this->pathlibrary->getPathStart($this->config);
+        $filePath    = $pathStart . '/datarequests-research/' . $requestId . '/' . $filename;
 
         $this->filesystem->download($rodsaccount, $filePath);
     }
@@ -363,8 +363,8 @@ class Datarequest extends MY_Controller
 
         # Construct path to data request directory (in which the document will
         # be stored)
-        $pathStart = $this->pathlibrary->getPathStart($this->config);
-        $filePath = $pathStart . '/datarequests-research/' . $requestId . '/';
+        $pathStart   = $this->pathlibrary->getPathStart($this->config);
+        $filePath    = $pathStart . '/datarequests-research/' . $requestId . '/';
         $rodsaccount = $this->rodsuser->getRodsAccount();
 
         # Upload the document
@@ -400,8 +400,8 @@ class Datarequest extends MY_Controller
         $this->load->library('pathlibrary');
 
         $rodsaccount = $this->rodsuser->getRodsAccount();
-        $pathStart = $this->pathlibrary->getPathStart($this->config);
-        $filePath = $pathStart . '/datarequests-research/' . $requestId . '/' . $filename;
+        $pathStart   = $this->pathlibrary->getPathStart($this->config);
+        $filePath    = $pathStart . '/datarequests-research/' . $requestId . '/' . $filename;
 
         $this->filesystem->download($rodsaccount, $filePath);
     }
