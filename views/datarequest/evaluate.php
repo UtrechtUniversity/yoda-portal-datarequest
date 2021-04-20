@@ -16,7 +16,7 @@
     <div class="col-md-12">
         <div class="card ">
             <div class="card-header clearfix">
-                <h5 class="card-header float-left">Board of Directors response to data manager review (if any)</h5>
+                <h5 class="card-header float-left">Project manager's response to data manager review (if any)</h5>
             </div>
             <div class="card-body">
                 <div id="assign" class="metadata-form"
@@ -50,7 +50,7 @@
     <div class="col-md-12">
         <div class="card ">
             <div class="card-header clearfix">
-                <h5 class="card-header float-left">Board of Directors preliminary review</h5>
+                <h5 class="card-header float-left">Project manager's preliminary review</h5>
             </div>
             <div class="card-body">
                 <div id="preliminaryReview" class="metadata-form"

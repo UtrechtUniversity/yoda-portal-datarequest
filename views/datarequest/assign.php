@@ -29,7 +29,7 @@
         </div>
         <div class="card ">
             <div class="card-header clearfix">
-                <h5 class="card-header float-left">Board of Directors preliminary review</h5>
+                <h5 class="card-header float-left">Project manager's preliminary review</h5>
             </div>
             <div class="card-body">
                 <div id="preliminaryReview" class="metadata-form"

@@ -20,8 +20,8 @@ class Datarequest extends MY_Controller
         $items = $this->config->item('browser-items-per-page');
 
         # Check user group memberships
-        $isBoardMember  = $this->api->call('datarequest_is_bod_member')->data;
-        $isDatamanager  = $this->api->call('datarequest_is_datamanager')->data;
+        $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
+        $isDatamanager    = $this->api->call('datarequest_is_datamanager')->data;
 
         $viewParams = array(
             'styleIncludes'      => array(
@@ -35,7 +35,7 @@ class Datarequest extends MY_Controller
             ),
             'items'              => $items,
             'activeModule'       => 'datarequest',
-            'isBoardMember'      => $isBoardMember,
+            'isProjectManager'   => $isProjectManager,
             'isDatamanager'      => $isDatamanager,
             'help_contact_name'  => $this->config->item('datarequest_help_contact_name'),
             'help_contact_email' => $this->config->item('datarequest_help_contact_email')
@@ -51,14 +51,14 @@ class Datarequest extends MY_Controller
 
     public function view($requestId) {
         # Check user group memberships and statuses
-        $isBoardMember  = $this->api->call('datarequest_is_bod_member')->data;
-        $isDatamanager  = $this->api->call('datarequest_is_datamanager')->data;
-        $isDMCMember    = $this->api->call('datarequest_is_dmc_member')->data;
-        $isRequestOwner = $this->api->call('datarequest_is_owner', ['request_id' => $requestId])->data;
-        $isReviewer     = $this->api->call('datarequest_is_reviewer', ['request_id' => $requestId])->data;
+        $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
+        $isDatamanager    = $this->api->call('datarequest_is_datamanager')->data;
+        $isDMCMember      = $this->api->call('datarequest_is_dmc_member')->data;
+        $isRequestOwner   = $this->api->call('datarequest_is_owner', ['request_id' => $requestId])->data;
+        $isReviewer       = $this->api->call('datarequest_is_reviewer', ['request_id' => $requestId])->data;
 
         # If the user is neither of the above, return a 403
-        if (!$isBoardMember && !$isDatamanager && !$isDMCMember && !$isRequestOwner && !$isReviewer) {
+        if (!$isProjectManager && !$isDatamanager && !$isDMCMember && !$isRequestOwner && !$isReviewer) {
             $this->output->set_status_header('403');
             return;
         }
@@ -72,16 +72,16 @@ class Datarequest extends MY_Controller
 
         # Set view params and render the view
         $viewParams = array(
-            'tokenName'      => $tokenName,
-            'tokenHash'      => $tokenHash,
-            'requestId'      => $requestId,
-            'requestStatus'  => $requestStatus,
-            'isReviewer'     => $isReviewer,
-            'isBoardMember'  => $isBoardMember,
-            'isDatamanager'  => $isDatamanager,
-            'isRequestOwner' => $isRequestOwner,
-            'activeModule'   => 'datarequest',
-            'scriptIncludes' => array(
+            'tokenName'        => $tokenName,
+            'tokenHash'        => $tokenHash,
+            'requestId'        => $requestId,
+            'requestStatus'    => $requestStatus,
+            'isReviewer'       => $isReviewer,
+            'isProjectManager' => $isProjectManager,
+            'isDatamanager'    => $isDatamanager,
+            'isRequestOwner'   => $isRequestOwner,
+            'activeModule'     => 'datarequest',
+            'scriptIncludes'   => array(
                 'js/datarequest/view.js'
             ),
             'styleIncludes'  => array(
@@ -133,9 +133,9 @@ class Datarequest extends MY_Controller
     }
 
     public function preliminaryReview($requestId) {
-        // Check if user is board of directors member. If not, return a 403
-        $isBoardMember = $this->api->call('datarequest_is_bod_member')->data;
-        if (!$isBoardMember) {
+        // Check if user is project manager. If not, return a 403
+        $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
+        if (!$isProjectManager) {
             $this->output->set_status_header('403');
             return;
         }
@@ -193,9 +193,9 @@ class Datarequest extends MY_Controller
     }
 
     public function assign($requestId) {
-        // Check if user is board of directors member. If not, return a 403
-        $isBoardMember = $this->api->call('datarequest_is_bod_member')->data;
-        if (!$isBoardMember) {
+        // Check if user is project manager. If not, return a 403
+        $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
+        if (!$isProjectManager) {
             $this->output->set_status_header('403');
             return;
         }
@@ -254,9 +254,9 @@ class Datarequest extends MY_Controller
     }
 
     public function evaluate($requestId) {
-        // Check if user is board of directors member. If not, return a 403
-        $isBoardMember = $this->api->call('datarequest_is_bod_member')->data;
-        if (!$isBoardMember) {
+        // Check if user is project manager. If not, return a 403
+        $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
+        if (!$isProjectManager) {
             $this->output->set_status_header('403');
             return;
         }
@@ -377,10 +377,10 @@ class Datarequest extends MY_Controller
     }
 
     public function download_signed_dta($requestId) {
-        # Check if user is a data manager or bod member. If not, return a 403
-        $isBoardMember = $this->api->call('datarequest_is_bod_member')->data;
-        $isDatamanager = $this->api->call('datarequest_is_datamanager')->data;
-        if (!$isDatamanager && !$isBoardMember) {
+        # Check if user is a data manager or project manager. If not, return a 403
+        $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
+        $isDatamanager    = $this->api->call('datarequest_is_datamanager')->data;
+        if (!$isDatamanager && !$isProjectManager) {
             $this->output->set_status_header('403');
         }
 
