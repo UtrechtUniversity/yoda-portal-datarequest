@@ -20,25 +20,27 @@ class Datarequest extends MY_Controller
         $items = $this->config->item('browser-items-per-page');
 
         # Check user group memberships
-        $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
-        $isDatamanager    = $this->api->call('datarequest_is_datamanager')->data;
+        $isProjectManager    = $this->api->call('datarequest_is_project_manager')->data;
+        $isDatamanager       = $this->api->call('datarequest_is_datamanager')->data;
+        $isExecutiveDirector = $this->api->call('datarequest_is_executive_director')->data;
 
         $viewParams = array(
-            'styleIncludes'      => array(
+            'styleIncludes'       => array(
                 'lib/datatables/css/datatables.min.css',
                 'lib/font-awesome/css/font-awesome.css',
                 'css/datarequest/index.css'
             ),
-            'scriptIncludes'     => array(
+            'scriptIncludes'      => array(
                 'lib/datatables/js/datatables.min.js',
                 'js/datarequest/index.js',
             ),
-            'items'              => $items,
-            'activeModule'       => 'datarequest',
-            'isProjectManager'   => $isProjectManager,
-            'isDatamanager'      => $isDatamanager,
-            'help_contact_name'  => $this->config->item('datarequest_help_contact_name'),
-            'help_contact_email' => $this->config->item('datarequest_help_contact_email')
+            'items'               => $items,
+            'activeModule'        => 'datarequest',
+            'isProjectManager'    => $isProjectManager,
+            'isExecutiveDirector' => $isExecutiveDirector,
+            'isDatamanager'       => $isDatamanager,
+            'help_contact_name'   => $this->config->item('datarequest_help_contact_name'),
+            'help_contact_email'  => $this->config->item('datarequest_help_contact_email')
         );
 
         loadView('/datarequest/index', $viewParams);
@@ -51,14 +53,18 @@ class Datarequest extends MY_Controller
 
     public function view($requestId) {
         # Check user group memberships and statuses
-        $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
-        $isDatamanager    = $this->api->call('datarequest_is_datamanager')->data;
-        $isDMCMember      = $this->api->call('datarequest_is_dmc_member')->data;
-        $isRequestOwner   = $this->api->call('datarequest_is_owner', ['request_id' => $requestId])->data;
-        $isReviewer       = $this->api->call('datarequest_is_reviewer', ['request_id' => $requestId])->data;
+        $isProjectManager    = $this->api->call('datarequest_is_project_manager')->data;
+        $isExecutiveDirector = $this->api->call('datarequest_is_executive_director')->data;
+        $isDatamanager       = $this->api->call('datarequest_is_datamanager')->data;
+        $isDMCMember         = $this->api->call('datarequest_is_dmc_member')->data;
+        $isRequestOwner      = $this->api->call('datarequest_is_owner',
+                                                ['request_id' => $requestId])->data;
+        $isReviewer          = $this->api->call('datarequest_is_reviewer',
+                                                ['request_id' => $requestId])->data;
 
         # If the user is neither of the above, return a 403
-        if (!$isProjectManager && !$isDatamanager && !$isDMCMember && !$isRequestOwner && !$isReviewer) {
+        if (!$isProjectManager && !$isExecutiveDirector && !$isDatamanager && !$isDMCMember &&
+            !$isRequestOwner && !$isReviewer) {
             $this->output->set_status_header('403');
             return;
         }
@@ -72,19 +78,20 @@ class Datarequest extends MY_Controller
 
         # Set view params and render the view
         $viewParams = array(
-            'tokenName'        => $tokenName,
-            'tokenHash'        => $tokenHash,
-            'requestId'        => $requestId,
-            'requestStatus'    => $requestStatus,
-            'isReviewer'       => $isReviewer,
-            'isProjectManager' => $isProjectManager,
-            'isDatamanager'    => $isDatamanager,
-            'isRequestOwner'   => $isRequestOwner,
-            'activeModule'     => 'datarequest',
-            'scriptIncludes'   => array(
+            'tokenName'           => $tokenName,
+            'tokenHash'           => $tokenHash,
+            'requestId'           => $requestId,
+            'requestStatus'       => $requestStatus,
+            'isReviewer'          => $isReviewer,
+            'isProjectManager'    => $isProjectManager,
+            'isExecutiveDirector' => $isExecutiveDirector,
+            'isDatamanager'       => $isDatamanager,
+            'isRequestOwner'      => $isRequestOwner,
+            'activeModule'        => 'datarequest',
+            'scriptIncludes'      => array(
                 'js/datarequest/view.js'
             ),
-            'styleIncludes'  => array(
+            'styleIncludes'       => array(
                 'css/datarequest/view.css'
             )
         );
@@ -192,18 +199,59 @@ class Datarequest extends MY_Controller
         loadView('/datarequest/datamanagerreview', $viewParams);
     }
 
-    public function assign($requestId) {
-        // Check if user is project manager. If not, return a 403
+    public function dmr_review($requestId) {
+        // Check permissions
         $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
-        if (!$isProjectManager) {
+        $requestStatus = $this->datarequest_status($requestId);
+        if (!$isProjectManager or !in_array($requestStatus, ["DATAMANAGER_ACCEPT",
+                                                             "DATAMANAGER_REJECT",
+                                                             "DATAMANAGER_RESUBMIT"])) {
             $this->output->set_status_header('403');
             return;
         }
 
-	# Check if request status is appropriate
-        $requestStatus = $this->datarequestStatus($requestId);
-        if (!in_array($requestStatus, ["DATAMANAGER_ACCEPT", "DATAMANAGER_REJECT",
-                                       "DATAMANAGER_RESUBMIT"])) {
+        // Load CSRF token
+        $tokenName = $this->security->get_csrf_token_name();
+        $tokenHash = $this->security->get_csrf_hash();
+
+        $viewParams = array(
+            'tokenName'    => $tokenName,
+            'tokenHash'    => $tokenHash,
+            'activeModule' => 'datarequest',
+            'requestId'    => $requestId
+        );
+
+        loadView('/datarequest/dmr_review', $viewParams);
+    }
+
+    public function contribution_review($requestId) {
+        // Check permissions
+        $isExecutiveDirector = $this->api->call('datarequest_is_executive_director')->data;
+        $requestStatus       = $this->datarequest_status($requestId);
+        if (!$isExecutiveDirector or $requestStatus !== "DATAMANAGER_REVIEW_ACCEPTED") {
+            $this->output->set_status_header('403');
+            return;
+        }
+
+        // Load CSRF token
+        $tokenName = $this->security->get_csrf_token_name();
+        $tokenHash = $this->security->get_csrf_hash();
+
+        $viewParams = array(
+            'tokenName'    => $tokenName,
+            'tokenHash'    => $tokenHash,
+            'activeModule' => 'datarequest',
+            'requestId'    => $requestId
+        );
+
+        loadView('/datarequest/contribution_review', $viewParams);
+    }
+
+    public function assign($requestId) {
+        // Check permissions
+        $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
+        $requestStatus    = $this->datarequest_status($requestId);
+        if (!$isProjectManager or $requestStatus !== "CONTRIBUTION_ACCEPTED") {
             $this->output->set_status_header('403');
             return;
         }
@@ -223,17 +271,11 @@ class Datarequest extends MY_Controller
     }
 
     public function review($requestId) {
-        // Check if user has been assigned as a review to the specified data
-        // request. If not, return 403.
-        $isReviewer = $this->api->call('datarequest_is_reviewer', ['request_id' => $requestId])->data;
-        if (!$isReviewer) {
-            $this->output->set_status_header('403');
-            return;
-        }
-
-	# Check if request status is appropriate
-        $requestStatus = $this->datarequestStatus($requestId);
-        if ($requestStatus !== "UNDER_REVIEW") {
+        // Check permissions
+        $isReviewer    = $this->api->call('datarequest_is_reviewer',
+                                          ['request_id' => $requestId])->data;
+        $requestStatus = $this->datarequest_status($requestId);
+        if (!$isReviewer or $requestStatus !== "UNDER_REVIEW") {
             $this->output->set_status_header('403');
             return;
         }
@@ -254,16 +296,10 @@ class Datarequest extends MY_Controller
     }
 
     public function evaluate($requestId) {
-        // Check if user is project manager. If not, return a 403
+        // Check permissions
         $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
-        if (!$isProjectManager) {
-            $this->output->set_status_header('403');
-            return;
-        }
-
-	# Check if request status is appropriate
-        $requestStatus = $this->datarequestStatus($requestId);
-        if (!in_array($requestStatus, ["DAO_SUBMITTED", "REVIEWED"])) {
+        $requestStatus    = $this->datarequest_status($requestId);
+        if (!$isProjectManager or !in_array($requestStatus, ["DAO_SUBMITTED", "REVIEWED"])) {
             $this->output->set_status_header('403');
             return;
         }
@@ -286,17 +322,31 @@ class Datarequest extends MY_Controller
         }
     }
 
-    public function upload_dta($requestId) {
-        // Check if user is a data manager. If not, return a 403
-        $isDatamanager = $this->api->call('datarequest_is_datamanager')->data;
-        if (!$isDatamanager) {
+    public function contribution_confirm($requestId) {
+        // Check permissions
+        $isExecutiveDirector = $this->api->call('datarequest_is_executive_director')->data;
+        $requestStatus       = $this->datarequest_status($requestId);
+        if (!$isExecutiveDirector or $requestStatus !== "APPROVED") {
             $this->output->set_status_header('403');
             return;
         }
 
-	# Check if request status is appropriate
-        $requestStatus = $this->datarequestStatus($requestId);
-        if ($requestStatus !== "APPROVED") {
+        // Set status to CONTRIBUTION_CONFIRMED
+	$result = $this->api->call('datarequest_contribution_confirm',
+                                   ['request_id' => $requestId]);
+
+        // Redirect to view/
+        if ($result->status === "ok") {
+            redirect('/datarequest/view/' . $requestId);
+        }
+    }
+
+    public function upload_dta($requestId) {
+        // Check permissions
+        $isDatamanager = $this->api->call('datarequest_is_datamanager')->data;
+        $requestStatus = $this->datarequest_status($requestId);
+        if (!$isDatamanager or !in_array($requestStatus, ["CONTRIBUTION_CONFIRMED",
+                                                          "DAO_APPROVED"])) {
             $this->output->set_status_header('403');
             return;
         }

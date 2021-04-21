@@ -46,26 +46,37 @@
 
 <div class="row">
     <div class=col-md-12>
-<?php if ($requestStatus == "DTA_SIGNED" && $isDatamanager): ?>
+<?php if ($requestStatus == "SUBMITTED" && $isProjectManager): ?>
+    <a href="/datarequest/preliminary_review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Preliminary review</a>
+<?php elseif ($requestStatus == "PRELIMINARY_ACCEPT" && $isDatamanager): ?>
+    <a href="/datarequest/datamanager_review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Data manager review</a>
+<?php elseif (in_array($requestStatus, array("DATAMANAGER_ACCEPT", "DATAMANAGER_RESUBMIT", "DATAMANAGER_REJECT")) && $isProjectManager): ?>
+    <a href="/datarequest/dmr_review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Review data manager review</a>
+
+<?php elseif ($requestStatus == "DATAMANAGER_REVIEW_ACCEPTED" && $isExecutiveDirector): ?>
+    <a href="/datarequest/contribution_review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Review contribution</a>
+
+<?php elseif ($requestStatus == "CONTRIBUTION_ACCEPTED" && $isProjectManager): ?>
+    <a href="/datarequest/assign/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Assign</a>
+<?php elseif ($requestStatus == "UNDER_REVIEW" && $isReviewer): ?>
+    <a href="/datarequest/review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Review data request</a>
+<?php elseif (in_array($requestStatus, ["DAO_SUBMITTED", "REVIEWED"]) && $isProjectManager): ?>
+    <a href="/datarequest/evaluate/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Evaluate data request</a>
+
+<?php elseif ($requestStatus == "APPROVED" && $isExecutiveDirector): ?>
+    <a href="/datarequest/contribution_confirm/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Confirm contribution</a>
+
+<?php elseif (in_array($requestStatus, ["CONTRIBUTION_CONFIRMED", "DAO_APPROVED"]) && $isDatamanager): ?>
+    <button type="button" class="btn btn-primary mb-3 float-right upload_dta" data-path="">Upload DTA</button>
+<?php elseif ($requestStatus == "DTA_READY" && $isRequestOwner): ?>
+    <a href="/datarequest/download_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 mr-1 float-right">Download DTA</a>
+    <button type="button" class="btn btn-primary mb-3 mr-1 float-right upload_signed_dta" data-path="">Upload signed DTA</button>
+<?php elseif ($requestStatus == "DTA_SIGNED" && $isDatamanager): ?>
     <a href="/datarequest/download_signed_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 mr-1 float-right">Download signed DTA</a>
     <a href="/datarequest/data_ready/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 mr-1 float-right" role="button">Data ready</a>
 <?php elseif ($requestStatus == "DTA_SIGNED" && $isProjectManager): ?>
     <a href="/datarequest/download_signed_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right">Download signed DTA</a>
-<?php elseif ($requestStatus == "DTA_READY" && $isRequestOwner): ?>
-    <a href="/datarequest/download_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 mr-1 float-right">Download DTA</a>
-    <button type="button" class="btn btn-primary mb-3 mr-1 float-right upload_signed_dta" data-path="">Upload signed DTA</button>
-<?php elseif ($requestStatus == "APPROVED" && $isDatamanager): ?>
-    <button type="button" class="btn btn-primary mb-3 float-right upload_dta" data-path="">Upload DTA</button>
-<?php elseif (in_array($requestStatus, ["DAO_SUBMITTED", "REVIEWED"]) && $isProjectManager): ?>
-    <a href="/datarequest/evaluate/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Evaluate data request</a>
-<?php elseif ($requestStatus == "UNDER_REVIEW" && $isReviewer): ?>
-    <a href="/datarequest/review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Review data request</a>
-<?php elseif (in_array($requestStatus, array("DATAMANAGER_ACCEPT", "DATAMANAGER_RESUBMIT", "DATAMANAGER_REJECT")) && $isProjectManager): ?>
-    <a href="/datarequest/assign/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Assign (or reject/resubmit)</a>
-<?php elseif ($requestStatus == "PRELIMINARY_ACCEPT" && $isDatamanager): ?>
-    <a href="/datarequest/datamanagerreview/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Data manager review</a>
-<?php elseif ($requestStatus == "SUBMITTED" && $isProjectManager): ?>
-    <a href="/datarequest/preliminaryreview/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Preliminary review</a>
+
 <?php elseif (in_array($requestStatus, array("PRELIMINARY_RESUBMIT", "RESUBMIT_AFTER_DATAMANAGER_REVIEW", "RESUBMIT")) && $isRequestOwner): ?>
     <a href="/datarequest/add/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Resubmit</a>
 <?php endif ?>

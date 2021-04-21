@@ -180,12 +180,20 @@ function convertToHumanReadableStatus(status) {
             return "Datamanager reject";
         case "DATAMANAGER_RESUBMIT":
             return "Datamanager reject (resubmit)";
-        case "UNDER_REVIEW":
-            return "Under review";
+        case "DATAMANAGER_REVIEW_ACCEPTED":
+            return "Data manager review accepted";
         case "REJECTED_AFTER_DATAMANAGER_REVIEW":
             return "Rejected after datamanager review";
         case "RESUBMIT_AFTER_DATAMANAGER_REVIEW":
             return "Rejected (resubmit) after datamanager review";
+        case "CONTRIBUTION_ACCEPTED":
+            return "Contribution accepted";
+        case "CONTRIBUTION_REJECTED":
+            return "Contribution rejected";
+        case "CONTRIBUTION_RESUBMIT":
+            return "Contribution rejected(resubmit)";
+        case "UNDER_REVIEW":
+            return "Under review";
         case "REVIEWED":
             return "Reviewed";
         case "APPROVED":
@@ -194,6 +202,10 @@ function convertToHumanReadableStatus(status) {
             return "Rejected";
         case "RESUBMIT":
             return "Rejected (resubmit)";
+        case "CONTRIBUTION_CONFIRMED":
+            return "Contribution confirmed";
+        case "DAO_APPROVED":
+            return "Approved (data assessment)";
         case "DTA_READY":
             return "DTA ready";
         case "DTA_SIGNED":
