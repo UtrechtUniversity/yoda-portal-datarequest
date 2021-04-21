@@ -15,11 +15,16 @@ class Datarequest extends MY_Controller
         $this->load->library('api');
     }
 
+    function datarequest_status($requestId) {
+	return $this->api->call('datarequest_get',
+                                ['request_id' => $requestId])->data->requestStatus;
+    }
+
     public function index() {
         $this->config->load('config');
         $items = $this->config->item('browser-items-per-page');
 
-        # Check user group memberships
+        # Get user group memberships
         $isProjectManager    = $this->api->call('datarequest_is_project_manager')->data;
         $isDatamanager       = $this->api->call('datarequest_is_datamanager')->data;
         $isExecutiveDirector = $this->api->call('datarequest_is_executive_director')->data;
@@ -46,11 +51,6 @@ class Datarequest extends MY_Controller
         loadView('/datarequest/index', $viewParams);
     }
 
-    function datarequestStatus($requestId) {
-	$result = $this->api->call('datarequest_get', ['request_id' => $requestId]);
-	return $result->data->requestStatus;
-    }
-
     public function view($requestId) {
         # Check user group memberships and statuses
         $isProjectManager    = $this->api->call('datarequest_is_project_manager')->data;
@@ -74,7 +74,7 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
 	# Get datarequest status
-        $requestStatus = $this->datarequestStatus($requestId);
+        $requestStatus = $this->datarequest_status($requestId);
 
         # Set view params and render the view
         $viewParams = array(
@@ -139,17 +139,11 @@ class Datarequest extends MY_Controller
         loadView('/datarequest/add', $viewParams);
     }
 
-    public function preliminaryReview($requestId) {
-        // Check if user is project manager. If not, return a 403
+    public function preliminary_review($requestId) {
+        // Check permissions
         $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
-        if (!$isProjectManager) {
-            $this->output->set_status_header('403');
-            return;
-        }
-
-	# Check if request status is appropriate
-        $requestStatus = $this->datarequestStatus($requestId);
-        if ($requestStatus !== "SUBMITTED") {
+        $requestStatus = $this->datarequest_status($requestId);
+        if (!$isProjectManager or $requestStatus !== "SUBMITTED") {
             $this->output->set_status_header('403');
             return;
         }
@@ -168,19 +162,13 @@ class Datarequest extends MY_Controller
         loadView('/datarequest/preliminaryreview', $viewParams);
     }
 
-    public function datamanagerReview($requestId) {
-        // Check if user is data manager. If not, return a 403
+    public function datamanager_review($requestId) {
+        // Check permissions
         $isDatamanager = $this->api->call('datarequest_is_datamanager')->data;
-
-        if (!$isDatamanager) {
-            $this->output->set_status_header('403');
-            return;
-        }
-
-	# Check if request status is appropriate
-        $requestStatus = $this->datarequestStatus($requestId);
-        if (!in_array($requestStatus, ["PRELIMINARY_ACCEPT", "PRELIMINARY_REJECT",
-                                       "PRELIMINARY_RESUBMIT"])) {
+        $requestStatus = $this->datarequest_status($requestId);
+        if (!$isDatamanager or !in_array($requestStatus, ["PRELIMINARY_ACCEPT",
+                                                          "PRELIMINARY_REJECT",
+                                                          "PRELIMINARY_RESUBMIT"])) {
             $this->output->set_status_header('403');
             return;
         }
@@ -371,8 +359,9 @@ class Datarequest extends MY_Controller
     }
 
     public function download_dta($requestId) {
-        # Check if user owns the data request. If not, return a 403
-        $isRequestOwner = $this->api->call('datarequest_is_owner', ['request_id' => $requestId])->data;
+        // Check permissions
+        $isRequestOwner = $this->api->call('datarequest_is_owner',
+                                           ['request_id' => $requestId])->data;
         if (!$isRequestOwner) {
             $this->output->set_status_header('403');
             return;
@@ -394,17 +383,12 @@ class Datarequest extends MY_Controller
     }
 
     public function upload_signed_dta($requestId) {
-        # Check if user is the owner of the datarequest. If not, return a 403
-        $isRequestOwner = $this->api->call('datarequest_is_owner', ['request_id' => $requestId])->data;
-        if (!$isRequestOwner) {
+        // Check permissions
+        $isRequestOwner = $this->api->call('datarequest_is_owner',
+                                           ['request_id' => $requestId])->data;
+        $requestStatus  = $this->datarequest_status($requestId);
+        if (!$isRequestOwner or $requestStatus !== "DTA_READY") {
             $this->output->set_status_header('403');
-        }
-
-	# Check if request status is appropriate
-        $requestStatus = $this->datarequestStatus($requestId);
-        if ($requestStatus !== "DTA_READY") {
-            $this->output->set_status_header('403');
-            return;
         }
 
         # Load Filesystem model and PathLibrary library
@@ -427,18 +411,12 @@ class Datarequest extends MY_Controller
     }
 
     public function download_signed_dta($requestId) {
-        # Check if user is a data manager or project manager. If not, return a 403
+        // Check permissions
         $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
         $isDatamanager    = $this->api->call('datarequest_is_datamanager')->data;
-        if (!$isDatamanager && !$isProjectManager) {
+        $requestStatus    = $this->datarequest_status($requestId);
+        if ((!$isDatamanager && !$isProjectManager) or !in_array($requestStatus, ["DTA_SIGNED", "DATA_READY"])) {
             $this->output->set_status_header('403');
-        }
-
-	# Check if request status is appropriate
-        $requestStatus = $this->datarequestStatus($requestId);
-        if (!in_array($requestStatus, ["DTA_SIGNED", "DATA_READY"])) {
-            $this->output->set_status_header('403');
-            return;
         }
 
         # Get filename
@@ -457,16 +435,10 @@ class Datarequest extends MY_Controller
     }
 
     public function data_ready($requestId) {
-        # Check if user is a data manager. If not, return a 403
+        // Check permissions
         $isDatamanager = $this->api->call('datarequest_is_datamanager')->data;
-        if (!$isDatamanager) {
-            $this->output->set_status_header('403');
-            return;
-        }
-
-	# Check if request status is appropriate
-        $requestStatus = $this->datarequestStatus($requestId);
-        if ($requestStatus !== "DTA_SIGNED") {
+        $requestStatus = $this->datarequest_status($requestId);
+        if (!$isDatamanager or $requestStatus !== "DTA_SIGNED") {
             $this->output->set_status_header('403');
             return;
         }

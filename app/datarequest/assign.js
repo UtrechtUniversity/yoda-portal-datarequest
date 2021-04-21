@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                document.getElementById("datamanagerReview"));
     });
 
-    // Get the schema of the data request review form for the data manager
+    // Get the schema of the data request assignment form
     Yoda.call("datarequest_schema_get", {schema_name: "assignment"})
     .then(response => {
         let assignSchema = response.schema;
