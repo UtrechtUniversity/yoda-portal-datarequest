@@ -54,11 +54,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 datarequestStatusInt = 1;
                 break;
             case 'REVIEWED':
+            case 'REJECTED':
+            case 'RESUBMIT':
                 datarequestStatusInt = 2;
                 break;
             case 'APPROVED':
-            case 'REJECTED':
-            case 'RESUBMIT':
             case 'CONTRIBUTION_CONFIRMED':
             case 'DAO_APPROVED':
                 datarequestStatusInt = 3;

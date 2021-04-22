@@ -99,8 +99,10 @@ class Datarequest extends MY_Controller
         # Add feedback for researcher as view param if applicable
         if (in_array($requestStatus,
                      array("PRELIMINARY_RESUBMIT", "RESUBMIT_AFTER_DATAMANAGER_REVIEW", "RESUBMIT",
-                           "PRELIMINARY_REJECT", "REJECTED_AFTER_DATAMANAGER_REVIEW", "REJECTED"))) {
-            $feedback = json_decode($this->api->call('datarequest_feedback_get', ['request_id' => $requestId])->data);
+                           "PRELIMINARY_REJECT", "REJECTED_AFTER_DATAMANAGER_REVIEW",
+                           "REJECTED"))) {
+            $feedback = json_decode($this->api->call('datarequest_feedback_get',
+                                    ['request_id' => $requestId])->data);
             $viewParams['feedback'] = $feedback;
         }
 
@@ -125,6 +127,15 @@ class Datarequest extends MY_Controller
     }
 
     public function add_from_draft($draftRequestId) {
+        // Check permissions
+        $isRequestOwner = $this->api->call('datarequest_is_owner',
+                                           ['request_id' => $requestId])->data;
+        $requestStatus  = $this->datarequest_status($requestId);
+        if (!$isRequestOwner or $requestStatus !== "DRAFT") {
+            $this->output->set_status_header('403');
+            return;
+        }
+
         // Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
         $tokenHash = $this->security->get_csrf_hash();
@@ -415,7 +426,8 @@ class Datarequest extends MY_Controller
         $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
         $isDatamanager    = $this->api->call('datarequest_is_datamanager')->data;
         $requestStatus    = $this->datarequest_status($requestId);
-        if ((!$isDatamanager && !$isProjectManager) or !in_array($requestStatus, ["DTA_SIGNED", "DATA_READY"])) {
+        if ((!$isDatamanager && !$isProjectManager) or !in_array($requestStatus,
+                                                                 ["DTA_SIGNED", "DATA_READY"])) {
             $this->output->set_status_header('403');
         }
 
