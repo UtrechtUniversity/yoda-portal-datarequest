@@ -135,14 +135,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
     .then(() => {
         var reviews = reviewFormData.map((line, i) => {
+          let reviewDiv="review" + [i] + "Div";
           return(
             <div class="card">
                 <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href={"#" + reviewDiv} role="button" aria-expanded="true">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
                     <h5 class="card-header float-left">
                         Review by {reviewFormData[i].username}
                     </h5>
                 </div>
-                <div class="card-body">
+                <div id={reviewDiv} class="card-body collapse show">
                     <ContainerReadonly schema={reviewSchema}
                                        uiSchema={reviewUiSchema}
                                        formData={reviewFormData[i]} />

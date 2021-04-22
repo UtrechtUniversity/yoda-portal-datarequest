@@ -164,10 +164,13 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
         $viewParams = array(
-            'tokenName'    => $tokenName,
-            'tokenHash'    => $tokenHash,
-            'activeModule' => 'datarequest',
-            'requestId'    => $requestId
+            'tokenName'     => $tokenName,
+            'tokenHash'     => $tokenHash,
+            'activeModule'  => 'datarequest',
+            'requestId'     => $requestId,
+            'styleIncludes' => array(
+                'css/datarequest/forms.css'
+            )
         );
 
         loadView('/datarequest/preliminaryreview', $viewParams);
@@ -189,10 +192,13 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
         $viewParams = array(
-            'tokenName'    => $tokenName,
-            'tokenHash'    => $tokenHash,
-            'activeModule' => 'datarequest',
-            'requestId'    => $requestId
+            'tokenName'     => $tokenName,
+            'tokenHash'     => $tokenHash,
+            'activeModule'  => 'datarequest',
+            'requestId'     => $requestId,
+            'styleIncludes' => array(
+                'css/datarequest/forms.css'
+            )
         );
 
         loadView('/datarequest/datamanagerreview', $viewParams);
@@ -214,10 +220,13 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
         $viewParams = array(
-            'tokenName'    => $tokenName,
-            'tokenHash'    => $tokenHash,
-            'activeModule' => 'datarequest',
-            'requestId'    => $requestId
+            'tokenName'     => $tokenName,
+            'tokenHash'     => $tokenHash,
+            'activeModule'  => 'datarequest',
+            'requestId'     => $requestId,
+            'styleIncludes' => array(
+                'css/datarequest/forms.css'
+            )
         );
 
         loadView('/datarequest/dmr_review', $viewParams);
@@ -237,10 +246,13 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
         $viewParams = array(
-            'tokenName'    => $tokenName,
-            'tokenHash'    => $tokenHash,
-            'activeModule' => 'datarequest',
-            'requestId'    => $requestId
+            'tokenName'     => $tokenName,
+            'tokenHash'     => $tokenHash,
+            'activeModule'  => 'datarequest',
+            'requestId'     => $requestId,
+            'styleIncludes' => array(
+                'css/datarequest/forms.css'
+            )
         );
 
         loadView('/datarequest/contribution_review', $viewParams);
@@ -260,10 +272,13 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
         $viewParams = array(
-            'tokenName'    => $tokenName,
-            'tokenHash'    => $tokenHash,
-            'activeModule' => 'datarequest',
-            'requestId'    => $requestId
+            'tokenName'     => $tokenName,
+            'tokenHash'     => $tokenHash,
+            'activeModule'  => 'datarequest',
+            'requestId'     => $requestId,
+            'styleIncludes' => array(
+                'css/datarequest/forms.css'
+            )
         );
 
         loadView('/datarequest/assign', $viewParams);
@@ -284,11 +299,14 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
         $viewParams = array(
-            'username'     => $this->rodsuser->getUserInfo()['name'],
-            'tokenName'    => $tokenName,
-            'tokenHash'    => $tokenHash,
-            'activeModule' => 'datarequest',
-            'requestId'    => $requestId
+            'username'      => $this->rodsuser->getUserInfo()['name'],
+            'tokenName'     => $tokenName,
+            'tokenHash'     => $tokenHash,
+            'activeModule'  => 'datarequest',
+            'requestId'     => $requestId,
+            'styleIncludes' => array(
+                'css/datarequest/forms.css'
+            )
         );
 
         loadView('/datarequest/review', $viewParams);
@@ -308,10 +326,13 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
         $viewParams = array(
-            'tokenName'    => $tokenName,
-            'tokenHash'    => $tokenHash,
-            'activeModule' => 'datarequest',
-            'requestId'    => $requestId
+            'tokenName'     => $tokenName,
+            'tokenHash'     => $tokenHash,
+            'activeModule'  => 'datarequest',
+            'requestId'     => $requestId,
+            'styleIncludes' => array(
+                'css/datarequest/forms.css'
+            )
         );
 
         if ($requestStatus === "DAO_SUBMITTED") {
