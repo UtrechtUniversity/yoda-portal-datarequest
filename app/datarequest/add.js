@@ -5,7 +5,6 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { numberFilter, textFilter, selectFilter, multiSelectFilter, Comparator } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import DataSelection, { DataSelectionTable } from "./DataSelection.js";
-import wordcount from 'wordcount';
 
 let save = false;
 
@@ -54,20 +53,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Some validations that cannot be done in the schema itself
 function validate(formData, errors) {
-    
-    // Validate whether the background field contains less than 500 words
-    //
-    // First confirm that the background field is present, as this isn't
-    // necessarily the case
-    let background = getNested(formData, 'research_context', 'background');
-    if (typeof(background) !== 'undefined') {
-        // Then validate number of words
-        let num_words = wordcount(background);
-        if (num_words > 500) {
-            errors.research_context.background.addError(
-                `Please use at most 500 words. You have used ${num_words} words.`);
-        }
-    }
 
     // Validate whether CC email addresses are valid
     //

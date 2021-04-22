@@ -22,8 +22,7 @@
     "react-bootstrap-table2-paginator": "^2.1.2",
     "react-dom": "^16.13.0",
     "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.7",
-    "wordcount": "^1.1.1"
+    "webpack-cli": "^3.3.7"
   },
   "devDependencies": {
     "babel-plugin-transform-object-rest-spread": "^6.26.0"
