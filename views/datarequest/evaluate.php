@@ -14,7 +14,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card ">
+        <div class="card">
             <div class="card-header clearfix">
                 <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#assignDiv" role="button" aria-expanded="false">
                     <span class="text-collapsed">Show</span>
@@ -35,7 +35,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card ">
+        <div class="card">
             <div class="card-header clearfix">
                 <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#datamanagerReviewDiv" role="button" aria-expanded="false">
                     <span class="text-collapsed">Show</span>
@@ -56,7 +56,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card ">
+        <div class="card">
             <div class="card-header clearfix">
                 <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#preliminaryReviewDiv" role="button" aria-expanded="false">
                     <span class="text-collapsed">Show</span>

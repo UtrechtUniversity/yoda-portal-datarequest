@@ -15,7 +15,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card ">
+        <div class="card">
             <div class="card-header clearfix">
                 <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#datarequestDiv" role="button" aria-expanded="true">
                     <span class="text-collapsed">Show</span>
