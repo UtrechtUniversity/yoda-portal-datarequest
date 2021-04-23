@@ -378,16 +378,20 @@ class Datarequest extends MY_Controller
         # Construct path to data request directory (in which the document will
         # be stored)
         $pathStart   = $this->pathlibrary->getPathStart($this->config);
-        $filePath    = $pathStart . '/datarequests-research/' . $requestId . '/';
+        $filePath    = $pathStart . '/datarequests-research/' . $requestId . '/dta/';
         $rodsaccount = $this->rodsuser->getRodsAccount();
 
         # Upload the document
+        $this->api->call('datarequest_dta_upload_permission', ['request_id' => $requestId,
+                                                               'action' => 'grant'])->data;
         $this->filesystem->upload($rodsaccount, $filePath, $_FILES["file"]);
 
         # Perform post-upload actions
         $result = $this->api->call('datarequest_dta_post_upload_actions',
                                    ['request_id' => $requestId,
                                     'filename' => $_FILES["file"]["name"]]);
+        $this->api->call('datarequest_dta_upload_permission', ['request_id' => $requestId,
+                                                               'action' => 'revoke'])->data;
     }
 
     public function download_dta($requestId) {
@@ -399,19 +403,15 @@ class Datarequest extends MY_Controller
             return;
         }
 
-        # Get filename
-        $filename = $this->api->call('datarequest_filename_get',
-                                     ['request_id' => $requestId, 'key' => 'dta'])->data;
+        # Get file path
+        $file_path = $this->api->call('datarequest_dta_path_get',
+                                      ['request_id' => $requestId])->data;
 
-        # Load Filesystem model and PathLibrary library
+        # Get file
         $this->load->model('filesystem');
         $this->load->library('pathlibrary');
-
         $rodsaccount = $this->rodsuser->getRodsAccount();
-        $pathStart   = $this->pathlibrary->getPathStart($this->config);
-        $filePath    = $pathStart . '/datarequests-research/' . $requestId . '/' . $filename;
-
-        $this->filesystem->download($rodsaccount, $filePath);
+        $this->filesystem->download($rodsaccount, $file_path);
     }
 
     public function upload_signed_dta($requestId) {
@@ -430,16 +430,20 @@ class Datarequest extends MY_Controller
         # Construct path to data request directory (in which the document will
         # be stored)
         $pathStart   = $this->pathlibrary->getPathStart($this->config);
-        $filePath    = $pathStart . '/datarequests-research/' . $requestId . '/';
+        $filePath    = $pathStart . '/datarequests-research/' . $requestId . '/signed_dta/';
         $rodsaccount = $this->rodsuser->getRodsAccount();
 
         # Upload the document
+        $this->api->call('datarequest_dta_upload_permission', ['request_id' => $requestId,
+                                                               'action' => 'grant'])->data;
         $this->filesystem->upload($rodsaccount, $filePath, $_FILES["file"]);
 
         # Perform post-upload actions
         $result = $this->api->call('datarequest_signed_dta_post_upload_actions',
                                    ['request_id' => $requestId,
                                     'filename' => $_FILES["file"]["name"]]);
+        $this->api->call('datarequest_dta_upload_permission', ['request_id' => $requestId,
+                                                               'action' => 'revoke'])->data;
     }
 
     public function download_signed_dta($requestId) {
@@ -452,19 +456,15 @@ class Datarequest extends MY_Controller
             $this->output->set_status_header('403');
         }
 
-        # Get filename
-        $filename = $this->api->call('datarequest_filename_get',
-                                     ['request_id' => $requestId, 'key' => 'dta_signed'])->data;
+        # Get file path
+        $file_path = $this->api->call('datarequest_signed_dta_path_get',
+                                      ['request_id' => $requestId])->data;
 
-        # Load Filesystem model and PathLibrary library
+        # Get file
         $this->load->model('filesystem');
         $this->load->library('pathlibrary');
-
         $rodsaccount = $this->rodsuser->getRodsAccount();
-        $pathStart   = $this->pathlibrary->getPathStart($this->config);
-        $filePath    = $pathStart . '/datarequests-research/' . $requestId . '/' . $filename;
-
-        $this->filesystem->download($rodsaccount, $filePath);
+        $this->filesystem->download($rodsaccount, $file_path);
     }
 
     public function data_ready($requestId) {
