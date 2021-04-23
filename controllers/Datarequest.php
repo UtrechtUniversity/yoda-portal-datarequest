@@ -129,8 +129,8 @@ class Datarequest extends MY_Controller
     public function add_from_draft($draftRequestId) {
         // Check permissions
         $isRequestOwner = $this->api->call('datarequest_is_owner',
-                                           ['request_id' => $requestId])->data;
-        $requestStatus  = $this->datarequest_status($requestId);
+                                           ['request_id' => $draftRequestId])->data;
+        $requestStatus  = $this->datarequest_status($draftRequestId);
         if (!$isRequestOwner or $requestStatus !== "DRAFT") {
             $this->output->set_status_header('403');
             return;
@@ -375,8 +375,7 @@ class Datarequest extends MY_Controller
         $this->load->model('filesystem');
         $this->load->library('pathlibrary');
 
-        # Construct path to data request directory (in which the document will
-        # be stored)
+        # Construct path to data request directory (in which the document will be stored)
         $pathStart   = $this->pathlibrary->getPathStart($this->config);
         $filePath    = $pathStart . '/datarequests-research/' . $requestId . '/dta/';
         $rodsaccount = $this->rodsuser->getRodsAccount();
@@ -385,11 +384,8 @@ class Datarequest extends MY_Controller
         $this->api->call('datarequest_dta_upload_permission', ['request_id' => $requestId,
                                                                'action' => 'grant'])->data;
         $this->filesystem->upload($rodsaccount, $filePath, $_FILES["file"]);
-
-        # Perform post-upload actions
-        $result = $this->api->call('datarequest_dta_post_upload_actions',
-                                   ['request_id' => $requestId,
-                                    'filename' => $_FILES["file"]["name"]]);
+        $this->api->call('datarequest_dta_post_upload_actions',
+                         ['request_id' => $requestId, 'filename' => $_FILES["file"]["name"]]);
         $this->api->call('datarequest_dta_upload_permission', ['request_id' => $requestId,
                                                                'action' => 'revoke'])->data;
     }
@@ -437,11 +433,8 @@ class Datarequest extends MY_Controller
         $this->api->call('datarequest_dta_upload_permission', ['request_id' => $requestId,
                                                                'action' => 'grant'])->data;
         $this->filesystem->upload($rodsaccount, $filePath, $_FILES["file"]);
-
-        # Perform post-upload actions
-        $result = $this->api->call('datarequest_signed_dta_post_upload_actions',
-                                   ['request_id' => $requestId,
-                                    'filename' => $_FILES["file"]["name"]]);
+        $this->api->call('datarequest_signed_dta_post_upload_actions',
+                         ['request_id' => $requestId, 'filename' => $_FILES["file"]["name"]]);
         $this->api->call('datarequest_dta_upload_permission', ['request_id' => $requestId,
                                                                'action' => 'revoke'])->data;
     }

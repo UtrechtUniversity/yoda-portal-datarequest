@@ -21,7 +21,7 @@
                     <span class="text-collapsed">Show</span>
                     <span class="text-expanded">Hide</span>
                 </a>
-                <h5 class="card-header float-xs-left">Data request <?php echo html_escape($requestId) ?></h5>
+                <h5 class="card-header float-left">Data request <?php echo html_escape($requestId) ?></h5>
             </div>
             <div id="datarequestDiv" class="card-body collapse show">
                 <div id="datarequest" class="metadata-form"
