@@ -162,6 +162,15 @@ const fields = {
 };
 
 function transformErrors(errors) {
+    // Scroll to first error (ugly but works). A proper solution isn't available yet, see:
+    // https://github.com/rjsf-team/react-jsonschema-form/issues/1791
+    if (errors.length !== 0) {
+        let first_error_property = errors[0].property;
+        let elem_id = "yoda" + first_error_property.replace(/\./g, '_');
+        let elem = document.getElementById(elem_id) !== null ? document.getElementById(elem_id) : document.getElementsByName(elem_id)[0].parentElement.parentElement;
+        elem.parentElement.scrollIntoView();
+    }
+
     return errors.map(error => {
         if(error.name === "not" && error.property === ".contribution") {
             error.message = "Please specify at least one contribution."
