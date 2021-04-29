@@ -63,6 +63,22 @@
                 </div>
             </div>
         </div>
+        <?php if(count($attachments) > 0): ?>
+        <div class="card">
+            <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#attachmentsDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
+                <h5 class="card-header float-left">Attachments</h5>
+            </div>
+            <div id="attachmentsDiv" class="card-body collapse">
+                <ul>
+                    <?php $i=0; foreach($attachments as $attachment) { echo "<li><a href=\"/datarequest/download_attachment/" . html_escape($requestId) . "?file=" . $i . "\">" . html_escape($attachment) . "</a></li>"; $i++; } ?>
+                </ul>
+            </div>
+        </div>
+        <?php endif ?>
     </div>
 </div>
 

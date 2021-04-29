@@ -164,6 +164,8 @@ function convertToHumanReadableStatus(status) {
     switch(status) {
         case "DRAFT":
             return "In draft";
+        case "PENDING_ATTACHMENTS":
+            return "Pending attachments";
         case "DAO_SUBMITTED":
             return "Submitted (data assessment)";
         case "SUBMITTED":

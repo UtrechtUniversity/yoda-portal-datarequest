@@ -212,6 +212,9 @@ function submitData(data)
                 $("#saveButton").text("Save as draft");
                 $('#saveButton').attr("disabled", false);
             }
+        // If attachments should be added, redirect to attachment upload page
+        } else if  (response !== null && response.hasOwnProperty('pendingAttachments')) {
+            window.location.href = "/datarequest/add_attachments/" + response.requestId;
         // If we are submitting the data request instead of saving it as a draft, redirect to index
         } else {
             window.location.href = "/datarequest/";

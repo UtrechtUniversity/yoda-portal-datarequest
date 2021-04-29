@@ -150,6 +150,117 @@ class Datarequest extends MY_Controller
         loadView('/datarequest/add', $viewParams);
     }
 
+    public function add_attachments($requestId) {
+        // Check permissions
+        $isRequestOwner = $this->api->call('datarequest_is_owner',
+                                           ['request_id' => $requestId])->data;
+        $requestStatus  = $this->datarequest_status($requestId);
+        if (!$isRequestOwner or $requestStatus !== "PENDING_ATTACHMENTS") {
+            $this->output->set_status_header('403');
+            return;
+        }
+
+        // Get current attachments
+        $attachments = $this->api->call('datarequest_attachments_get',
+                                        ['request_id' => $requestId])->data;
+
+        // Load CSRF token
+        $tokenName = $this->security->get_csrf_token_name();
+        $tokenHash = $this->security->get_csrf_hash();
+
+        $viewParams = array(
+            'tokenName'    => $tokenName,
+            'tokenHash'    => $tokenHash,
+            'requestId'    => $requestId,
+            'activeModule' => 'datarequest',
+            'attachments'  => $attachments
+        );
+
+        loadView('/datarequest/add_attachments', $viewParams);
+    }
+
+    public function upload_attachment($requestId) {
+        // Check permissions
+        $isRequestOwner = $this->api->call('datarequest_is_owner',
+                                           ['request_id' => $requestId])->data;
+        $requestStatus  = $this->datarequest_status($requestId);
+        if (!$isRequestOwner or $requestStatus !== "PENDING_ATTACHMENTS") {
+            $this->output->set_status_header('403');
+            return;
+        }
+
+        # Load Filesystem model and PathLibrary library
+        $this->load->model('filesystem');
+        $this->load->library('pathlibrary');
+
+        # Construct path to data request directory (in which the document will be stored)
+        $pathStart   = $this->pathlibrary->getPathStart($this->config);
+        $filePath    = $pathStart . '/datarequests-research/' . $requestId . '/attachments/';
+        $rodsaccount = $this->rodsuser->getRodsAccount();
+
+        # Upload the document
+        $this->api->call('datarequest_attachment_upload_permission', ['request_id' => $requestId,
+                                                                      'action' => 'grant'])->data;
+        $this->filesystem->upload($rodsaccount, $filePath, $_FILES["file"]);
+        $this->api->call('datarequest_attachment_post_upload_actions',
+                         ['request_id' => $requestId, 'filename' => $_FILES["file"]["name"]]);
+        $this->api->call('datarequest_attachment_upload_permission', ['request_id' => $requestId,
+                                                                      'action' => 'grantread'])->data;
+    }
+
+    public function submit_attachments($requestId) {
+        // Check permissions
+        $isRequestOwner = $this->api->call('datarequest_is_owner',
+                                           ['request_id' => $requestId])->data;
+        $requestStatus  = $this->datarequest_status($requestId);
+        if (!$isRequestOwner or $requestStatus !== "PENDING_ATTACHMENTS") {
+            $this->output->set_status_header('403');
+            return;
+        }
+
+        // Submit attachments
+	$result = $this->api->call('datarequest_attachments_submit',
+                                   ['request_id' => $requestId]);
+
+        // Redirect to view/
+        if ($result->status === "ok") {
+            redirect('/datarequest/view/' . $requestId);
+        }
+    }
+
+    protected function get_attachments($requestId) {
+        return $this->api->call('datarequest_attachments_get', ['request_id' => $requestId])->data;
+    }
+
+    public function download_attachment($requestId) {
+        // Check permissions
+        $isProjectManager    = $this->api->call('datarequest_is_project_manager')->data;
+        $isExecutiveDirector = $this->api->call('datarequest_is_executive_director')->data;
+        $isDatamanager       = $this->api->call('datarequest_is_datamanager')->data;
+        $isDMCMember         = $this->api->call('datarequest_is_dmc_member')->data;
+        $isRequestOwner      = $this->api->call('datarequest_is_owner',
+                                                ['request_id' => $requestId])->data;
+        if (!$isProjectManager && !$isExecutiveDirector && !$isDatamanager && !$isDMCMember &&
+            !$isRequestOwner) {
+            $this->output->set_status_header('403');
+            return;
+        }
+
+        # Get file path
+        $this->load->library('pathlibrary');
+        $pathStart   = $this->pathlibrary->getPathStart($this->config);
+        $filePath    = $pathStart . '/datarequests-research/' . $requestId . '/attachments/';
+        $file_path   = $filePath . $this->api->call('datarequest_attachments_get',
+                                                    ['request_id' => $requestId])->data[$_GET['file']];
+
+        # Get file
+        $this->load->model('filesystem');
+        $this->load->library('pathlibrary');
+        $rodsaccount = $this->rodsuser->getRodsAccount();
+
+        return $this->filesystem->download($rodsaccount, $file_path);
+    }
+
     public function preliminary_review($requestId) {
         // Check permissions
         $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
@@ -168,6 +279,7 @@ class Datarequest extends MY_Controller
             'tokenHash'     => $tokenHash,
             'activeModule'  => 'datarequest',
             'requestId'     => $requestId,
+            'attachments'   => $this->get_attachments($requestId),
             'styleIncludes' => array(
                 'css/datarequest/forms.css'
             )
@@ -196,6 +308,7 @@ class Datarequest extends MY_Controller
             'tokenHash'     => $tokenHash,
             'activeModule'  => 'datarequest',
             'requestId'     => $requestId,
+            'attachments'   => $this->get_attachments($requestId),
             'styleIncludes' => array(
                 'css/datarequest/forms.css'
             )
@@ -224,6 +337,7 @@ class Datarequest extends MY_Controller
             'tokenHash'     => $tokenHash,
             'activeModule'  => 'datarequest',
             'requestId'     => $requestId,
+            'attachments'   => $this->get_attachments($requestId),
             'styleIncludes' => array(
                 'css/datarequest/forms.css'
             )
@@ -250,6 +364,7 @@ class Datarequest extends MY_Controller
             'tokenHash'     => $tokenHash,
             'activeModule'  => 'datarequest',
             'requestId'     => $requestId,
+            'attachments'   => $this->get_attachments($requestId),
             'styleIncludes' => array(
                 'css/datarequest/forms.css'
             )
@@ -276,6 +391,7 @@ class Datarequest extends MY_Controller
             'tokenHash'     => $tokenHash,
             'activeModule'  => 'datarequest',
             'requestId'     => $requestId,
+            'attachments'   => $this->get_attachments($requestId),
             'styleIncludes' => array(
                 'css/datarequest/forms.css'
             )
@@ -304,6 +420,7 @@ class Datarequest extends MY_Controller
             'tokenHash'     => $tokenHash,
             'activeModule'  => 'datarequest',
             'requestId'     => $requestId,
+            'attachments'   => $this->get_attachments($requestId),
             'styleIncludes' => array(
                 'css/datarequest/forms.css'
             )
@@ -330,6 +447,7 @@ class Datarequest extends MY_Controller
             'tokenHash'     => $tokenHash,
             'activeModule'  => 'datarequest',
             'requestId'     => $requestId,
+            'attachments'   => $this->get_attachments($requestId),
             'styleIncludes' => array(
                 'css/datarequest/forms.css'
             )

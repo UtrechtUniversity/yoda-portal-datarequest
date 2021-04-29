@@ -6,6 +6,7 @@ var APP_DIR = path.resolve(__dirname, 'app');
 
 var config = {
     entry: {'datarequest/add': APP_DIR + '/datarequest/add.js',
+            'datarequest/add_attachments': APP_DIR + '/datarequest/add_attachments.js',
             'datarequest/view': APP_DIR + '/datarequest/view.js',
             'datarequest/preliminaryreview': APP_DIR + '/datarequest/preliminaryreview.js',
             'datarequest/datamanagerreview': APP_DIR + '/datarequest/datamanagerreview.js',
