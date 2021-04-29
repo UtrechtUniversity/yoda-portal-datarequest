@@ -15,7 +15,7 @@ class Datarequest extends MY_Controller
         $this->load->library('api');
     }
 
-    function datarequest_status($requestId) {
+    protected function datarequest_status($requestId) {
 	return $this->api->call('datarequest_get',
                                 ['request_id' => $requestId])->data->requestStatus;
     }
@@ -80,7 +80,7 @@ class Datarequest extends MY_Controller
             return;
         }
 
-        // Load CSRF token
+        # Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
         $tokenHash = $this->security->get_csrf_hash();
 
@@ -121,7 +121,7 @@ class Datarequest extends MY_Controller
     }
 
     public function add($previousRequestId = NULL) {
-        // Load CSRF token
+        # Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
         $tokenHash = $this->security->get_csrf_hash();
 
@@ -141,7 +141,7 @@ class Datarequest extends MY_Controller
         # Check permissions
         if (!$this->permission_check($draftRequestId, ["OWN"], null)) { return; }
 
-        // Load CSRF token
+        # Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
         $tokenHash = $this->security->get_csrf_hash();
 
@@ -159,11 +159,11 @@ class Datarequest extends MY_Controller
         # Check permissions
         if (!$this->permission_check($requestId, ["OWN"], ["PENDING_ATTACHMENTS"])) { return; }
 
-        // Get current attachments
+        # Get current attachments
         $attachments = $this->api->call('datarequest_attachments_get',
                                         ['request_id' => $requestId])->data;
 
-        // Load CSRF token
+        # Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
         $tokenHash = $this->security->get_csrf_hash();
 
@@ -192,24 +192,23 @@ class Datarequest extends MY_Controller
         $rodsaccount = $this->rodsuser->getRodsAccount();
 
         # Upload the document
-        $this->api->call('datarequest_attachment_upload_permission', ['request_id' => $requestId,
-                                                                      'action' => 'grant'])->data;
+        $this->api->call('datarequest_attachment_upload_permission',
+                         ['request_id' => $requestId, 'action' => 'grant'])->data;
         $this->filesystem->upload($rodsaccount, $filePath, $_FILES["file"]);
         $this->api->call('datarequest_attachment_post_upload_actions',
                          ['request_id' => $requestId, 'filename' => $_FILES["file"]["name"]]);
-        $this->api->call('datarequest_attachment_upload_permission', ['request_id' => $requestId,
-                                                                      'action' => 'grantread'])->data;
+        $this->api->call('datarequest_attachment_upload_permission',
+                         ['request_id' => $requestId, 'action' => 'grantread'])->data;
     }
 
     public function submit_attachments($requestId) {
         # Check permissions
         if (!$this->permission_check($requestId, ["OWN"], ["PENDING_ATTACHMENTS"])) { return; }
 
-        // Submit attachments
-	$result = $this->api->call('datarequest_attachments_submit',
-                                   ['request_id' => $requestId]);
+        # Submit attachments
+	$result = $this->api->call('datarequest_attachments_submit', ['request_id' => $requestId]);
 
-        // Redirect to view/
+        # Redirect to view/
         if ($result->status === "ok") {
             redirect('/datarequest/view/' . $requestId);
         }
@@ -242,7 +241,7 @@ class Datarequest extends MY_Controller
         # Check permissions
         if (!$this->permission_check($requestId, ["PM"], ["SUBMITTED"])) { return; }
 
-        // Load CSRF token
+        # Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
         $tokenHash = $this->security->get_csrf_hash();
 
@@ -264,7 +263,7 @@ class Datarequest extends MY_Controller
         # Check permissions
         if (!$this->permission_check($requestId, ["DM"], ["PRELIMINARY_ACCEPT"])) { return; }
 
-        // Load CSRF token
+        # Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
         $tokenHash = $this->security->get_csrf_hash();
 
@@ -288,7 +287,7 @@ class Datarequest extends MY_Controller
                                                           "DATAMANAGER_REJECT",
                                                           "DATAMANAGER_RESUBMIT"])) { return; }
 
-        // Load CSRF token
+        # Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
         $tokenHash = $this->security->get_csrf_hash();
 
@@ -311,7 +310,7 @@ class Datarequest extends MY_Controller
         if (!$this->permission_check($requestId, ["ED"],
                                      ["DATAMANAGER_REVIEW_ACCEPTED"])) { return; }
 
-        // Load CSRF token
+        # Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
         $tokenHash = $this->security->get_csrf_hash();
 
@@ -333,7 +332,7 @@ class Datarequest extends MY_Controller
         # Check permissions
         if (!$this->permission_check($requestId, ["PM"], ["CONTRIBUTION_ACCEPTED"])) { return; }
 
-        // Load CSRF token
+        # Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
         $tokenHash = $this->security->get_csrf_hash();
 
@@ -355,7 +354,7 @@ class Datarequest extends MY_Controller
         # Check permissions
         if (!$this->permission_check($requestId, ["REV"], ["UNDER_REVIEW"])) { return; }
 
-        // Load CSRF token
+        # Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
         $tokenHash = $this->security->get_csrf_hash();
 
@@ -378,7 +377,7 @@ class Datarequest extends MY_Controller
         # Check permissions
         if (!$this->permission_check($requestId, ["PM"], ["DAO_SUBMITTED", "REVIEWED"])) { return; }
 
-        // Load CSRF token
+        # Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
         $tokenHash = $this->security->get_csrf_hash();
 
@@ -404,11 +403,11 @@ class Datarequest extends MY_Controller
         # Check permissions
         if (!$this->permission_check($requestId, ["ED"], ["APPROVED"])) { return; }
 
-        // Set status to CONTRIBUTION_CONFIRMED
+        # Set status to CONTRIBUTION_CONFIRMED
 	$result = $this->api->call('datarequest_contribution_confirm',
                                    ['request_id' => $requestId]);
 
-        // Redirect to view/
+        # Redirect to view/
         if ($result->status === "ok") {
             redirect('/datarequest/view/' . $requestId);
         }
@@ -496,11 +495,11 @@ class Datarequest extends MY_Controller
         # Check permissions
         if (!$this->permission_check($requestId, ["DM"], ["DTA_SIGNED"])) { return; }
 
-        // Set status to data_ready
+        # Set status to data_ready
 	$result = $this->api->call('datarequest_data_ready',
                                    ['request_id' => $requestId]);
 
-        // Redirect to view/
+        # Redirect to view/
         if ($result->status === "ok") {
             redirect('/datarequest/view/' . $requestId);
         }
