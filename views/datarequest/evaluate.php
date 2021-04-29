@@ -20,21 +20,48 @@
                     <span class="text-collapsed">Show</span>
                     <span class="text-expanded">Hide</span>
                 </a>
-                <h5 class="card-header float-left">Project manager's response to data manager review (if any)</h5>
+                <h5 class="card-header float-left">Review assignment</h5>
             </div>
             <div id="assignDiv" class="card-body collapse">
                 <div id="assign" class="metadata-form"
+                    data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
+                    data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
+                    <p>Loading metadata <i class="fa fa-spinner fa-spin fa-fw"></i></p>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#contributionReviewDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
+                <h5 class="card-header float-left">Contribution review</h5>
+            </div>
+            <div id="contributionReviewDiv" class="card-body collapse">
+                <div id="contributionReview" class="metadata-form"
                      data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
                      data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
                     <p>Loading metadata <i class="fa fa-spinner fa-spin fa-fw"></i></p>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#dmrReviewDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
+                <h5 class="card-header float-left">Project manager's review of data manager review</h5>
+            </div>
+            <div id="dmrReviewDiv" class="card-body collapse">
+                <div id="dmrReview" class="metadata-form"
+                     data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
+                     data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
+                    <p>Loading metadata <i class="fa fa-spinner fa-spin fa-fw"></i></p>
+                </div>
+            </div>
+        </div>
         <div class="card">
             <div class="card-header clearfix">
                 <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#datamanagerReviewDiv" role="button" aria-expanded="false">
@@ -51,11 +78,6 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
         <div class="card">
             <div class="card-header clearfix">
                 <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#preliminaryReviewDiv" role="button" aria-expanded="false">
