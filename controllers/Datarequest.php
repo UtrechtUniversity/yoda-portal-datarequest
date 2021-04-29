@@ -20,6 +20,17 @@ class Datarequest extends MY_Controller
                                 ['request_id' => $requestId])->data->requestStatus;
     }
 
+    protected function permission_check($requestId, $roles, $statuses) {
+        if ($this->api->call('datarequest_action_permitted', ["request_id" => $requestId,
+                                                              "statuses" => $statuses,
+                                                              "roles" => $roles])->data) {
+            return True;
+        } else {
+            $this->output->set_status_header('403');
+            return False;
+        }
+    }
+
     public function index() {
         $this->config->load('config');
         $items = $this->config->item('browser-items-per-page');
@@ -127,14 +138,8 @@ class Datarequest extends MY_Controller
     }
 
     public function add_from_draft($draftRequestId) {
-        // Check permissions
-        $isRequestOwner = $this->api->call('datarequest_is_owner',
-                                           ['request_id' => $draftRequestId])->data;
-        $requestStatus  = $this->datarequest_status($draftRequestId);
-        if (!$isRequestOwner or $requestStatus !== "DRAFT") {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($draftRequestId, ["OWN"], null)) { return; }
 
         // Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
@@ -151,14 +156,8 @@ class Datarequest extends MY_Controller
     }
 
     public function add_attachments($requestId) {
-        // Check permissions
-        $isRequestOwner = $this->api->call('datarequest_is_owner',
-                                           ['request_id' => $requestId])->data;
-        $requestStatus  = $this->datarequest_status($requestId);
-        if (!$isRequestOwner or $requestStatus !== "PENDING_ATTACHMENTS") {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["OWN"], ["PENDING_ATTACHMENTS"])) { return; }
 
         // Get current attachments
         $attachments = $this->api->call('datarequest_attachments_get',
@@ -180,14 +179,8 @@ class Datarequest extends MY_Controller
     }
 
     public function upload_attachment($requestId) {
-        // Check permissions
-        $isRequestOwner = $this->api->call('datarequest_is_owner',
-                                           ['request_id' => $requestId])->data;
-        $requestStatus  = $this->datarequest_status($requestId);
-        if (!$isRequestOwner or $requestStatus !== "PENDING_ATTACHMENTS") {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["OWN"], ["PENDING_ATTACHMENTS"])) { return; }
 
         # Load Filesystem model and PathLibrary library
         $this->load->model('filesystem');
@@ -209,14 +202,8 @@ class Datarequest extends MY_Controller
     }
 
     public function submit_attachments($requestId) {
-        // Check permissions
-        $isRequestOwner = $this->api->call('datarequest_is_owner',
-                                           ['request_id' => $requestId])->data;
-        $requestStatus  = $this->datarequest_status($requestId);
-        if (!$isRequestOwner or $requestStatus !== "PENDING_ATTACHMENTS") {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["OWN"], ["PENDING_ATTACHMENTS"])) { return; }
 
         // Submit attachments
 	$result = $this->api->call('datarequest_attachments_submit',
@@ -233,18 +220,8 @@ class Datarequest extends MY_Controller
     }
 
     public function download_attachment($requestId) {
-        // Check permissions
-        $isProjectManager    = $this->api->call('datarequest_is_project_manager')->data;
-        $isExecutiveDirector = $this->api->call('datarequest_is_executive_director')->data;
-        $isDatamanager       = $this->api->call('datarequest_is_datamanager')->data;
-        $isDMCMember         = $this->api->call('datarequest_is_dmc_member')->data;
-        $isRequestOwner      = $this->api->call('datarequest_is_owner',
-                                                ['request_id' => $requestId])->data;
-        if (!$isProjectManager && !$isExecutiveDirector && !$isDatamanager && !$isDMCMember &&
-            !$isRequestOwner) {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["PM", "ED", "DM", "DMC", "OWN"], null)) { return; }
 
         # Get file path
         $this->load->library('pathlibrary');
@@ -262,13 +239,8 @@ class Datarequest extends MY_Controller
     }
 
     public function preliminary_review($requestId) {
-        // Check permissions
-        $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
-        $requestStatus = $this->datarequest_status($requestId);
-        if (!$isProjectManager or $requestStatus !== "SUBMITTED") {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["PM"], ["SUBMITTED"])) { return; }
 
         // Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
@@ -289,15 +261,8 @@ class Datarequest extends MY_Controller
     }
 
     public function datamanager_review($requestId) {
-        // Check permissions
-        $isDatamanager = $this->api->call('datarequest_is_datamanager')->data;
-        $requestStatus = $this->datarequest_status($requestId);
-        if (!$isDatamanager or !in_array($requestStatus, ["PRELIMINARY_ACCEPT",
-                                                          "PRELIMINARY_REJECT",
-                                                          "PRELIMINARY_RESUBMIT"])) {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["DM"], ["PRELIMINARY_ACCEPT"])) { return; }
 
         // Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
@@ -318,15 +283,10 @@ class Datarequest extends MY_Controller
     }
 
     public function dmr_review($requestId) {
-        // Check permissions
-        $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
-        $requestStatus = $this->datarequest_status($requestId);
-        if (!$isProjectManager or !in_array($requestStatus, ["DATAMANAGER_ACCEPT",
-                                                             "DATAMANAGER_REJECT",
-                                                             "DATAMANAGER_RESUBMIT"])) {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["PM"], ["DATAMANAGER_ACCEPT",
+                                                          "DATAMANAGER_REJECT",
+                                                          "DATAMANAGER_RESUBMIT"])) { return; }
 
         // Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
@@ -347,13 +307,9 @@ class Datarequest extends MY_Controller
     }
 
     public function contribution_review($requestId) {
-        // Check permissions
-        $isExecutiveDirector = $this->api->call('datarequest_is_executive_director')->data;
-        $requestStatus       = $this->datarequest_status($requestId);
-        if (!$isExecutiveDirector or $requestStatus !== "DATAMANAGER_REVIEW_ACCEPTED") {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["ED"],
+                                     ["DATAMANAGER_REVIEW_ACCEPTED"])) { return; }
 
         // Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
@@ -374,13 +330,8 @@ class Datarequest extends MY_Controller
     }
 
     public function assign($requestId) {
-        // Check permissions
-        $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
-        $requestStatus    = $this->datarequest_status($requestId);
-        if (!$isProjectManager or $requestStatus !== "CONTRIBUTION_ACCEPTED") {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["PM"], ["CONTRIBUTION_ACCEPTED"])) { return; }
 
         // Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
@@ -401,14 +352,8 @@ class Datarequest extends MY_Controller
     }
 
     public function review($requestId) {
-        // Check permissions
-        $isReviewer    = $this->api->call('datarequest_is_reviewer',
-                                          ['request_id' => $requestId])->data;
-        $requestStatus = $this->datarequest_status($requestId);
-        if (!$isReviewer or $requestStatus !== "UNDER_REVIEW") {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["REV"], ["UNDER_REVIEW"])) { return; }
 
         // Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
@@ -430,13 +375,8 @@ class Datarequest extends MY_Controller
     }
 
     public function evaluate($requestId) {
-        // Check permissions
-        $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
-        $requestStatus    = $this->datarequest_status($requestId);
-        if (!$isProjectManager or !in_array($requestStatus, ["DAO_SUBMITTED", "REVIEWED"])) {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["PM"], ["DAO_SUBMITTED", "REVIEWED"])) { return; }
 
         // Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
@@ -453,7 +393,7 @@ class Datarequest extends MY_Controller
             )
         );
 
-        if ($requestStatus === "DAO_SUBMITTED") {
+        if ($this->datarequest_status($requestId) === "DAO_SUBMITTED") {
             loadView('/datarequest/dao_evaluate', $viewParams);
         } else {
             loadView('/datarequest/evaluate', $viewParams);
@@ -461,13 +401,8 @@ class Datarequest extends MY_Controller
     }
 
     public function contribution_confirm($requestId) {
-        // Check permissions
-        $isExecutiveDirector = $this->api->call('datarequest_is_executive_director')->data;
-        $requestStatus       = $this->datarequest_status($requestId);
-        if (!$isExecutiveDirector or $requestStatus !== "APPROVED") {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["ED"], ["APPROVED"])) { return; }
 
         // Set status to CONTRIBUTION_CONFIRMED
 	$result = $this->api->call('datarequest_contribution_confirm',
@@ -480,14 +415,9 @@ class Datarequest extends MY_Controller
     }
 
     public function upload_dta($requestId) {
-        // Check permissions
-        $isDatamanager = $this->api->call('datarequest_is_datamanager')->data;
-        $requestStatus = $this->datarequest_status($requestId);
-        if (!$isDatamanager or !in_array($requestStatus, ["CONTRIBUTION_CONFIRMED",
-                                                          "DAO_APPROVED"])) {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["DM"], ["CONTRIBUTION_CONFIRMED",
+                                                          "DAO_APPROVED"])) { return; }
 
         # Load Filesystem model and PathLibrary library
         $this->load->model('filesystem');
@@ -509,13 +439,8 @@ class Datarequest extends MY_Controller
     }
 
     public function download_dta($requestId) {
-        // Check permissions
-        $isRequestOwner = $this->api->call('datarequest_is_owner',
-                                           ['request_id' => $requestId])->data;
-        if (!$isRequestOwner) {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["PM", "DM", "OWN"], null)) { return; }
 
         # Get file path
         $file_path = $this->api->call('datarequest_dta_path_get',
@@ -529,13 +454,8 @@ class Datarequest extends MY_Controller
     }
 
     public function upload_signed_dta($requestId) {
-        // Check permissions
-        $isRequestOwner = $this->api->call('datarequest_is_owner',
-                                           ['request_id' => $requestId])->data;
-        $requestStatus  = $this->datarequest_status($requestId);
-        if (!$isRequestOwner or $requestStatus !== "DTA_READY") {
-            $this->output->set_status_header('403');
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["OWN"], ["DTA_READY"])) { return; }
 
         # Load Filesystem model and PathLibrary library
         $this->load->model('filesystem');
@@ -558,14 +478,8 @@ class Datarequest extends MY_Controller
     }
 
     public function download_signed_dta($requestId) {
-        // Check permissions
-        $isProjectManager = $this->api->call('datarequest_is_project_manager')->data;
-        $isDatamanager    = $this->api->call('datarequest_is_datamanager')->data;
-        $requestStatus    = $this->datarequest_status($requestId);
-        if ((!$isDatamanager && !$isProjectManager) or !in_array($requestStatus,
-                                                                 ["DTA_SIGNED", "DATA_READY"])) {
-            $this->output->set_status_header('403');
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["PM", "DM", "OWN"], null)) { return; }
 
         # Get file path
         $file_path = $this->api->call('datarequest_signed_dta_path_get',
@@ -579,13 +493,8 @@ class Datarequest extends MY_Controller
     }
 
     public function data_ready($requestId) {
-        // Check permissions
-        $isDatamanager = $this->api->call('datarequest_is_datamanager')->data;
-        $requestStatus = $this->datarequest_status($requestId);
-        if (!$isDatamanager or $requestStatus !== "DTA_SIGNED") {
-            $this->output->set_status_header('403');
-            return;
-        }
+        # Check permissions
+        if (!$this->permission_check($requestId, ["DM"], ["DTA_SIGNED"])) { return; }
 
         // Set status to data_ready
 	$result = $this->api->call('datarequest_data_ready',
