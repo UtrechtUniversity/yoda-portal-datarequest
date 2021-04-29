@@ -64,7 +64,7 @@ class Datarequest extends MY_Controller
 
         # If the user is neither of the above, return a 403
         if (!$isProjectManager && !$isExecutiveDirector && !$isDatamanager && !$isDMCMember &&
-            !$isRequestOwner && !$isReviewer) {
+            !$isRequestOwner) {
             $this->output->set_status_header('403');
             return;
         }

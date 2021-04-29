@@ -33,13 +33,13 @@
         </div>
         <div class="card">
             <div class="card-header clearfix">
-                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#datarequestDiv" role="button" aria-expanded="true">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#datarequestDiv" role="button" aria-expanded="false">
                     <span class="text-collapsed">Show</span>
                     <span class="text-expanded">Hide</span>
                 </a>
                 <h5 class="card-header float-left">Data request <?php echo html_escape($requestId) ?></h5>
             </div>
-            <div id="datarequestDiv" class="card-body collapse show">
+            <div id="datarequestDiv" class="card-body collapse">
                 <div id="datarequest" class="metadata-form"
                      data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
                      data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">

@@ -204,7 +204,7 @@ function submitData(data)
             //
             // We know this is the case when the call returns a requestId, i.e. the requestId of the
             // newly created draft data request
-            if (response.requestId) {
+            if (response !== null && response.hasOwnProperty('requestId')) {
                 window.location.href = "/datarequest/add_from_draft/" + response.requestId;
             // If no draft requestId is returned, we are already working on a draft proposal and can
             // therefore stay on the same page (i.e. add_from_draft/{draftRequestId})
