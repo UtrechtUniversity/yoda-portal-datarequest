@@ -2,7 +2,7 @@
     var browsePageItems = <?php echo $items; ?>;
 </script>
 
-<?php if (!$isDatamanager && !$isProjectManager && !$isExecutiveDirector): ?>
+<?php if ($submissionAllowed): ?>
 <div class="row">
     <div class="col-md-12">
         <a href="/datarequest/add" class="btn btn-primary mb-3 float-right" role="button">Submit data request</a>

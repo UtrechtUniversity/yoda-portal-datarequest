@@ -35,10 +35,10 @@ class Datarequest extends MY_Controller
         $this->config->load('config');
         $items = $this->config->item('browser-items-per-page');
 
-        # Get user group memberships
-        $isProjectManager    = $this->api->call('datarequest_is_role', ["role" => "PM"])->data;
-        $isDatamanager       = $this->api->call('datarequest_is_role', ["role" => "DM"])->data;
-        $isExecutiveDirector = $this->api->call('datarequest_is_role', ["role" => "ED"])->data;
+        # Check if user is allowed to submit data request
+        $roles             = $this->api->call('datarequest_roles_get')->data;
+        $submissionAllowed = !in_array("PM", $roles) and !in_array("DM", $roles) and
+                             !in_array("ED", $roles);
 
         $viewParams = array(
             'styleIncludes'       => array(
@@ -52,9 +52,7 @@ class Datarequest extends MY_Controller
             ),
             'items'               => $items,
             'activeModule'        => 'datarequest',
-            'isProjectManager'    => $isProjectManager,
-            'isExecutiveDirector' => $isExecutiveDirector,
-            'isDatamanager'       => $isDatamanager,
+            'submissionAllowed'   => $submissionAllowed,
             'help_contact_name'   => $this->config->item('datarequest_help_contact_name'),
             'help_contact_email'  => $this->config->item('datarequest_help_contact_email')
         );
@@ -64,14 +62,14 @@ class Datarequest extends MY_Controller
 
     public function view($requestId) {
         # Check user group memberships and statuses
-        $isProjectManager    = $this->api->call('datarequest_is_role', ["role" => "PM"])->data;
-        $isExecutiveDirector = $this->api->call('datarequest_is_role', ["role" => "ED"])->data;
-        $isDatamanager       = $this->api->call('datarequest_is_role', ["role" => "DM"])->data;
-        $isDMCMember         = $this->api->call('datarequest_is_role', ["role" => "DMC"])->data;
-        $isRequestOwner      = $this->api->call('datarequest_is_role',
-                                                ["role" => "OWN", "request_id" => $requestId])->data;
-        $isReviewer          = $this->api->call('datarequest_is_role',
-                                                ["role" => "REV", "request_id" => $requestId])->data;
+        $roles               = $this->api->call('datarequest_roles_get',
+                                                ["request_id" => $requestId])->data;
+        $isProjectManager    = in_array("PM", $roles);
+        $isExecutiveDirector = in_array("ED", $roles);
+        $isDatamanager       = in_array("DM", $roles);
+        $isDMCMember         = in_array("DMC", $roles);
+        $isRequestOwner      = in_array("OWN", $roles);
+        $isReviewer          = in_array("REV", $roles);
 
         # If the user is neither of the above, return a 403
         if (!$isProjectManager && !$isExecutiveDirector && !$isDatamanager && !$isDMCMember &&
