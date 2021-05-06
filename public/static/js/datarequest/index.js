@@ -162,26 +162,40 @@ function startBrowsing(items)
 
 function convertToHumanReadableStatus(status) {
     switch(status) {
+        case "DRAFT":
+            return "In draft";
+        case "PENDING_ATTACHMENTS":
+            return "Pending attachments";
+        case "DAO_SUBMITTED":
+            return "Submitted (data assessment)";
         case "SUBMITTED":
             return "Submitted";
         case "PRELIMINARY_ACCEPT":
             return "Preliminary accept";
         case "PRELIMINARY_REJECT":
-            return "Preliminary reject";
+            return "Rejected at preliminary review";
         case "PRELIMINARY_RESUBMIT":
-            return "Preliminary reject (resubmit)";
+            return "Rejected (resubmit) at preliminary review";
         case "DATAMANAGER_ACCEPT":
             return "Datamanager accept";
         case "DATAMANAGER_REJECT":
             return "Datamanager reject";
         case "DATAMANAGER_RESUBMIT":
             return "Datamanager reject (resubmit)";
+        case "DATAMANAGER_REVIEW_ACCEPTED":
+            return "Data manager review accepted";
+        case "REJECTED_AFTER_DATAMANAGER_REVIEW":
+            return "Rejected after datamanager review";
+        case "RESUBMIT_AFTER_DATAMANAGER_REVIEW":
+            return "Rejected (resubmit) after datamanager review";
+        case "CONTRIBUTION_ACCEPTED":
+            return "Contribution accepted";
+        case "CONTRIBUTION_REJECTED":
+            return "Contribution rejected";
+        case "CONTRIBUTION_RESUBMIT":
+            return "Contribution rejected(resubmit)";
         case "UNDER_REVIEW":
             return "Under review";
-        case "REJECTED_AFTER_DATAMANAGER_REVIEW":
-            return "Rejected";
-        case "RESUBMIT_AFTER_DATAMANAGER_REVIEW":
-            return "Rejected (resubmit)";
         case "REVIEWED":
             return "Reviewed";
         case "APPROVED":
@@ -190,6 +204,10 @@ function convertToHumanReadableStatus(status) {
             return "Rejected";
         case "RESUBMIT":
             return "Rejected (resubmit)";
+        case "CONTRIBUTION_CONFIRMED":
+            return "Contribution confirmed";
+        case "DAO_APPROVED":
+            return "Approved (data assessment)";
         case "DTA_READY":
             return "DTA ready";
         case "DTA_SIGNED":

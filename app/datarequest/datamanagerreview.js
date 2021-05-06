@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     Yoda.call("datarequest_schema_get", {schema_name: "datamanager_review"})
     .then(response => {
         let datamanagerReviewSchema = response.schema;
-        let datamanagerReviewUiSchema = response.uiSchema;
+        let datamanagerReviewUiSchema = response.uischema;
 
         render(<Container schema={datamanagerReviewSchema}
                           uiSchema={datamanagerReviewUiSchema} />,
@@ -89,8 +89,8 @@ class Container extends React.Component {
         <div>
           <YodaForm schema={this.props.schema}
                     uiSchema={this.props.uiSchema}
-                    ref={(form) => {this.form=form;}}/>
-          <YodaButtons submitButton={this.submitForm}/>
+                    ref={(form) => {this.form=form;}} />
+          <YodaButtons submitButton={this.submitForm} />
         </div>
         );
     }
@@ -182,7 +182,8 @@ const fields = {
 function submitData(data) {
 
     // Disable submit button
-    $("button:submit").attr("disabled", true);
+    $("button:submit").text("Submitting...")
+    $("button:submit").attr("disabled", "disabled");
 
     // Submit form and redirect to view/
     Yoda.call("datarequest_datamanager_review_submit",

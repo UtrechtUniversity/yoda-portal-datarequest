@@ -2,11 +2,14 @@
     <?php if (isset($previousRequestId)): ?>
         var previousRequestId = <?php echo $previousRequestId; ?>;
     <?php endif ?>
+    <?php if (isset($draftRequestId)): ?>
+        var draftRequestId = <?php echo $draftRequestId; ?>;
+    <?php endif ?>
 </script>
 
 <div class="row metadata-form">
     <div class="col-md-12">
-        <div class="card ">
+        <div class="card">
             <div class="card-header clearfix">
                 <h5 class="card-header float-left">
                     Data request submission form

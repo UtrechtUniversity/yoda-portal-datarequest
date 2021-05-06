@@ -6,6 +6,8 @@ import filterFactory, { numberFilter, textFilter, selectFilter, multiSelectFilte
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import DataSelection, { DataSelectionTable } from "./DataSelection.js";
 
+let save = false;
+
 document.addEventListener("DOMContentLoaded", async () => {
 
     // Get data request schema and uiSchema
@@ -14,39 +16,79 @@ document.addEventListener("DOMContentLoaded", async () => {
         let datarequestSchema = response.schema;
         let datarequestUiSchema = response.uischema;
 
-        // If specified, get data of previous data request (of which the present
-        // data request will become a resubmission) and prefill data request
-        // form
-        if (typeof previousRequestId !== 'undefined') {
-            var datarequestFormData = {};
+        // Determine if form should be prefilled...
+        if (typeof(draftRequestId) !== 'undefined' || typeof(previousRequestId) !== 'undefined') {
+            let datarequestFormData = {};
 
+            // Determine with which data to prefill the form
+            let requestId = typeof(draftRequestId) !== 'undefined' ? draftRequestId : previousRequestId;
+
+            // Get that data and render the prefilled form
             Yoda.call('datarequest_get',
-                {request_id: previousRequestId},
+                {request_id: requestId},
                 {errorPrefix: "Could not get datarequest"})
-            .then(previousDatarequest => {
-                datarequestFormData = JSON.parse(previousDatarequest.requestJSON);
+            .then(data => {
+                datarequestFormData = JSON.parse(data.requestJSON);
+
+                // Add previous request ID to form data if applicable
+                if (typeof(previousRequestId) !== 'undefined') {
+                    datarequestFormData['previous_request_id'] = previousRequestId;
+                }
 
                 render(<Container schema={datarequestSchema}
                                   uiSchema={datarequestUiSchema}
-                                  formData={datarequestFormData} />,
+                                  formData={datarequestFormData}
+                                  validate={validate} />,
                        document.getElementById("form"));
             });
-        // Else, render blank data request form
+        // ...if not, render blank form
         } else {
             render(<Container schema={datarequestSchema}
-                              uiSchema={datarequestUiSchema} />,
+                              uiSchema={datarequestUiSchema}
+                              validate={validate} />,
                    document.getElementById("form"));
         }
     });
 });
 
+// Some validations that cannot be done in the schema itself
+function validate(formData, errors) {
+
+    // Validate whether CC email addresses are valid
+    //
+    // First check whether any CC email addresses have been entered
+    let cc_email_addresses = getNested(formData, 'contact', 'cc_email_addresses');
+    if (typeof(cc_email_addresses) !== 'undefined') {
+        // Then remove all spaces
+        cc_email_addresses = cc_email_addresses.replace(/\s+/g, '');
+        // Then check if they look like valid email addresses
+        let cc_split = cc_email_addresses.split(",");
+        for (const address of cc_split) {
+            if (!isEmailAddress(address)) {
+                errors.contact.cc_email_addresses.addError(
+                    "One or more of the entered email addresses is invalid.");
+                break;
+            }
+        };
+    }
+
+    return errors;
+}
+
 class Container extends React.Component {
     constructor(props) {
         super(props);
         this.submitForm = this.submitForm.bind(this);
+        this.saveForm = this.saveForm.bind(this);
     }
 
     submitForm() {
+        save = false;
+        this.form.submitButton.click();
+    }
+
+    saveForm() {
+        save = true;
         this.form.submitButton.click();
     }
 
@@ -56,8 +98,9 @@ class Container extends React.Component {
           <YodaForm schema={this.props.schema}
                     uiSchema={this.props.uiSchema}
                     formData={this.props.formData}
-                    ref={(form) => {this.form=form;}}/>
-          <YodaButtons submitButton={this.submitForm}/>
+                    validate={this.props.validate}
+                    ref={(form) => {this.form=form;}} />
+          <YodaButtons submitButton={this.submitForm} saveButton={this.saveForm} />
         </div>
       );
     }
@@ -75,6 +118,7 @@ class YodaForm extends React.Component {
                   idPrefix={"yoda"}
                   uiSchema={this.props.uiSchema}
                   formData={this.props.formData}
+                  validate={this.props.validate}
                   fields={fields}
                   onSubmit={onSubmit}
                   showErrorList={false}
@@ -97,7 +141,8 @@ class YodaButtons extends React.Component {
             <div className="form-group">
                 <div className="row yodaButtons">
                     <div className="col-sm-12">
-                        <button onClick={this.props.submitButton} type="submit" className="btn btn-primary">Submit</button>
+                        <button id="saveButton" onClick={this.props.saveButton} type="submit" className="btn btn-secondary mr-1">Save as draft</button>
+                        <button id="submitButton" onClick={this.props.submitButton} type="submit" className="btn btn-primary">Submit</button>
                     </div>
                 </div>
             </div>
@@ -117,6 +162,15 @@ const fields = {
 };
 
 function transformErrors(errors) {
+    // Scroll to first error (ugly but works). A proper solution isn't available yet, see:
+    // https://github.com/rjsf-team/react-jsonschema-form/issues/1791
+    if (errors.length !== 0) {
+        let first_error_property = errors[0].property;
+        let elem_id = "yoda" + first_error_property.replace(/\./g, '_');
+        let elem = document.getElementById(elem_id) !== null ? document.getElementById(elem_id) : document.getElementsByName(elem_id)[0].parentElement.parentElement;
+        elem.parentElement.scrollIntoView();
+    }
+
     return errors.map(error => {
         if(error.name === "not" && error.property === ".contribution") {
             error.message = "Please specify at least one contribution."
@@ -127,19 +181,59 @@ function transformErrors(errors) {
 
 function submitData(data)
 {
-    // Disable submit button
-    $("button:submit").attr("disabled", "disabled");
+    // Disable button
+    if (save) {
+        $("#saveButton").text("Saving...");
+        $("#saveButton").attr("disabled", "disabled");
+    } else {
+        $("#submitButton").text("Submitting...");
+        $("#submitButton").attr("disabled", "disabled");
+    }
 
-    // Submit form and redirect to overview page
+    // Submit form
     Yoda.call("datarequest_submit",
         {data: data,
-         previous_request_id: typeof(previousRequestId) !== 'undefined' ? previousRequestId : null},
+         draft: save,
+         draft_request_id: typeof(draftRequestId) !== 'undefined' ? draftRequestId : null},
         {errorPrefix: "Could not submit data"})
-    .then(() => {
-        window.location.href = "/datarequest/";
+    // Redirect if applicable
+    .then(response => {
+        if (save) {
+            // If this is the first time the draft is saved, redirect to
+            // add_from_draft/{draftRequestId}
+            //
+            // We know this is the case when the call returns a requestId, i.e. the requestId of the
+            // newly created draft data request
+            if (response !== null && response.hasOwnProperty('requestId')) {
+                window.location.href = "/datarequest/add_from_draft/" + response.requestId;
+            // If no draft requestId is returned, we are already working on a draft proposal and can
+            // therefore stay on the same page (i.e. add_from_draft/{draftRequestId})
+            } else {
+                $("#saveButton").text("Save as draft");
+                $('#saveButton').attr("disabled", false);
+            }
+        // If attachments should be added, redirect to attachment upload page
+        } else if  (response !== null && response.hasOwnProperty('pendingAttachments')) {
+            window.location.href = "/datarequest/add_attachments/" + response.requestId;
+        // If we are submitting the data request instead of saving it as a draft, redirect to index
+        } else {
+            window.location.href = "/datarequest/";
+        }
     })
     .catch(error => {
         // Re-enable submit button if submission failed
+        $("#submitButton").text("Submit");
+        $("#saveButton").text("Save as draft");
         $('button:submit').attr("disabled", false);
     });
+}
+
+// https://stackoverflow.com/a/2631198
+function getNested(obj, ...args) {
+  return args.reduce((obj, level) => obj && obj[level], obj)
+}
+
+// https://stackoverflow.com/a/9204568
+function isEmailAddress(address) {
+    return address.match(/^[^\s@]+@[^\s@]+$/) !== null
 }

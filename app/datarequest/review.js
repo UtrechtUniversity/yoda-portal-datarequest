@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     var datarequestFormData = {};
 
     // Get data request
-    Yoda.call('datarequest_get',
+    await Yoda.call('datarequest_get',
         {request_id: requestId},
         {errorPrefix: "Could not get datarequest"})
     .then(datarequest => {
@@ -86,15 +86,66 @@ document.addEventListener("DOMContentLoaded", async () => {
                                   formData={dmrFormData} />,
                document.getElementById("datamanagerReview"));
     });
+    var dmrrSchema   = {};
+    var dmrrUiSchema = {};
+    var dmrrFormData = {};
+
+    // Get data manager review review
+    Yoda.call("datarequest_dmr_review_get",
+              {request_id: requestId},
+              {errorPrefix: "Could not get datamanager review review."})
+    .then(response => {
+        dmrrFormData = JSON.parse(response);
+    })
+    // Get data manager review review schema and uischema
+    .then(async () => {
+        await Yoda.call("datarequest_schema_get", {schema_name: "dmr_review"})
+        .then(response => {
+            dmrrSchema   = response.schema;
+            dmrrUiSchema = response.uischema;
+        })
+    })
+    .then(() => {
+        render(<ContainerReadonly schema={dmrrSchema}
+                                  uiSchema={dmrrUiSchema}
+                                  formData={dmrrFormData} />,
+               document.getElementById("dmrReview"));
+    });
+
+    var crSchema =   {};
+    var crUiSchema = {};
+    var crFormData = {};
+
+    // Get contribution review
+    Yoda.call("datarequest_contribution_review_get",
+              {request_id: requestId},
+              {errorPrefix: "Could not get contribution review."})
+    .then(response => {
+        crFormData = JSON.parse(response);
+    })
+    // Get contribution review schema and uischema
+    .then(async () => {
+        await Yoda.call("datarequest_schema_get", {schema_name: "contribution_review"})
+        .then(response => {
+            crSchema   = response.schema;
+            crUiSchema = response.uischema;
+        })
+    })
+    .then(() => {
+        render(<ContainerReadonly schema={crSchema}
+                                  uiSchema={crUiSchema}
+                                  formData={crFormData} />,
+               document.getElementById("contributionReview"));
+    });
 
     var assignSchema   = {};
     var assignUiSchema = {};
     var assignFormData = {};
 
-    // Get data manager review
+    // Get data assignment
     Yoda.call("datarequest_assignment_get",
               {request_id: requestId},
-              {errorPrefix: "Could not get datamanager review"})
+              {errorPrefix: "Could not get assignment"})
     .then(response => {
         assignFormData = JSON.parse(response);
     })
@@ -118,10 +169,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     Yoda.call("datarequest_schema_get", {schema_name: "review"})
     .then(response => {
         let reviewSchema = response.schema;
-        let reviewUiSchema = response.uiSchema;
+        let reviewUiSchema = response.uischema;
+        let reviewFormData = {};
+
+        // If it is a data request for data assessment only, hide irrelevant
+        // fields
+        reviewFormData.for_publishing = datarequestFormData.datarequest.purpose
+                                        ===
+                                        'Analyses in order to publish'
+
+        // If biological material is requested, set the biological samples field
+        // to save the reviewer some time
+        let datasetsRequested = datarequestFormData.datarequest.data.selectedRows;
+        for(var dataset of datasetsRequested) {
+            if(dataset.expType == 0) {
+                reviewFormData.biological_samples = true;
+                break;
+            }
+        }
 
         render(<Container schema={reviewSchema}
-                          uiSchema={reviewUiSchema} />,
+                          uiSchema={reviewUiSchema}
+                          formData={reviewFormData} />,
                document.getElementById("form"));
     });
 });
@@ -141,8 +210,9 @@ class Container extends React.Component {
         <div>
           <YodaForm schema={this.props.schema}
                     uiSchema={this.props.uiSchema}
-                    ref={(form) => {this.form=form;}}/>
-          <YodaButtons submitButton={this.submitForm}/>
+                    formData={this.props.formData}
+                    ref={(form) => {this.form=form;}} />
+          <YodaButtons submitButton={this.submitForm} />
         </div>
         );
     }
@@ -170,6 +240,7 @@ class YodaForm extends React.Component {
             <Form className="form"
                   schema={this.props.schema}
                   uiSchema={this.props.uiSchema}
+                  formData={this.props.formData}
                   idPrefix={"yoda"}
                   onSubmit={onSubmit}
                   showErrorList={false}
@@ -235,6 +306,7 @@ const fields = {
 function submitData(data)
 {
     // Disable submit button
+    $("button:submit").text("Submitting...")
     $("button:submit").attr("disabled", "disabled");
 
     // Append username to data
@@ -251,4 +323,9 @@ function submitData(data)
         // Re-enable submit button if submission failed
         $("button:submit").attr("disabled", false);
    });
+}
+
+// https://stackoverflow.com/a/2631198
+function getNested(obj, ...args) {
+  return args.reduce((obj, level) => obj && obj[level], obj)
 }

@@ -79,146 +79,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             dmrUiSchema = response.uischema;
         })
     })
-    // Render data manager review as disabled form
     .then(() => {
         render(<ContainerReadonly schema={dmrSchema}
                                   uiSchema={dmrUiSchema}
                                   formData={dmrFormData} />,
                document.getElementById("datamanagerReview"));
     });
-    var dmrrSchema   = {};
-    var dmrrUiSchema = {};
-    var dmrrFormData = {};
 
-    // Get data manager review review
-    Yoda.call("datarequest_dmr_review_get",
-              {request_id: requestId},
-              {errorPrefix: "Could not get datamanager review review."})
+    // Get the schema of the datamanager review review form
+    Yoda.call("datarequest_schema_get", {schema_name: "dmr_review"})
     .then(response => {
-        dmrrFormData = JSON.parse(response);
-    })
-    // Get data manager review review schema and uischema
-    .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "dmr_review"})
-        .then(response => {
-            dmrrSchema   = response.schema;
-            dmrrUiSchema = response.uischema;
-        })
-    })
-    .then(() => {
-        render(<ContainerReadonly schema={dmrrSchema}
-                                  uiSchema={dmrrUiSchema}
-                                  formData={dmrrFormData} />,
-               document.getElementById("dmrReview"));
-    });
+        let dmrReviewSchema = response.schema;
+        let dmrReviewUiSchema = response.uischema;
 
-    var crSchema =   {};
-    var crUiSchema = {};
-    var crFormData = {};
-
-    // Get contribution review
-    Yoda.call("datarequest_contribution_review_get",
-              {request_id: requestId},
-              {errorPrefix: "Could not get contribution review."})
-    .then(response => {
-        crFormData = JSON.parse(response);
-    })
-    // Get contribution review schema and uischema
-    .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "contribution_review"})
-        .then(response => {
-            crSchema   = response.schema;
-            crUiSchema = response.uischema;
-        })
-    })
-    .then(() => {
-        render(<ContainerReadonly schema={crSchema}
-                                  uiSchema={crUiSchema}
-                                  formData={crFormData} />,
-               document.getElementById("contributionReview"));
-    });
-
-    var assignSchema   = {};
-    var assignUiSchema = {};
-    var assignFormData = {};
-
-    // Get assignment
-    Yoda.call("datarequest_assignment_get",
-              {request_id: requestId},
-              {errorPrefix: "Could not get assignment"})
-    .then(response => {
-        assignFormData = JSON.parse(response);
-    })
-    // Get assignment schema and uischema
-    .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "assignment"})
-        .then(response => {
-            assignSchema   = response.schema;
-            assignUiSchema = response.uischema;
-        })
-    })
-    // Render assignment as disabled form
-    .then(() => {
-        render(<ContainerReadonly schema={assignSchema}
-                                  uiSchema={assignUiSchema}
-                                  formData={assignFormData} />,
-               document.getElementById("assign"));
-    });
-
-    var reviewSchema = {};
-    var reviewUiSchema = {};
-    var reviewFormData = {};
-
-    // Get the reviews and render them in as dissabled forms
-    Yoda.call("datarequest_reviews_get",
-              {request_id: requestId},
-              {errorPrefix: "Could not get reviews"})
-    .then(response => {
-        reviewFormData = JSON.parse(response);
-    })
-    // Get review schema and uischema
-    .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "review"})
-        .then(response => {
-            reviewSchema   = response.schema;
-            reviewUiSchema = response.uischema;
-        })
-    })
-    .then(() => {
-        var reviews = reviewFormData.map((line, i) => {
-          let reviewDiv="review" + [i] + "Div";
-          return(
-            <div class="card">
-                <div class="card-header clearfix">
-                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href={"#" + reviewDiv} role="button" aria-expanded="true">
-                    <span class="text-collapsed">Show</span>
-                    <span class="text-expanded">Hide</span>
-                </a>
-                    <h5 class="card-header float-left">
-                        Review by {reviewFormData[i].username}
-                    </h5>
-                </div>
-                <div id={reviewDiv} class="card-body collapse show">
-                    <ContainerReadonly schema={reviewSchema}
-                                       uiSchema={reviewUiSchema}
-                                       formData={reviewFormData[i]} />
-                </div>
-            </div>
-          );
-        });
-
-        render(<div>{reviews}</div>, document.getElementById("reviews"));
-    });
-
-    // Get the schema of the data request evaluation form
-    Yoda.call("datarequest_schema_get", {schema_name: "evaluation"})
-    .then(response => {
-        let evaluationSchema = response.schema;
-        let evaluationUiSchema = response.uischema;
-
-        render(<Container schema={evaluationSchema}
-                          uiSchema={evaluationUiSchema} />,
-               document.getElementById("evaluation"));
+        render(<Container schema={dmrReviewSchema}
+                          uiSchema={dmrReviewUiSchema} />,
+               document.getElementById("dmrreview"));
     });
 });
 
@@ -335,9 +211,9 @@ function submitData(data)
     $("button:submit").attr("disabled", "disabled");
 
     // Submit form and direct to view/
-    Yoda.call("datarequest_evaluation_submit",
+    Yoda.call("datarequest_dmr_review_submit",
         {data: data, request_id: requestId},
-        {errorPrefix: "Could not submit assignment"})
+        {errorPrefix: "Could not submit datamanager review review."})
     .then(() => {
         window.location.href = "/datarequest/view/" + requestId;
     })

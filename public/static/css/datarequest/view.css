@@ -17,6 +17,10 @@
 .bs-wizard > .bs-wizard-step:first-child  > .progress {left: 50%; width: 50%;}
 .bs-wizard > .bs-wizard-step:last-child  > .progress {width: 50%;}
 .bs-wizard > .bs-wizard-step.disabled a.bs-wizard-dot{ pointer-events: none; }
+
+.bs-wizard > .bs-wizard-step.rejected > .progress > .progress-bar {background: #dcdcdc;}
+.bs-wizard > .bs-wizard-step.rejected > .bs-wizard-dot {background: #dcdcdc;}
+.bs-wizard > .bs-wizard-step.rejected > .bs-wizard-dot:after {background: #bebebe;}
 /*END Form Wizard*/
 
 -wizard {
@@ -26,4 +30,9 @@
 .rejected {
   text-align: center;
   color: red;
+}
+
+.resubmit {
+  text-align: center;
+  color: orange;
 }

@@ -33,15 +33,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         );
     });
 
-    // Get the schema of the data request preliminary review form
-    Yoda.call("datarequest_schema_get", {schema_name: "preliminary_review"})
+    // Get the schema of the data request evaluation form
+    Yoda.call("datarequest_schema_get", {schema_name: "evaluation"})
     .then(response => {
-        let preliminaryReviewSchema = response.schema;
-        let preliminaryReviewUiSchema = response.uischema;
+        let evaluationSchema = response.schema;
+        let evaluationUiSchema = response.uischema;
 
-        render(<Container schema={preliminaryReviewSchema}
-                          uiSchema={preliminaryReviewUiSchema} />,
-               document.getElementById("preliminaryReview"));
+        render(<Container schema={evaluationSchema}
+                          uiSchema={evaluationUiSchema} />,
+               document.getElementById("evaluation"));
     });
 });
 
@@ -157,10 +157,10 @@ function submitData(data)
     $("button:submit").text("Submitting...")
     $("button:submit").attr("disabled", "disabled");
 
-    // Submit form and redirect to view/
-    Yoda.call("datarequest_preliminary_review_submit",
+    // Submit form and direct to view/
+    Yoda.call("datarequest_evaluation_submit",
         {data: data, request_id: requestId},
-        {errorPrefix: "Could not submit data"})
+        {errorPrefix: "Could not submit assignment"})
     .then(() => {
         window.location.href = "/datarequest/view/" + requestId;
     })

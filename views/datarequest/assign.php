@@ -15,11 +15,47 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card ">
+        <div class="card">
             <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#contributionReviewDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
+                <h5 class="card-header float-left">Contribution review</h5>
+            </div>
+            <div id="contributionReviewDiv" class="card-body collapse">
+                <div id="contributionReview" class="metadata-form"
+                     data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
+                     data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
+                    <p>Loading metadata <i class="fa fa-spinner fa-spin fa-fw"></i></p>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#dmrReviewDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
+                <h5 class="card-header float-left">Project manager's review of data manager review</h5>
+            </div>
+            <div id="dmrReviewDiv" class="card-body collapse">
+                <div id="dmrReview" class="metadata-form"
+                     data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
+                     data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
+                    <p>Loading metadata <i class="fa fa-spinner fa-spin fa-fw"></i></p>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#datamanagerReviewDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
                 <h5 class="card-header float-left">Data manager review</h5>
             </div>
-            <div class="card-body">
+            <div id="datamanagerReviewDiv" class="card-body collapse">
                 <div id="datamanagerReview" class="metadata-form"
                      data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
                      data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
@@ -27,11 +63,15 @@
                 </div>
             </div>
         </div>
-        <div class="card ">
+        <div class="card">
             <div class="card-header clearfix">
-                <h5 class="card-header float-left">Board of Directors preliminary review</h5>
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#preliminaryReviewDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
+                <h5 class="card-header float-left">Project manager's preliminary review</h5>
             </div>
-            <div class="card-body">
+            <div id="preliminaryReviewDiv" class="card-body collapse">
                 <div id="preliminaryReview" class="metadata-form"
                      data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
                      data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
@@ -39,11 +79,15 @@
                 </div>
             </div>
         </div>
-        <div class="card ">
+        <div class="card">
             <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#datarequestDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
                 <h5 class="card-header float-left">Data request <?php echo html_escape($requestId) ?></h5>
             </div>
-            <div class="card-body">
+            <div id="datarequestDiv" class="card-body collapse">
                 <div id="datarequest" class="metadata-form"
                      data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
                      data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
@@ -51,6 +95,22 @@
                 </div>
             </div>
         </div>
+        <?php if(count($attachments) > 0): ?>
+        <div class="card">
+            <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#attachmentsDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
+                <h5 class="card-header float-left">Attachments</h5>
+            </div>
+            <div id="attachmentsDiv" class="card-body collapse">
+                <ul>
+                    <?php $i=0; foreach($attachments as $attachment) { echo "<li><a href=\"/datarequest/download_attachment/" . html_escape($requestId) . "?file=" . $i . "\">" . html_escape($attachment) . "</a></li>"; $i++; } ?>
+                </ul>
+            </div>
+        </div>
+        <?php endif ?>
     </div>
 </div>
 

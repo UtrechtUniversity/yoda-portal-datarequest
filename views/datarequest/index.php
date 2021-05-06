@@ -2,11 +2,13 @@
     var browsePageItems = <?php echo $items; ?>;
 </script>
 
+<?php if ($submissionAllowed): ?>
 <div class="row">
     <div class="col-md-12">
-        <a href="/datarequest/datarequest/add" class="btn btn-primary mb-3 float-right" role="button">Add data request</a>
+        <a href="/datarequest/add" class="btn btn-primary mb-3 float-right" role="button">Submit data request</a>
     </div>
 </div>
+<?php endif ?>
 
 <div class="row">
     <div class="col-md-12">
@@ -96,7 +98,7 @@
     <tr>
         <td><img src=/datarequest/static/img/button.png></img></td>
         <td>Approved</td>
-        <td>The YOUth Executive Board has approved the proposal.</td>
+        <td>The YOUth project manager has approved the proposal.</td>
     </tr>
     <tr>
         <td><img src=/datarequest/static/img/button.png></img></td>

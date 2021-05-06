@@ -33,7 +33,7 @@ class Filesystem extends CI_Model {
 
         // Set headers to force download.
         $filename = basename($file);
-        header('Content-Type: application/octet');
+        header('Content-Type: application/pdf');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
 
         // Try to open file from iRODS.
