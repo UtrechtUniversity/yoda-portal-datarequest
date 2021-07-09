@@ -136,9 +136,9 @@
                     </div>
                 </div>
 
-                <?php if (in_array($requestStatus, array("PRELIMINARY_REJECT", "REJECTED_AFTER_DATAMANAGER_REVIEW", "REJECTED"))): ?>
+                <?php if (in_array($requestStatus, array("PRELIMINARY_REJECT", "REJECTED_AFTER_DATAMANAGER_REVIEW", "CONTRIBUTION_REJECTED", "REJECTED"))): ?>
                     <div class="rejected"><h5>Proposal rejected</h5></div>
-                <?php elseif (in_array($requestStatus, array("PRELIMINARY_RESUBMIT", "RESUBMIT_AFTER_DATAMANAGER_REVIEW", "RESUBMIT"))): ?>
+                <?php elseif (in_array($requestStatus, array("PRELIMINARY_RESUBMIT", "RESUBMIT_AFTER_DATAMANAGER_REVIEW", "CONTRIBUTION_RESUBMIT", "RESUBMIT"))): ?>
                     <div class="resubmit"><h5>Resubmission requested</h5></div>
                     <?php if ($isRequestOwner): ?>
                         <div class="resubmit">

@@ -107,8 +107,9 @@ class Datarequest extends MY_Controller
 
         # Add feedback for researcher as view param if applicable
         if (in_array($requestStatus,
-                     array("PRELIMINARY_RESUBMIT", "RESUBMIT_AFTER_DATAMANAGER_REVIEW", "RESUBMIT",
-                           "PRELIMINARY_REJECT", "REJECTED_AFTER_DATAMANAGER_REVIEW",
+                     array("PRELIMINARY_RESUBMIT", "RESUBMIT_AFTER_DATAMANAGER_REVIEW",
+                           "CONTRIBUTION_RESUBMIT", "RESUBMIT", "PRELIMINARY_REJECT",
+                           "REJECTED_AFTER_DATAMANAGER_REVIEW", "CONTRIBUTION_REJECTED",
                            "REJECTED"))) {
             $feedback = json_decode($this->api->call('datarequest_feedback_get',
                                     ['request_id' => $requestId])->data);
