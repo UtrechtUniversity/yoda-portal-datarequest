@@ -193,7 +193,7 @@ function convertToHumanReadableStatus(status) {
         case "CONTRIBUTION_REJECTED":
             return "Contribution rejected";
         case "CONTRIBUTION_RESUBMIT":
-            return "Contribution rejected(resubmit)";
+            return "Contribution rejected (resubmit)";
         case "UNDER_REVIEW":
             return "Under review";
         case "REVIEWED":
