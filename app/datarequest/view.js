@@ -44,10 +44,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             case 'DATAMANAGER_RESUBMIT':
                 datarequestStatusInt = 0;
                 break;
-            case 'DATAMANAGER_REVIEW_ACCEPTED':
-            case 'CONTRIBUTION_ACCEPTED':
-            case 'CONTRIBUTION_REJECTED':
-            case 'CONTRIBUTION_RESUBMIT':
             case 'UNDER_REVIEW':
             case 'REJECTED_AFTER_DATAMANAGER_REVIEW':
             case 'RESUBMIT_AFTER_DATAMANAGER_REVIEW':
@@ -59,7 +55,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 datarequestStatusInt = 2;
                 break;
             case 'APPROVED':
-            case 'CONTRIBUTION_CONFIRMED':
             case 'DAO_APPROVED':
                 datarequestStatusInt = 3;
                 break;

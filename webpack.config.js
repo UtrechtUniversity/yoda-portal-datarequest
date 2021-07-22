@@ -10,8 +10,6 @@ var config = {
             'datarequest/view': APP_DIR + '/datarequest/view.js',
             'datarequest/preliminaryreview': APP_DIR + '/datarequest/preliminaryreview.js',
             'datarequest/datamanagerreview': APP_DIR + '/datarequest/datamanagerreview.js',
-            'datarequest/dmr_review': APP_DIR + '/datarequest/dmr_review.js',
-            'datarequest/contribution_review': APP_DIR + '/datarequest/contribution_review.js',
             'datarequest/assign': APP_DIR + '/datarequest/assign.js',
             'datarequest/review': APP_DIR + '/datarequest/review.js',
             'datarequest/evaluate': APP_DIR + '/datarequest/evaluate.js',
