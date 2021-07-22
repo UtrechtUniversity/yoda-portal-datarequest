@@ -86,57 +86,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                                   formData={dmrFormData} />,
                document.getElementById("datamanagerReview"));
     });
-    var dmrrSchema   = {};
-    var dmrrUiSchema = {};
-    var dmrrFormData = {};
-
-    // Get data manager review review
-    Yoda.call("datarequest_dmr_review_get",
-              {request_id: requestId},
-              {errorPrefix: "Could not get datamanager review review."})
-    .then(response => {
-        dmrrFormData = JSON.parse(response);
-    })
-    // Get data manager review review schema and uischema
-    .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "dmr_review"})
-        .then(response => {
-            dmrrSchema   = response.schema;
-            dmrrUiSchema = response.uischema;
-        })
-    })
-    .then(() => {
-        render(<ContainerReadonly schema={dmrrSchema}
-                                  uiSchema={dmrrUiSchema}
-                                  formData={dmrrFormData} />,
-               document.getElementById("dmrReview"));
-    });
-
-    var crSchema =   {};
-    var crUiSchema = {};
-    var crFormData = {};
-
-    // Get contribution review
-    Yoda.call("datarequest_contribution_review_get",
-              {request_id: requestId},
-              {errorPrefix: "Could not get contribution review."})
-    .then(response => {
-        crFormData = JSON.parse(response);
-    })
-    // Get contribution review schema and uischema
-    .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "contribution_review"})
-        .then(response => {
-            crSchema   = response.schema;
-            crUiSchema = response.uischema;
-        })
-    })
-    .then(() => {
-        render(<ContainerReadonly schema={crSchema}
-                                  uiSchema={crUiSchema}
-                                  formData={crFormData} />,
-               document.getElementById("contributionReview"));
-    });
 
     var assignSchema   = {};
     var assignUiSchema = {};

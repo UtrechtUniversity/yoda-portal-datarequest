@@ -107,9 +107,8 @@ class Datarequest extends MY_Controller
 
         # Add feedback for researcher as view param if applicable
         if (in_array($requestStatus,
-                     array("PRELIMINARY_RESUBMIT", "RESUBMIT_AFTER_DATAMANAGER_REVIEW",
-                           "CONTRIBUTION_RESUBMIT", "RESUBMIT", "PRELIMINARY_REJECT",
-                           "REJECTED_AFTER_DATAMANAGER_REVIEW", "CONTRIBUTION_REJECTED",
+                     array("PRELIMINARY_RESUBMIT", "RESUBMIT_AFTER_DATAMANAGER_REVIEW", "RESUBMIT",
+                           "PRELIMINARY_REJECT", "REJECTED_AFTER_DATAMANAGER_REVIEW",
                            "REJECTED"))) {
             $feedback = json_decode($this->api->call('datarequest_feedback_get',
                                     ['request_id' => $requestId])->data);
@@ -280,56 +279,11 @@ class Datarequest extends MY_Controller
         loadView('/datarequest/datamanagerreview', $viewParams);
     }
 
-    public function dmr_review($requestId) {
+    public function assign($requestId) {
         # Check permissions
         if (!$this->permission_check($requestId, ["PM"], ["DATAMANAGER_ACCEPT",
                                                           "DATAMANAGER_REJECT",
                                                           "DATAMANAGER_RESUBMIT"])) { return; }
-
-        # Load CSRF token
-        $tokenName = $this->security->get_csrf_token_name();
-        $tokenHash = $this->security->get_csrf_hash();
-
-        $viewParams = array(
-            'tokenName'     => $tokenName,
-            'tokenHash'     => $tokenHash,
-            'activeModule'  => 'datarequest',
-            'requestId'     => $requestId,
-            'attachments'   => $this->get_attachments($requestId),
-            'styleIncludes' => array(
-                'css/datarequest/forms.css'
-            )
-        );
-
-        loadView('/datarequest/dmr_review', $viewParams);
-    }
-
-    public function contribution_review($requestId) {
-        # Check permissions
-        if (!$this->permission_check($requestId, ["ED"],
-                                     ["DATAMANAGER_REVIEW_ACCEPTED"])) { return; }
-
-        # Load CSRF token
-        $tokenName = $this->security->get_csrf_token_name();
-        $tokenHash = $this->security->get_csrf_hash();
-
-        $viewParams = array(
-            'tokenName'     => $tokenName,
-            'tokenHash'     => $tokenHash,
-            'activeModule'  => 'datarequest',
-            'requestId'     => $requestId,
-            'attachments'   => $this->get_attachments($requestId),
-            'styleIncludes' => array(
-                'css/datarequest/forms.css'
-            )
-        );
-
-        loadView('/datarequest/contribution_review', $viewParams);
-    }
-
-    public function assign($requestId) {
-        # Check permissions
-        if (!$this->permission_check($requestId, ["PM"], ["CONTRIBUTION_ACCEPTED"])) { return; }
 
         # Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
@@ -398,23 +352,9 @@ class Datarequest extends MY_Controller
         }
     }
 
-    public function contribution_confirm($requestId) {
-        # Check permissions
-        if (!$this->permission_check($requestId, ["ED"], ["APPROVED"])) { return; }
-
-        # Set status to CONTRIBUTION_CONFIRMED
-	$result = $this->api->call('datarequest_contribution_confirm',
-                                   ['request_id' => $requestId]);
-
-        # Redirect to view/
-        if ($result->status === "ok") {
-            redirect('/datarequest/view/' . $requestId);
-        }
-    }
-
     public function upload_dta($requestId) {
         # Check permissions
-        if (!$this->permission_check($requestId, ["DM"], ["CONTRIBUTION_CONFIRMED",
+        if (!$this->permission_check($requestId, ["DM"], ["APPROVED",
                                                           "DAO_APPROVED"])) { return; }
 
         # Load Filesystem model and PathLibrary library

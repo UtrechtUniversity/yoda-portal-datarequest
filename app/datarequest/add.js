@@ -171,12 +171,7 @@ function transformErrors(errors) {
         elem.parentElement.scrollIntoView();
     }
 
-    return errors.map(error => {
-        if(error.name === "not" && error.property === ".contribution") {
-            error.message = "Please specify at least one contribution."
-        }
-        return error;
-    });
+    return errors;
 }
 
 function submitData(data)
