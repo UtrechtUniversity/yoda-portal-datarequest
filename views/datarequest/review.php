@@ -11,7 +11,7 @@
                     <span class="text-collapsed">Show</span>
                     <span class="text-expanded">Hide</span>
                 </a>
-                <h5 class="card-header float-left">Review assignment</h5>
+                <h5 class="card-header float-left">Assignment</h5>
             </div>
             <div id="assignDiv" class="card-body collapse">
                 <div id="assign" class="metadata-form"
