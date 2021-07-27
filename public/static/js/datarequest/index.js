@@ -191,6 +191,7 @@ function convertToHumanReadableStatus(status) {
         case "REVIEWED":
             return "Reviewed";
         case "APPROVED":
+        case "APPROVED_PRIVATE":
             return "Approved";
         case "REJECTED":
             return "Rejected";
@@ -198,6 +199,10 @@ function convertToHumanReadableStatus(status) {
             return "Rejected (resubmit)";
         case "DAO_APPROVED":
             return "Approved (data assessment)";
+        case "PREREGISTRATION_SUBMITTED":
+            return "Preregistration submitted";
+        case "PREREGISTRATION_CONFIRMED":
+            return "Preregistration confirmed";
         case "DTA_READY":
             return "DTA ready";
         case "DTA_SIGNED":

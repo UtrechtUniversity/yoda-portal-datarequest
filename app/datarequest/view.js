@@ -55,17 +55,22 @@ document.addEventListener("DOMContentLoaded", async () => {
                 datarequestStatusInt = 2;
                 break;
             case 'APPROVED':
-            case 'DAO_APPROVED':
                 datarequestStatusInt = 3;
                 break;
-            case 'DTA_READY':
+            case 'PREREGISTRATION_SUBMITTED':
+            case 'PREREGISTRATION_CONFIRMED':
+            case 'APPROVED_PRIVATE':
+            case 'DAO_APPROVED':
                 datarequestStatusInt = 4;
                 break;
-            case 'DTA_SIGNED':
+            case 'DTA_READY':
                 datarequestStatusInt = 5;
                 break;
-            case 'DATA_READY':
+            case 'DTA_SIGNED':
                 datarequestStatusInt = 6;
+                break;
+            case 'DATA_READY':
+                datarequestStatusInt = 7;
                 break;
         }
 

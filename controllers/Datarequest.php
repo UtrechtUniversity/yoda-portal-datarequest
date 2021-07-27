@@ -352,9 +352,68 @@ class Datarequest extends MY_Controller
         }
     }
 
+    public function preregister($requestId) {
+        # Check permissions
+        if (!$this->permission_check($requestId, ["OWN"], ["APPROVED"])) { return; }
+
+        # Load CSRF token
+        $tokenName = $this->security->get_csrf_token_name();
+        $tokenHash = $this->security->get_csrf_hash();
+
+        $viewParams = array(
+            'tokenName'     => $tokenName,
+            'tokenHash'     => $tokenHash,
+            'activeModule'  => 'datarequest',
+            'requestId'     => $requestId,
+            'attachments'   => $this->get_attachments($requestId),
+            'styleIncludes' => array(
+                'css/datarequest/forms.css'
+            )
+        );
+
+        loadView('/datarequest/preregister', $viewParams);
+    }
+
+    public function preregistration_confirm($requestId) {
+        # Check permissions
+        if (!$this->permission_check($requestId, ["PM"], ["PREREGISTRATION_SUBMITTED"])) { return; }
+
+        # Load CSRF token
+        $tokenName = $this->security->get_csrf_token_name();
+        $tokenHash = $this->security->get_csrf_hash();
+
+        $viewParams = array(
+            'tokenName'     => $tokenName,
+            'tokenHash'     => $tokenHash,
+            'activeModule'  => 'datarequest',
+            'requestId'     => $requestId,
+            'attachments'   => $this->get_attachments($requestId),
+            'styleIncludes' => array(
+                'css/datarequest/forms.css'
+            )
+        );
+
+        loadView('/datarequest/preregistration_confirm', $viewParams);
+    }
+
+    public function confirm_preregistration($requestId) {
+        # Check permissions
+        if (!$this->permission_check($requestId, ["PM"], ["PREREGISTRATION_SUBMITTED"])) { return; }
+
+        # Set status to PREREGISTRATION_CONFIRMED
+       $result = $this->api->call('datarequest_preregistration_confirm',
+                                   ['request_id' => $requestId]);
+
+        # Redirect to view/
+        if ($result->status === "ok") {
+            redirect('/datarequest/view/' . $requestId);
+        }
+    }
+
     public function upload_dta($requestId) {
         # Check permissions
-        if (!$this->permission_check($requestId, ["DM"], ["APPROVED",
+        if (!$this->permission_check($requestId, ["DM"], ["PREREGISTRATION_CONFIRMED",
+                                                          "APPROVED_PRIVATE",
                                                           "DAO_APPROVED"])) { return; }
 
         # Load Filesystem model and PathLibrary library
