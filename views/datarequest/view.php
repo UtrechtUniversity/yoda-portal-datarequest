@@ -60,7 +60,12 @@
 <?php elseif (in_array($requestStatus, ["DAO_SUBMITTED", "REVIEWED"]) && $isProjectManager): ?>
     <a href="/datarequest/evaluate/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Evaluate data request</a>
 
-<?php elseif (in_array($requestStatus, ["APPROVED", "DAO_APPROVED"]) && $isDatamanager): ?>
+<?php elseif (in_array($requestStatus, ["APPROVED"]) && $isRequestOwner): ?>
+    <a href="/datarequest/preregister/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Preregister study</a>
+<?php elseif (in_array($requestStatus, ["PREREGISTRATION_SUBMITTED"]) && $isProjectManager): ?>
+    <a href="/datarequest/preregistration_confirm/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Confirm pregistration</a>
+
+<?php elseif (in_array($requestStatus, ["PREREGISTRATION_CONFIRMED", "APPROVED_PRIVATE", "DAO_APPROVED"]) && $isDatamanager): ?>
     <button type="button" class="btn btn-primary mb-3 float-right upload_dta" data-path="">Upload DTA</button>
 <?php elseif ($requestStatus == "DTA_READY" && $isRequestOwner): ?>
     <a href="/datarequest/download_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 mr-1 float-right">Download DTA</a>
@@ -110,19 +115,24 @@
                          <a href="#" class="bs-wizard-dot"></a>
                     </div>
                 </div>
-                <div class="row bs-wizard offset-md-2" style="border-bottom:0;">
+                <div class="row bs-wizard" style="border-bottom:0;">
                     <div class="col-md-3 bs-wizard-step disabled" id="step-4">
-                        <div class="text-md-center bs-wizard-stepnum">5. DTA ready</div>
+                        <div class="text-md-center bs-wizard-stepnum">5. Preregistration</div>
                         <div class="progress"><div class="progress-bar"></div></div>
                         <a href="#" class="bs-wizard-dot"></a>
                     </div>
                     <div class="col-md-3 bs-wizard-step disabled" id="step-5">
-                        <div class="text-md-center bs-wizard-stepnum">6. DTA signed</div>
+                        <div class="text-md-center bs-wizard-stepnum">6. DTA ready</div>
                         <div class="progress"><div class="progress-bar"></div></div>
                         <a href="#" class="bs-wizard-dot"></a>
                     </div>
                     <div class="col-md-3 bs-wizard-step disabled" id="step-6">
-                        <div class="text-md-center bs-wizard-stepnum">7. Data ready</div>
+                        <div class="text-md-center bs-wizard-stepnum">7. DTA signed</div>
+                        <div class="progress"><div class="progress-bar"></div></div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                    </div>
+                    <div class="col-md-3 bs-wizard-step disabled" id="step-7">
+                        <div class="text-md-center bs-wizard-stepnum">8. Data ready</div>
                         <div class="progress"><div class="progress-bar"></div></div>
                         <a href="#" class="bs-wizard-dot"></a>
                     </div>
