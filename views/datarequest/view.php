@@ -9,8 +9,8 @@
                 <h5>Upload a DTA (to be signed by the researcher).</h5>
                 <div class="form-group">
                     <form id="dta" enctype="multipart/form-data">
-                        <label for="file">Select a document to upload:</label><br />
-                        <input type="file" name="file" id="file" />
+                        <label for="file">Select a document to upload (must be a PDF file):</label><br />
+                        <input type="file" accept=".pdf,application/pdf" name="file" id="file" />
                     </form>
                 </div>
             </div>
@@ -30,8 +30,8 @@
                 <h5>Upload the signed DTA.</h5>
                 <div class="form-group">
                     <form id="signed_dta" enctype="multipart/form-data">
-                        <label for="file">Select a document to upload:</label><br />
-                        <input type="file" name="file" id="file" />
+                        <label for="file">Select a document to upload (must be a PDF file):</label><br />
+                        <input type="file" accept=".pdf,application/pdf" name="file" id="file" />
                     </form>
                 </div>
             </div>
