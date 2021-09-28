@@ -37,8 +37,7 @@ class Datarequest extends MY_Controller
 
         # Check if user is allowed to submit data request
         $roles             = $this->api->call('datarequest_roles_get')->data;
-        $submissionAllowed = !in_array("PM", $roles) and !in_array("DM", $roles) and
-                             !in_array("ED", $roles);
+        $submissionAllowed = (!in_array("PM", $roles) and !in_array("DM", $roles));
 
         $viewParams = array(
             'styleIncludes'       => array(
