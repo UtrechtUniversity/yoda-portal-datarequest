@@ -46,7 +46,9 @@
 
 <div class="row">
     <div class=col-md-12>
-<?php if ($requestStatus == "PENDING_ATTACHMENTS" && $isRequestOwner): ?>
+<?php if ($requestStatus == "DRAFT" && $isRequestOwner): ?>
+    <a href="/datarequest/add_from_draft/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Resume draft data request</a>
+<?php elseif ($requestStatus == "PENDING_ATTACHMENTS" && $isRequestOwner): ?>
     <a href="/datarequest/add_attachments/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Add attachments</a>
 <?php elseif ($requestStatus == "SUBMITTED" && $isProjectManager): ?>
     <a href="/datarequest/preliminary_review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Preliminary review</a>
