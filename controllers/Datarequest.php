@@ -64,15 +64,13 @@ class Datarequest extends MY_Controller
         $roles               = $this->api->call('datarequest_roles_get',
                                                 ["request_id" => $requestId])->data;
         $isProjectManager    = in_array("PM", $roles);
-        $isExecutiveDirector = in_array("ED", $roles);
         $isDatamanager       = in_array("DM", $roles);
         $isDMCMember         = in_array("DMC", $roles);
         $isRequestOwner      = in_array("OWN", $roles);
         $isReviewer          = in_array("REV", $roles);
 
         # If the user is neither of the above, return a 403
-        if (!$isProjectManager && !$isExecutiveDirector && !$isDatamanager && !$isDMCMember &&
-            !$isRequestOwner) {
+        if (!$isProjectManager && !$isDatamanager && !$isDMCMember && !$isRequestOwner) {
             $this->output->set_status_header('403');
             return;
         }
@@ -92,7 +90,6 @@ class Datarequest extends MY_Controller
             'requestStatus'       => $requestStatus,
             'isReviewer'          => $isReviewer,
             'isProjectManager'    => $isProjectManager,
-            'isExecutiveDirector' => $isExecutiveDirector,
             'isDatamanager'       => $isDatamanager,
             'isRequestOwner'      => $isRequestOwner,
             'activeModule'        => 'datarequest',
