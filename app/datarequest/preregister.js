@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // Get the schema of the data request review form for the data manager
-    Yoda.call("datarequest_schema_get", {schema_name: "preregister"})
+    Yoda.call("datarequest_schema_get", {schema_name: "preregistration"})
     .then(response => {
         let preregisterSchema = response.schema;
         let preregisterUiSchema = response.uischema;
