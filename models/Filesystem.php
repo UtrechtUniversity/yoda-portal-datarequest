@@ -23,7 +23,7 @@ class Filesystem extends CI_Model {
      * @param $path
      * @return mixed
      */
-    function download($rodsaccount, $file)
+    function download($rodsaccount, $file, $contenttype = "application/octet" )
     {
         // Close session to allow other pages to continue.
         session_write_close();
@@ -33,7 +33,7 @@ class Filesystem extends CI_Model {
 
         // Set headers to force download.
         $filename = basename($file);
-        header('Content-Type: application/pdf');
+        header('Content-Type: ' . $contenttype);
         header('Content-Disposition: attachment; filename="' . $filename . '"');
 
         // Try to open file from iRODS.
