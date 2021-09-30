@@ -443,7 +443,7 @@ class Datarequest extends MY_Controller
         $this->load->model('filesystem');
         $this->load->library('pathlibrary');
         $rodsaccount = $this->rodsuser->getRodsAccount();
-        $this->filesystem->download($rodsaccount, $file_path);
+        $this->filesystem->download($rodsaccount, $file_path, "application/pdf");
     }
 
     public function upload_signed_dta($requestId) {
@@ -482,7 +482,7 @@ class Datarequest extends MY_Controller
         $this->load->model('filesystem');
         $this->load->library('pathlibrary');
         $rodsaccount = $this->rodsuser->getRodsAccount();
-        $this->filesystem->download($rodsaccount, $file_path);
+        $this->filesystem->download($rodsaccount, $file_path, "application/pdf");
     }
 
     public function data_ready($requestId) {
