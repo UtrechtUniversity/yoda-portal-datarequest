@@ -80,7 +80,12 @@ class Filesystem extends CI_Model {
 
             // Check file size.
             $size = filesize($tmpFile);
-            $maxSize = 25 * 1024 * 1024;
+            // 100 MiB is the maximum that seems to be working reliably. There's something weird
+            // going on in the 100MiB+ range (client seems to cut off the upload somwhere between
+            // 100 and 200 MiB.
+            // These problems are fixed in Pyportal anyway, so it's not worth the effort to debug it
+            // here.
+            $maxSize = 100 * 1024 * 1024;
             if ($size > $maxSize) {
                 $output = array(
                     'status' => 'ERROR',
