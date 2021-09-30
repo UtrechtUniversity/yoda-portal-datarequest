@@ -10,6 +10,7 @@
             </div>
             <div class="card-body collapse show">
                 <div>Please upload each file that should be attached to your data request here and click the Submit button to confirm your file attachments.</div>
+                <div>The maximum file size per file is <strong>100 MiB</strong>.</div>
                 <hr class="border-0 bg-secondary" style="height: 1px;">
                 <div class="form-group">
                     <form id="attachment" enctype="multipart/form-data">
