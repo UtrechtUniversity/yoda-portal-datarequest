@@ -15,9 +15,12 @@ class Datarequest extends MY_Controller
         $this->load->library('api');
     }
 
-    protected function datarequest_status($requestId) {
-	return $this->api->call('datarequest_get',
-                                ['request_id' => $requestId])->data->requestStatus;
+    protected function datarequest_info($requestId) {
+        $datarequest = $this->api->call('datarequest_get', ['request_id' => $requestId])->data;
+        $status      = $datarequest->requestStatus;
+        $type        = $datarequest->requestType;
+
+        return ['type' => $type, 'status' => $status];
     }
 
     protected function permission_check($requestId, $roles, $statuses) {
@@ -80,13 +83,16 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
 	# Get datarequest status
-        $requestStatus = $this->datarequest_status($requestId);
+        $requestInfo   = $this->datarequest_info($requestId);
+        $requestStatus = $requestInfo['status'];
+        $requestType   = $requestInfo['type'];
 
         # Set view params and render the view
         $viewParams = array(
             'tokenName'           => $tokenName,
             'tokenHash'           => $tokenHash,
             'requestId'           => $requestId,
+            'requestType'         => $requestType,
             'requestStatus'       => $requestStatus,
             'isReviewer'          => $isReviewer,
             'isProjectManager'    => $isProjectManager,
@@ -341,7 +347,7 @@ class Datarequest extends MY_Controller
             )
         );
 
-        if ($this->datarequest_status($requestId) === "DAO_SUBMITTED") {
+        if ($this->datarequest_info($requestId)['status'] === "DAO_SUBMITTED") {
             loadView('/datarequest/dao_evaluate', $viewParams);
         } else {
             loadView('/datarequest/evaluate', $viewParams);
