@@ -111,7 +111,6 @@
                          <div class="progress"><div class="progress-bar"></div></div>
                          <a href="#" class="bs-wizard-dot"></a>
                     </div>
-
                     <div class="col-md-3 bs-wizard-step disabled" id="step-3">
                          <div class="text-md-center bs-wizard-stepnum">4. Approved</div>
                          <div class="progress"><div class="progress-bar"></div></div>
@@ -213,21 +212,21 @@
             <?php endif ?>
 
                 <?php if (in_array($requestStatus, array("PRELIMINARY_REJECT", "REJECTED_AFTER_DATAMANAGER_REVIEW", "REJECTED"))): ?>
-                    <div class="rejected"><h5>Proposal rejected</h5></div>
+                <div class="rejected"><h5>Proposal rejected</h5></div>
                     <?php if ($isRequestOwner): ?>
-                        <h5>Feedback for researcher</h5>
-                        <hr class="border-0 bg-secondary" style="height: 1px;">
-                        <p><?php echo nl2br(html_escape($feedback)) ?></p>
+                    <h5>Feedback for researcher</h5>
+                    <hr class="border-0 bg-secondary" style="height: 1px;">
+                    <p><?php echo nl2br(html_escape($feedback)) ?></p>
                     <?php endif ?>
                 <?php elseif (in_array($requestStatus, array("PRELIMINARY_RESUBMIT", "RESUBMIT_AFTER_DATAMANAGER_REVIEW", "RESUBMIT"))): ?>
-                    <div class="resubmit"><h5>Resubmission requested</h5></div>
+                <div class="resubmit"><h5>Resubmission requested</h5></div>
                     <?php if ($isRequestOwner): ?>
-                        <div class="resubmit">
-                            <p>(click <a href=/datarequest/add/<?php echo html_escape($requestId) ?>>here</a> to open the resubmission form)</p>
-                        </div>
-                        <h5>Feedback for researcher</h5>
-                        <hr class="border-0 bg-secondary" style="height: 1px;">
-                        <p><?php echo nl2br(html_escape($feedback)) ?></p>
+                    <div class="resubmit">
+                        <p>(click <a href=/datarequest/add/<?php echo html_escape($requestId) ?>>here</a> to open the resubmission form)</p>
+                    </div>
+                    <h5>Feedback for researcher</h5>
+                    <hr class="border-0 bg-secondary" style="height: 1px;">
+                    <p><?php echo nl2br(html_escape($feedback)) ?></p>
                     <?php endif ?>
                 <?php endif ?>
 
