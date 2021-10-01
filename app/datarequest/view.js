@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     var datarequestUiSchema = {};
     var datarequestFormData = {};
     var datarequestStatus = {};
+    var datarequestType = "";
 
     // Get data request
     Yoda.call('datarequest_get',
@@ -26,6 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     .then(datarequest => {
         datarequestFormData = JSON.parse(datarequest.requestJSON);
         datarequestStatus   = datarequest.requestStatus;
+        datarequestType     = datarequest.requestType;
     })
     // Set progress bar according to status of data request
     .then(() => {
@@ -33,45 +35,96 @@ document.addEventListener("DOMContentLoaded", async () => {
         let datarequestRejected  = false;
 
         // Get progress
-        switch(datarequestStatus) {
-            case 'DAO_SUBMITTED':
-            case 'SUBMITTED':
-            case 'PRELIMINARY_ACCEPT':
-            case 'PRELIMINARY_REJECT':
-            case 'PRELIMINARY_RESUBMIT':
-            case 'DATAMANAGER_ACCEPT':
-            case 'DATAMANAGER_REJECT':
-            case 'DATAMANAGER_RESUBMIT':
-                datarequestStatusInt = 0;
-                break;
-            case 'UNDER_REVIEW':
-            case 'REJECTED_AFTER_DATAMANAGER_REVIEW':
-            case 'RESUBMIT_AFTER_DATAMANAGER_REVIEW':
-                datarequestStatusInt = 1;
-                break;
-            case 'REVIEWED':
-            case 'REJECTED':
-            case 'RESUBMIT':
-                datarequestStatusInt = 2;
-                break;
-            case 'APPROVED':
-                datarequestStatusInt = 3;
-                break;
-            case 'PREREGISTRATION_SUBMITTED':
-            case 'PREREGISTRATION_CONFIRMED':
-            case 'APPROVED_PRIVATE':
-            case 'DAO_APPROVED':
-                datarequestStatusInt = 4;
-                break;
-            case 'DTA_READY':
-                datarequestStatusInt = 5;
-                break;
-            case 'DTA_SIGNED':
-                datarequestStatusInt = 6;
-                break;
-            case 'DATA_READY':
-                datarequestStatusInt = 7;
-                break;
+        if (datarequestType == "REGULAR") {
+            switch(datarequestStatus) {
+                case 'SUBMITTED':
+                case 'PRELIMINARY_ACCEPT':
+                case 'PRELIMINARY_REJECT':
+                case 'PRELIMINARY_RESUBMIT':
+                case 'DATAMANAGER_ACCEPT':
+                case 'DATAMANAGER_REJECT':
+                case 'DATAMANAGER_RESUBMIT':
+                    datarequestStatusInt = 0;
+                    break;
+                case 'UNDER_REVIEW':
+                case 'REJECTED_AFTER_DATAMANAGER_REVIEW':
+                case 'RESUBMIT_AFTER_DATAMANAGER_REVIEW':
+                    datarequestStatusInt = 1;
+                    break;
+                case 'REVIEWED':
+                case 'REJECTED':
+                case 'RESUBMIT':
+                    datarequestStatusInt = 2;
+                    break;
+                case 'APPROVED':
+                    datarequestStatusInt = 3;
+                    break;
+                case 'PREREGISTRATION_SUBMITTED':
+                case 'PREREGISTRATION_CONFIRMED':
+                    datarequestStatusInt = 4;
+                    break;
+                case 'DTA_READY':
+                    datarequestStatusInt = 5;
+                    break;
+                case 'DTA_SIGNED':
+                    datarequestStatusInt = 6;
+                    break;
+                case 'DATA_READY':
+                    datarequestStatusInt = 7;
+                    break;
+            }
+        } else if (datarequestType == "PRIVATE") {
+            switch(datarequestStatus) {
+                case 'SUBMITTED':
+                case 'PRELIMINARY_ACCEPT':
+                case 'PRELIMINARY_REJECT':
+                case 'PRELIMINARY_RESUBMIT':
+                case 'DATAMANAGER_ACCEPT':
+                case 'DATAMANAGER_REJECT':
+                case 'DATAMANAGER_RESUBMIT':
+                    datarequestStatusInt = 0;
+                    break;
+                case 'UNDER_REVIEW':
+                case 'REJECTED_AFTER_DATAMANAGER_REVIEW':
+                case 'RESUBMIT_AFTER_DATAMANAGER_REVIEW':
+                    datarequestStatusInt = 1;
+                    break;
+                case 'REVIEWED':
+                case 'REJECTED':
+                case 'RESUBMIT':
+                    datarequestStatusInt = 2;
+                    break;
+                case 'APPROVED_PRIVATE':
+                    datarequestStatusInt = 3;
+                    break;
+                case 'DTA_READY':
+                    datarequestStatusInt = 4;
+                    break;
+                case 'DTA_SIGNED':
+                    datarequestStatusInt = 5;
+                    break;
+                case 'DATA_READY':
+                    datarequestStatusInt = 6;
+                    break;
+            }
+        } else if (datarequestType == "DAO") {
+            switch(datarequestStatus) {
+                case 'DAO_SUBMITTED':
+                    datarequestStatusInt = 0;
+                    break;
+                case 'DAO_APPROVED':
+                    datarequestStatusInt = 1;
+                    break;
+                case 'DTA_READY':
+                    datarequestStatusInt = 2;
+                    break;
+                case 'DTA_SIGNED':
+                    datarequestStatusInt = 3;
+                    break;
+                case 'DATA_READY':
+                    datarequestStatusInt = 4;
+                    break;
+            }
         }
 
         // Get rejection status
