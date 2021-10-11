@@ -15,10 +15,11 @@ $("body").on("click", "button.upload_attachment", data => {
 
     // Prepare XHR
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/datarequest/upload_attachment/" + requestId);
-    // Reload page after DTA upload
-    xhr.onload = location.reload();
+    xhr.open("POST", "/datarequest/upload_attachment/" + requestId, false);
 
     // Send DTA
     xhr.send(fd);
+
+    // Reload page after upload
+    location.reload();
 });
