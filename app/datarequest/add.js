@@ -162,6 +162,17 @@ const fields = {
 };
 
 function transformErrors(errors) {
+    // Filter out incorrect errors. These are erroneously added because of edge cases to do with
+    // nesting, conditionals and the use of oneOf.
+    var filtered_errors = [];
+    errors.map(error => {
+        if (!["should match exactly one schema in oneOf",
+              "should be equal to one of the allowed values"].includes(error.message)) {
+            filtered_errors.push(error)
+        }
+    });
+    errors = filtered_errors;
+
     // Scroll to first error (ugly but works). A proper solution isn't available yet, see:
     // https://github.com/rjsf-team/react-jsonschema-form/issues/1791
     if (errors.length !== 0) {
