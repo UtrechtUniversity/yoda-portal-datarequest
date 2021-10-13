@@ -86,12 +86,25 @@ document.addEventListener("DOMContentLoaded", async () => {
                document.getElementById("datamanagerReview"));
     });
 
+    var assignSchema = {};
+    var assignUiSchema = {};
+
     // Get the schema of the data request assignment form
     Yoda.call("datarequest_schema_get", {schema_name: "assignment"})
     .then(response => {
-        let assignSchema = response.schema;
-        let assignUiSchema = response.uischema;
-
+        assignSchema   = response.schema;
+        assignUiSchema = response.uischema;
+    })
+    // Insert DMC members
+    .then(async () => {
+        await Yoda.call('datarequest_dmc_members_get', {}, {errorPrefix: "Could not get DMC members"})
+        .then(dmc_members => {
+            assignSchema.dependencies.decision.oneOf[0].properties.assign_to.items.enum = dmc_members;
+            assignSchema.dependencies.decision.oneOf[0].properties.assign_to.items.enumNames = dmc_members;
+        })
+    })
+    // Render form
+    .then(() => {
         render(<Container schema={assignSchema}
                           uiSchema={assignUiSchema} />,
                document.getElementById("assign"));
