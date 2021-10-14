@@ -228,6 +228,11 @@
                     <hr class="border-0 bg-secondary" style="height: 1px;">
                     <p><?php echo nl2br(html_escape($feedback)) ?></p>
                     <?php endif ?>
+                <?php elseif ($requestStatus == "RESUBMITTED"): ?>
+                <div class="resubmitted"><h5>Resubmitted</h5></div>
+                <div class="resubmitted">
+                    <p>(click <a href=/datarequest/view/<?php echo html_escape($resubmissionId) ?>>here</a> to go to the resubmision)</p>
+                </div>
                 <?php endif ?>
 
                 <hr />

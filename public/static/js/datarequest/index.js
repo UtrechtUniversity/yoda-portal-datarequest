@@ -197,6 +197,8 @@ function convertToHumanReadableStatus(status) {
             return "Rejected";
         case "RESUBMIT":
             return "Rejected (resubmit)";
+        case "RESUBMITTED":
+            return "Resubmitted";
         case "DAO_APPROVED":
             return "Approved (data assessment)";
         case "PREREGISTRATION_SUBMITTED":

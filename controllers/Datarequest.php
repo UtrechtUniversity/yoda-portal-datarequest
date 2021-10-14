@@ -107,6 +107,13 @@ class Datarequest extends MY_Controller
             )
         );
 
+        # Get ID of resubmitted in case the data request has been resubmitted
+        if ($requestStatus == "RESUBMITTED") {
+            $resubmissionId = $this->api->call('datarequest_resubmission_id_get',
+                                               ['request_id' => $requestId])->data;
+            $viewParams['resubmissionId'] = $resubmissionId;
+        }
+
         # Add feedback for researcher as view param if applicable
         if (in_array($requestStatus,
                      array("PRELIMINARY_RESUBMIT", "RESUBMIT_AFTER_DATAMANAGER_REVIEW", "RESUBMIT",
