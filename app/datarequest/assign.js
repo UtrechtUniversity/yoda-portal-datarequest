@@ -5,32 +5,54 @@ import DataSelection, { DataSelectionCart } from "./DataSelection.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    var datarequestSchema = {};
-    var datarequestUiSchema = {};
-    var datarequestFormData = {};
+    var assignSchema = {};
+    var assignUiSchema = {};
 
-    // Get data request
-    Yoda.call('datarequest_get',
-        {request_id: requestId},
-        {errorPrefix: "Could not get datarequest"})
-    .then(datarequest => {
-        datarequestFormData = JSON.parse(datarequest.requestJSON);
+    // Get the schema of the data request assignment form
+    Yoda.call("datarequest_schema_get", {schema_name: "assignment"})
+    .then(response => {
+        assignSchema   = response.schema;
+        assignUiSchema = response.uischema;
     })
-    // Get data request schema and uischema
+    // Insert DMC members
     .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "datarequest"})
-        .then(response => {
-            datarequestSchema   = response.schema;
-            datarequestUiSchema = response.uischema;
+        await Yoda.call('datarequest_dmc_members_get', {}, {errorPrefix: "Could not get DMC members"})
+        .then(dmc_members => {
+            assignSchema.dependencies.decision.oneOf[0].properties.assign_to.items.enum = dmc_members;
+            assignSchema.dependencies.decision.oneOf[0].properties.assign_to.items.enumNames = dmc_members;
         })
     })
-    // Render data request as disabled form
+    // Render form
     .then(() => {
-        render(<ContainerReadonly schema={datarequestSchema}
-                                  uiSchema={datarequestUiSchema}
-                                  formData={datarequestFormData} />,
-               document.getElementById("datarequest")
-        );
+        render(<Container schema={assignSchema}
+                          uiSchema={assignUiSchema} />,
+               document.getElementById("assign"));
+    });
+
+    var dmrSchema   = {};
+    var dmrUiSchema = {};
+    var dmrFormData = {};
+
+    // Get data manager review
+    Yoda.call("datarequest_datamanager_review_get",
+              {request_id: requestId},
+              {errorPrefix: "Could not get datamanager review"})
+    .then(response => {
+        dmrFormData = JSON.parse(response);
+    })
+    // Get data manager review schema and uischema
+    .then(async () => {
+        await Yoda.call("datarequest_schema_get", {schema_name: "datamanager_review"})
+        .then(response => {
+            dmrSchema   = response.schema;
+            dmrUiSchema = response.uischema;
+        })
+    })
+    .then(() => {
+        render(<ContainerReadonly schema={dmrSchema}
+                                  uiSchema={dmrUiSchema}
+                                  formData={dmrFormData} />,
+               document.getElementById("datamanagerReview"));
     });
 
     var prSchema   = {};
@@ -60,54 +82,32 @@ document.addEventListener("DOMContentLoaded", async () => {
                document.getElementById("preliminaryReview"));
     });
 
-    var dmrSchema   = {};
-    var dmrUiSchema = {};
-    var dmrFormData = {};
+    var datarequestSchema = {};
+    var datarequestUiSchema = {};
+    var datarequestFormData = {};
 
-    // Get data manager review
-    Yoda.call("datarequest_datamanager_review_get",
-              {request_id: requestId},
-              {errorPrefix: "Could not get datamanager review"})
-    .then(response => {
-        dmrFormData = JSON.parse(response);
+    // Get data request
+    Yoda.call('datarequest_get',
+        {request_id: requestId},
+        {errorPrefix: "Could not get datarequest"})
+    .then(datarequest => {
+        datarequestFormData = JSON.parse(datarequest.requestJSON);
     })
-    // Get data manager review schema and uischema
+    // Get data request schema and uischema
     .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "datamanager_review"})
+        await Yoda.call("datarequest_schema_get", {schema_name: "datarequest"})
         .then(response => {
-            dmrSchema   = response.schema;
-            dmrUiSchema = response.uischema;
+            datarequestSchema   = response.schema;
+            datarequestUiSchema = response.uischema;
         })
     })
+    // Render data request as disabled form
     .then(() => {
-        render(<ContainerReadonly schema={dmrSchema}
-                                  uiSchema={dmrUiSchema}
-                                  formData={dmrFormData} />,
-               document.getElementById("datamanagerReview"));
-    });
-
-    var assignSchema = {};
-    var assignUiSchema = {};
-
-    // Get the schema of the data request assignment form
-    Yoda.call("datarequest_schema_get", {schema_name: "assignment"})
-    .then(response => {
-        assignSchema   = response.schema;
-        assignUiSchema = response.uischema;
-    })
-    // Insert DMC members
-    .then(async () => {
-        await Yoda.call('datarequest_dmc_members_get', {}, {errorPrefix: "Could not get DMC members"})
-        .then(dmc_members => {
-            assignSchema.dependencies.decision.oneOf[0].properties.assign_to.items.enum = dmc_members;
-            assignSchema.dependencies.decision.oneOf[0].properties.assign_to.items.enumNames = dmc_members;
-        })
-    })
-    // Render form
-    .then(() => {
-        render(<Container schema={assignSchema}
-                          uiSchema={assignUiSchema} />,
-               document.getElementById("assign"));
+        render(<ContainerReadonly schema={datarequestSchema}
+                                  uiSchema={datarequestUiSchema}
+                                  formData={datarequestFormData} />,
+               document.getElementById("datarequest")
+        );
     });
 });
 
