@@ -5,113 +5,15 @@ import DataSelection, { DataSelectionCart } from "./DataSelection.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    var datarequestSchema = {};
-    var datarequestUiSchema = {};
-    var datarequestFormData = {};
-
-    // Get data request
-    Yoda.call('datarequest_get',
-        {request_id: requestId},
-        {errorPrefix: "Could not get datarequest"})
-    .then(datarequest => {
-        datarequestFormData = JSON.parse(datarequest.requestJSON);
-    })
-    // Get data request schema and uischema
-    .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "datarequest"})
-        .then(response => {
-            datarequestSchema   = response.schema;
-            datarequestUiSchema = response.uischema;
-        })
-    })
-    // Render data request as disabled form
-    .then(() => {
-        render(<ContainerReadonly schema={datarequestSchema}
-                                  uiSchema={datarequestUiSchema}
-                                  formData={datarequestFormData} />,
-               document.getElementById("datarequest")
-        );
-    });
-
-    var prSchema   = {};
-    var prUiSchema = {};
-    var prFormData = {};
-
-    // Get preliminary review
-    Yoda.call('datarequest_preliminary_review_get',
-        {request_id: requestId},
-        {errorPrefix: "Could not get preliminary review"})
+    // Get the schema of the data request evaluation form
+    Yoda.call("datarequest_schema_get", {schema_name: "evaluation"})
     .then(response => {
-        prFormData = JSON.parse(response);
-    })
-    // Get preliminary review schema and uischema
-    .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "preliminary_review"})
-        .then(response => {
-            prSchema   = response.schema;
-            prUiSchema = response.uischema;
-        })
-    })
-    // Render preliminary review as disabled form
-    .then(() => {
-        render(<ContainerReadonly schema={prSchema}
-                                  uiSchema={prUiSchema}
-                                  formData={prFormData} />,
-               document.getElementById("preliminaryReview"));
-    });
+        let evaluationSchema = response.schema;
+        let evaluationUiSchema = response.uischema;
 
-    var dmrSchema   = {};
-    var dmrUiSchema = {};
-    var dmrFormData = {};
-
-    // Get data manager review
-    Yoda.call("datarequest_datamanager_review_get",
-              {request_id: requestId},
-              {errorPrefix: "Could not get datamanager review"})
-    .then(response => {
-        dmrFormData = JSON.parse(response);
-    })
-    // Get data manager review schema and uischema
-    .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "datamanager_review"})
-        .then(response => {
-            dmrSchema   = response.schema;
-            dmrUiSchema = response.uischema;
-        })
-    })
-    // Render data manager review as disabled form
-    .then(() => {
-        render(<ContainerReadonly schema={dmrSchema}
-                                  uiSchema={dmrUiSchema}
-                                  formData={dmrFormData} />,
-               document.getElementById("datamanagerReview"));
-    });
-
-    var assignSchema   = {};
-    var assignUiSchema = {};
-    var assignFormData = {};
-
-    // Get assignment
-    Yoda.call("datarequest_assignment_get",
-              {request_id: requestId},
-              {errorPrefix: "Could not get assignment"})
-    .then(response => {
-        assignFormData = JSON.parse(response);
-    })
-    // Get assignment schema and uischema
-    .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "assignment"})
-        .then(response => {
-            assignSchema   = response.schema;
-            assignUiSchema = response.uischema;
-        })
-    })
-    // Render assignment as disabled form
-    .then(() => {
-        render(<ContainerReadonly schema={assignSchema}
-                                  uiSchema={assignUiSchema}
-                                  formData={assignFormData} />,
-               document.getElementById("assign"));
+        render(<Container schema={evaluationSchema}
+                          uiSchema={evaluationUiSchema} />,
+               document.getElementById("evaluation"));
     });
 
     var reviewSchema = {};
@@ -159,15 +61,113 @@ document.addEventListener("DOMContentLoaded", async () => {
         render(<div>{reviews}</div>, document.getElementById("reviews"));
     });
 
-    // Get the schema of the data request evaluation form
-    Yoda.call("datarequest_schema_get", {schema_name: "evaluation"})
-    .then(response => {
-        let evaluationSchema = response.schema;
-        let evaluationUiSchema = response.uischema;
+    var datarequestSchema = {};
+    var datarequestUiSchema = {};
+    var datarequestFormData = {};
 
-        render(<Container schema={evaluationSchema}
-                          uiSchema={evaluationUiSchema} />,
-               document.getElementById("evaluation"));
+    // Get data request
+    Yoda.call('datarequest_get',
+        {request_id: requestId},
+        {errorPrefix: "Could not get datarequest"})
+    .then(datarequest => {
+        datarequestFormData = JSON.parse(datarequest.requestJSON);
+    })
+    // Get data request schema and uischema
+    .then(async () => {
+        await Yoda.call("datarequest_schema_get", {schema_name: "datarequest"})
+        .then(response => {
+            datarequestSchema   = response.schema;
+            datarequestUiSchema = response.uischema;
+        })
+    })
+    // Render data request as disabled form
+    .then(() => {
+        render(<ContainerReadonly schema={datarequestSchema}
+                                  uiSchema={datarequestUiSchema}
+                                  formData={datarequestFormData} />,
+               document.getElementById("datarequest")
+        );
+    });
+
+    var assignSchema   = {};
+    var assignUiSchema = {};
+    var assignFormData = {};
+
+    // Get assignment
+    Yoda.call("datarequest_assignment_get",
+              {request_id: requestId},
+              {errorPrefix: "Could not get assignment"})
+    .then(response => {
+        assignFormData = JSON.parse(response);
+    })
+    // Get assignment schema and uischema
+    .then(async () => {
+        await Yoda.call("datarequest_schema_get", {schema_name: "assignment"})
+        .then(response => {
+            assignSchema   = response.schema;
+            assignUiSchema = response.uischema;
+        })
+    })
+    // Render assignment as disabled form
+    .then(() => {
+        render(<ContainerReadonly schema={assignSchema}
+                                  uiSchema={assignUiSchema}
+                                  formData={assignFormData} />,
+               document.getElementById("assign"));
+    });
+
+    var dmrSchema   = {};
+    var dmrUiSchema = {};
+    var dmrFormData = {};
+
+    // Get data manager review
+    Yoda.call("datarequest_datamanager_review_get",
+              {request_id: requestId},
+              {errorPrefix: "Could not get datamanager review"})
+    .then(response => {
+        dmrFormData = JSON.parse(response);
+    })
+    // Get data manager review schema and uischema
+    .then(async () => {
+        await Yoda.call("datarequest_schema_get", {schema_name: "datamanager_review"})
+        .then(response => {
+            dmrSchema   = response.schema;
+            dmrUiSchema = response.uischema;
+        })
+    })
+    // Render data manager review as disabled form
+    .then(() => {
+        render(<ContainerReadonly schema={dmrSchema}
+                                  uiSchema={dmrUiSchema}
+                                  formData={dmrFormData} />,
+               document.getElementById("datamanagerReview"));
+    });
+
+    var prSchema   = {};
+    var prUiSchema = {};
+    var prFormData = {};
+
+    // Get preliminary review
+    Yoda.call('datarequest_preliminary_review_get',
+        {request_id: requestId},
+        {errorPrefix: "Could not get preliminary review"})
+    .then(response => {
+        prFormData = JSON.parse(response);
+    })
+    // Get preliminary review schema and uischema
+    .then(async () => {
+        await Yoda.call("datarequest_schema_get", {schema_name: "preliminary_review"})
+        .then(response => {
+            prSchema   = response.schema;
+            prUiSchema = response.uischema;
+        })
+    })
+    // Render preliminary review as disabled form
+    .then(() => {
+        render(<ContainerReadonly schema={prSchema}
+                                  uiSchema={prUiSchema}
+                                  formData={prFormData} />,
+               document.getElementById("preliminaryReview"));
     });
 });
 

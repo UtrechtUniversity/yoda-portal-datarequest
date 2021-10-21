@@ -5,31 +5,15 @@ import DataSelection, { DataSelectionCart } from "./DataSelection.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    var datarequestSchema   = {};
-    var datarequestUiSchema = {};
-    var datarequestFormData = {};
+    // Get the schema of the data request review form for the data manager
+    Yoda.call("datarequest_schema_get", {schema_name: "datamanager_review"})
+    .then(response => {
+        let datamanagerReviewSchema = response.schema;
+        let datamanagerReviewUiSchema = response.uischema;
 
-    // Get data request
-    Yoda.call('datarequest_get',
-        {request_id: requestId},
-        {errorPrefix: "Could not get datarequest"})
-    .then(datarequest => {
-        datarequestFormData = JSON.parse(datarequest.requestJSON);
-    })
-    // Get data request schema and uischema
-    .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "datarequest"})
-        .then(response => {
-            datarequestSchema   = response.schema;
-            datarequestUiSchema = response.uischema;
-        })
-    })
-    // Render data request as disabled form
-    .then(() => {
-        render(<ContainerReadonly schema={datarequestSchema}
-                                  uiSchema={datarequestUiSchema}
-                                  formData={datarequestFormData} />,
-               document.getElementById("datarequest")
+        render(<Container schema={datamanagerReviewSchema}
+                          uiSchema={datamanagerReviewUiSchema} />,
+               document.getElementById("datamanagerReview")
         );
     });
 
@@ -61,15 +45,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         );
     });
 
-    // Get the schema of the data request review form for the data manager
-    Yoda.call("datarequest_schema_get", {schema_name: "datamanager_review"})
-    .then(response => {
-        let datamanagerReviewSchema = response.schema;
-        let datamanagerReviewUiSchema = response.uischema;
+    var datarequestSchema   = {};
+    var datarequestUiSchema = {};
+    var datarequestFormData = {};
 
-        render(<Container schema={datamanagerReviewSchema}
-                          uiSchema={datamanagerReviewUiSchema} />,
-               document.getElementById("datamanagerReview")
+    // Get data request
+    Yoda.call('datarequest_get',
+        {request_id: requestId},
+        {errorPrefix: "Could not get datarequest"})
+    .then(datarequest => {
+        datarequestFormData = JSON.parse(datarequest.requestJSON);
+    })
+    // Get data request schema and uischema
+    .then(async () => {
+        await Yoda.call("datarequest_schema_get", {schema_name: "datarequest"})
+        .then(response => {
+            datarequestSchema   = response.schema;
+            datarequestUiSchema = response.uischema;
+        })
+    })
+    // Render data request as disabled form
+    .then(() => {
+        render(<ContainerReadonly schema={datarequestSchema}
+                                  uiSchema={datarequestUiSchema}
+                                  formData={datarequestFormData} />,
+               document.getElementById("datarequest")
         );
     });
 });
