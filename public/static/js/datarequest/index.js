@@ -62,6 +62,7 @@ let getFolderContents = (() => {
             let result = await Yoda.call('datarequest_browse',
                                          {'offset':     args.start,
                                           'limit':      batchSize,
+                                          'archived':   archived,
                                           'sort_order': args.order[0].dir,
                                           'sort_on':    ['name', 'modified'][args.order[0].column]});
 
@@ -191,13 +192,20 @@ function convertToHumanReadableStatus(status) {
         case "REVIEWED":
             return "Reviewed";
         case "APPROVED":
+        case "APPROVED_PRIVATE":
             return "Approved";
         case "REJECTED":
             return "Rejected";
         case "RESUBMIT":
             return "Rejected (resubmit)";
+        case "RESUBMITTED":
+            return "Resubmitted";
         case "DAO_APPROVED":
             return "Approved (data assessment)";
+        case "PREREGISTRATION_SUBMITTED":
+            return "Preregistration submitted";
+        case "PREREGISTRATION_CONFIRMED":
+            return "Preregistration confirmed";
         case "DTA_READY":
             return "DTA ready";
         case "DTA_SIGNED":

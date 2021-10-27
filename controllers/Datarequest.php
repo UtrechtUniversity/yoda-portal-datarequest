@@ -15,9 +15,12 @@ class Datarequest extends MY_Controller
         $this->load->library('api');
     }
 
-    protected function datarequest_status($requestId) {
-	return $this->api->call('datarequest_get',
-                                ['request_id' => $requestId])->data->requestStatus;
+    protected function datarequest_info($requestId) {
+        $datarequest = $this->api->call('datarequest_get', ['request_id' => $requestId])->data;
+        $status      = $datarequest->requestStatus;
+        $type        = $datarequest->requestType;
+
+        return ['type' => $type, 'status' => $status];
     }
 
     protected function permission_check($requestId, $roles, $statuses) {
@@ -31,14 +34,18 @@ class Datarequest extends MY_Controller
         }
     }
 
-    public function index() {
+    public function archive() {
+        $this->index($archived = True);
+    }
+
+    public function index($archived = False) {
         $this->config->load('config');
         $items = $this->config->item('browser-items-per-page');
 
         # Check if user is allowed to submit data request
         $roles             = $this->api->call('datarequest_roles_get')->data;
-        $submissionAllowed = !in_array("PM", $roles) and !in_array("DM", $roles) and
-                             !in_array("ED", $roles);
+        $submissionAllowed = (!in_array("PM", $roles) and !in_array("DM", $roles));
+        $isDMCMember       = in_array("DMC", $roles);
 
         $viewParams = array(
             'styleIncludes'       => array(
@@ -51,8 +58,10 @@ class Datarequest extends MY_Controller
                 'js/datarequest/index.js',
             ),
             'items'               => $items,
+            'archived'            => $archived,
             'activeModule'        => 'datarequest',
             'submissionAllowed'   => $submissionAllowed,
+            'isDMCMember'         => $isDMCMember,
             'help_contact_name'   => $this->config->item('datarequest_help_contact_name'),
             'help_contact_email'  => $this->config->item('datarequest_help_contact_email')
         );
@@ -65,15 +74,13 @@ class Datarequest extends MY_Controller
         $roles               = $this->api->call('datarequest_roles_get',
                                                 ["request_id" => $requestId])->data;
         $isProjectManager    = in_array("PM", $roles);
-        $isExecutiveDirector = in_array("ED", $roles);
         $isDatamanager       = in_array("DM", $roles);
         $isDMCMember         = in_array("DMC", $roles);
         $isRequestOwner      = in_array("OWN", $roles);
         $isReviewer          = in_array("REV", $roles);
 
         # If the user is neither of the above, return a 403
-        if (!$isProjectManager && !$isExecutiveDirector && !$isDatamanager && !$isDMCMember &&
-            !$isRequestOwner) {
+        if (!$isProjectManager && !$isDatamanager && !$isDMCMember && !$isRequestOwner) {
             $this->output->set_status_header('403');
             return;
         }
@@ -83,17 +90,19 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
 	# Get datarequest status
-        $requestStatus = $this->datarequest_status($requestId);
+        $requestInfo   = $this->datarequest_info($requestId);
+        $requestStatus = $requestInfo['status'];
+        $requestType   = $requestInfo['type'];
 
         # Set view params and render the view
         $viewParams = array(
             'tokenName'           => $tokenName,
             'tokenHash'           => $tokenHash,
             'requestId'           => $requestId,
+            'requestType'         => $requestType,
             'requestStatus'       => $requestStatus,
             'isReviewer'          => $isReviewer,
             'isProjectManager'    => $isProjectManager,
-            'isExecutiveDirector' => $isExecutiveDirector,
             'isDatamanager'       => $isDatamanager,
             'isRequestOwner'      => $isRequestOwner,
             'activeModule'        => 'datarequest',
@@ -104,6 +113,13 @@ class Datarequest extends MY_Controller
                 'css/datarequest/view.css'
             )
         );
+
+        # Get ID of resubmitted in case the data request has been resubmitted
+        if ($requestStatus == "RESUBMITTED") {
+            $resubmissionId = $this->api->call('datarequest_resubmission_id_get',
+                                               ['request_id' => $requestId])->data;
+            $viewParams['resubmissionId'] = $resubmissionId;
+        }
 
         # Add feedback for researcher as view param if applicable
         if (in_array($requestStatus,
@@ -345,16 +361,75 @@ class Datarequest extends MY_Controller
             )
         );
 
-        if ($this->datarequest_status($requestId) === "DAO_SUBMITTED") {
+        if ($this->datarequest_info($requestId)['status'] === "DAO_SUBMITTED") {
             loadView('/datarequest/dao_evaluate', $viewParams);
         } else {
             loadView('/datarequest/evaluate', $viewParams);
         }
     }
 
+    public function preregister($requestId) {
+        # Check permissions
+        if (!$this->permission_check($requestId, ["OWN"], ["APPROVED"])) { return; }
+
+        # Load CSRF token
+        $tokenName = $this->security->get_csrf_token_name();
+        $tokenHash = $this->security->get_csrf_hash();
+
+        $viewParams = array(
+            'tokenName'     => $tokenName,
+            'tokenHash'     => $tokenHash,
+            'activeModule'  => 'datarequest',
+            'requestId'     => $requestId,
+            'attachments'   => $this->get_attachments($requestId),
+            'styleIncludes' => array(
+                'css/datarequest/forms.css'
+            )
+        );
+
+        loadView('/datarequest/preregister', $viewParams);
+    }
+
+    public function preregistration_confirm($requestId) {
+        # Check permissions
+        if (!$this->permission_check($requestId, ["PM"], ["PREREGISTRATION_SUBMITTED"])) { return; }
+
+        # Load CSRF token
+        $tokenName = $this->security->get_csrf_token_name();
+        $tokenHash = $this->security->get_csrf_hash();
+
+        $viewParams = array(
+            'tokenName'     => $tokenName,
+            'tokenHash'     => $tokenHash,
+            'activeModule'  => 'datarequest',
+            'requestId'     => $requestId,
+            'attachments'   => $this->get_attachments($requestId),
+            'styleIncludes' => array(
+                'css/datarequest/forms.css'
+            )
+        );
+
+        loadView('/datarequest/preregistration_confirm', $viewParams);
+    }
+
+    public function confirm_preregistration($requestId) {
+        # Check permissions
+        if (!$this->permission_check($requestId, ["PM"], ["PREREGISTRATION_SUBMITTED"])) { return; }
+
+        # Set status to PREREGISTRATION_CONFIRMED
+       $result = $this->api->call('datarequest_preregistration_confirm',
+                                   ['request_id' => $requestId]);
+
+        # Redirect to view/
+        if ($result->status === "ok") {
+            redirect('/datarequest/view/' . $requestId);
+        }
+    }
+
     public function upload_dta($requestId) {
         # Check permissions
-        if (!$this->permission_check($requestId, ["DM"], ["APPROVED",
+        if (!$this->permission_check($requestId, ["DM"], ["PREREGISTRATION_CONFIRMED",
+                                                          "APPROVED_PRIVATE",
                                                           "DAO_APPROVED"])) { return; }
 
         # Load Filesystem model and PathLibrary library
@@ -388,7 +463,7 @@ class Datarequest extends MY_Controller
         $this->load->model('filesystem');
         $this->load->library('pathlibrary');
         $rodsaccount = $this->rodsuser->getRodsAccount();
-        $this->filesystem->download($rodsaccount, $file_path);
+        $this->filesystem->download($rodsaccount, $file_path, "application/pdf");
     }
 
     public function upload_signed_dta($requestId) {
@@ -412,7 +487,7 @@ class Datarequest extends MY_Controller
         $this->api->call('datarequest_signed_dta_post_upload_actions',
                          ['request_id' => $requestId, 'filename' => $_FILES["file"]["name"]]);
         $this->api->call('datarequest_signed_dta_upload_permission', ['request_id' => $requestId,
-                                                               'action' => 'revoke'])->data;
+                                                               'action' => 'grantread'])->data;
     }
 
     public function download_signed_dta($requestId) {
@@ -427,7 +502,7 @@ class Datarequest extends MY_Controller
         $this->load->model('filesystem');
         $this->load->library('pathlibrary');
         $rodsaccount = $this->rodsuser->getRodsAccount();
-        $this->filesystem->download($rodsaccount, $file_path);
+        $this->filesystem->download($rodsaccount, $file_path, "application/pdf");
     }
 
     public function data_ready($requestId) {

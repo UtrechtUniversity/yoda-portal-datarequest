@@ -5,71 +5,31 @@ import DataSelection, { DataSelectionCart } from "./DataSelection.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    // Get the schema of the data request review form for the data manager
-    Yoda.call("datarequest_schema_get", {schema_name: "datamanager_review"})
-    .then(response => {
-        let datamanagerReviewSchema = response.schema;
-        let datamanagerReviewUiSchema = response.uischema;
-
-        render(<Container schema={datamanagerReviewSchema}
-                          uiSchema={datamanagerReviewUiSchema} />,
-               document.getElementById("datamanagerReview")
-        );
-    });
-
-    var prSchema   = {};
-    var prUiSchema = {};
-    var prFormData = {};
-
-    // Get preliminary review
-    Yoda.call('datarequest_preliminary_review_get',
-        {request_id: requestId},
-        {errorPrefix: "Could not get preliminary review"})
-    .then(response => {
-        prFormData = JSON.parse(response);
-    })
-    // Get preliminary review schema and uischema
-    .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "preliminary_review"})
-        .then(response => {
-            prSchema   = response.schema;
-            prUiSchema = response.uischema;
-        })
-    })
-    // Render preliminary review as disabled form
-    .then(() => {
-        render(<ContainerReadonly schema={prSchema}
-                                  uiSchema={prUiSchema}
-                                  formData={prFormData} />,
-               document.getElementById("preliminaryReview")
-        );
-    });
-
-    var datarequestSchema   = {};
-    var datarequestUiSchema = {};
-    var datarequestFormData = {};
+    var preregistrationSchema = {};
+    var preregistrationUiSchema = {};
+    var preregistrationFormData = {};
 
     // Get data request
-    Yoda.call('datarequest_get',
+    Yoda.call('datarequest_preregistration_get',
         {request_id: requestId},
-        {errorPrefix: "Could not get datarequest"})
-    .then(datarequest => {
-        datarequestFormData = JSON.parse(datarequest.requestJSON);
+        {errorPrefix: "Could not get preregistration"})
+    .then(response => {
+        preregistrationFormData = JSON.parse(response);
     })
-    // Get data request schema and uischema
+    // Get preregistration schema and uischema
     .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "datarequest"})
+        await Yoda.call("datarequest_schema_get", {schema_name: "preregistration"})
         .then(response => {
-            datarequestSchema   = response.schema;
-            datarequestUiSchema = response.uischema;
+            preregistrationSchema   = response.schema;
+            preregistrationUiSchema = response.uischema;
         })
     })
-    // Render data request as disabled form
+    // Render preregistration as disabled form
     .then(() => {
-        render(<ContainerReadonly schema={datarequestSchema}
-                                  uiSchema={datarequestUiSchema}
-                                  formData={datarequestFormData} />,
-               document.getElementById("datarequest")
+        render(<ContainerReadonly schema={preregistrationSchema}
+                                  uiSchema={preregistrationUiSchema}
+                                  formData={preregistrationFormData} />,
+               document.getElementById("preregistration")
         );
     });
 });
@@ -107,6 +67,7 @@ class ContainerReadonly extends React.Component {
       );
     }
 }
+
 class YodaForm extends React.Component {
     constructor(props) {
         super(props);
@@ -179,16 +140,16 @@ const fields = {
   DataSelection: DataSelectionCart
 };
 
-function submitData(data) {
-
+function submitData(data)
+{
     // Disable submit button
     $("button:submit").text("Submitting...")
     $("button:submit").attr("disabled", "disabled");
 
     // Submit form and redirect to view/
-    Yoda.call("datarequest_datamanager_review_submit",
+    Yoda.call("datarequest_preliminary_review_submit",
         {data: data, request_id: requestId},
-        {errorPrefix: "Could not submit datamanager review"})
+        {errorPrefix: "Could not submit data"})
     .then(() => {
         window.location.href = "/datarequest/view/" + requestId;
     })

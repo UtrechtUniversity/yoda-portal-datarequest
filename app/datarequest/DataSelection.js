@@ -539,12 +539,11 @@ const columns = [
   dataField: 'expId',
   text: 'ID'
 }, {
-  dataField: 'expName',
-  text: 'Name',
-  formatter: cell => nameOptions[cell],
-  filter: multiSelectFilter({
-    options: nameOptions,
-    comparator: Comparator.EQ
+  dataField: 'expCohort',
+  text: 'Cohort',
+  formatter: cell => chrtOptions[cell],
+  filter: selectFilter({
+    options: chrtOptions
   })
 }, {
   dataField: 'expType',
@@ -555,11 +554,12 @@ const columns = [
     comparator: Comparator.EQ
   })
 }, {
-  dataField: 'expCohort',
-  text: 'Cohort',
-  formatter: cell => chrtOptions[cell],
-  filter: selectFilter({
-    options: chrtOptions
+  dataField: 'expName',
+  text: 'Name',
+  formatter: cell => nameOptions[cell],
+  filter: multiSelectFilter({
+    options: nameOptions,
+    comparator: Comparator.EQ
   })
 }, {
   dataField: 'expWave',
@@ -583,16 +583,17 @@ const cartColumns = [
     dataField: 'expId',
     text: 'ID'
   }, {
-    dataField: 'expName',
-    text: 'Name'
+    dataField: 'expCohort',
+    text: 'Cohort',
+    formatter: cell => chrtOptions[cell]
   }, {
     dataField: 'expType',
     text: 'Type',
     formatter: cell => typeOptions[cell]
   }, {
-    dataField: 'expCohort',
-    text: 'Cohort',
-    formatter: cell => chrtOptions[cell]
+    dataField: 'expName',
+    text: 'Name',
+    formatter: cell => nameOptions[cell]
   }, {
     dataField: 'expWave',
     text: 'Wave',

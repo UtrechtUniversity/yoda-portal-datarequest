@@ -5,46 +5,6 @@ import DataSelection, { DataSelectionCart } from "./DataSelection.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    // Get the schema of the data request review form for the data manager
-    Yoda.call("datarequest_schema_get", {schema_name: "datamanager_review"})
-    .then(response => {
-        let datamanagerReviewSchema = response.schema;
-        let datamanagerReviewUiSchema = response.uischema;
-
-        render(<Container schema={datamanagerReviewSchema}
-                          uiSchema={datamanagerReviewUiSchema} />,
-               document.getElementById("datamanagerReview")
-        );
-    });
-
-    var prSchema   = {};
-    var prUiSchema = {};
-    var prFormData = {};
-
-    // Get preliminary review
-    Yoda.call('datarequest_preliminary_review_get',
-        {request_id: requestId},
-        {errorPrefix: "Could not get preliminary review"})
-    .then(response => {
-        prFormData = JSON.parse(response);
-    })
-    // Get preliminary review schema and uischema
-    .then(async () => {
-        await Yoda.call("datarequest_schema_get", {schema_name: "preliminary_review"})
-        .then(response => {
-            prSchema   = response.schema;
-            prUiSchema = response.uischema;
-        })
-    })
-    // Render preliminary review as disabled form
-    .then(() => {
-        render(<ContainerReadonly schema={prSchema}
-                                  uiSchema={prUiSchema}
-                                  formData={prFormData} />,
-               document.getElementById("preliminaryReview")
-        );
-    });
-
     var datarequestSchema   = {};
     var datarequestUiSchema = {};
     var datarequestFormData = {};
@@ -70,6 +30,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                                   uiSchema={datarequestUiSchema}
                                   formData={datarequestFormData} />,
                document.getElementById("datarequest")
+        );
+    });
+
+    // Get the schema of the data request review form for the data manager
+    Yoda.call("datarequest_schema_get", {schema_name: "preregistration"})
+    .then(response => {
+        let preregisterSchema = response.schema;
+        let preregisterUiSchema = response.uischema;
+
+        render(<Container schema={preregisterSchema}
+                          uiSchema={preregisterUiSchema} />,
+               document.getElementById("preregister")
         );
     });
 });
@@ -117,6 +89,7 @@ class YodaForm extends React.Component {
             <Form className="form"
                   schema={this.props.schema}
                   uiSchema={this.props.uiSchema}
+                  fields={fields}
                   idPrefix={"yoda"}
                   onSubmit={onSubmit}
                   showErrorList={false}
@@ -171,7 +144,7 @@ class YodaButtons extends React.Component {
 const onSubmit = ({formData}) => submitData(formData);
 
 const CustomDescriptionField = ({id, description}) => {
-  return <div id={id} dangerouslySetInnerHTML={{ __html: description }}></div>;
+  return <div id={id} dangerouslySetInnerHTML={{ __html: description}}></div>;
 };
 
 const fields = {
@@ -186,9 +159,9 @@ function submitData(data) {
     $("button:submit").attr("disabled", "disabled");
 
     // Submit form and redirect to view/
-    Yoda.call("datarequest_datamanager_review_submit",
+    Yoda.call("datarequest_preregistration_submit",
         {data: data, request_id: requestId},
-        {errorPrefix: "Could not submit datamanager review"})
+        {errorPrefix: "Could not submit preregistration"})
     .then(() => {
         window.location.href = "/datarequest/view/" + requestId;
     })

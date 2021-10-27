@@ -13,6 +13,8 @@ var config = {
             'datarequest/assign': APP_DIR + '/datarequest/assign.js',
             'datarequest/review': APP_DIR + '/datarequest/review.js',
             'datarequest/evaluate': APP_DIR + '/datarequest/evaluate.js',
+            'datarequest/preregister': APP_DIR + '/datarequest/preregister.js',
+            'datarequest/preregistration_confirm': APP_DIR + '/datarequest/preregistration_confirm.js',
             'datarequest/dao_evaluate': APP_DIR + '/datarequest/dao_evaluate.js'},
     output: {
         path: BUILD_DIR,

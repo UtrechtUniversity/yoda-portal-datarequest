@@ -5,6 +5,17 @@ import DataSelection, { DataSelectionCart } from "./DataSelection.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
+    // Get the schema of the data request evaluation form
+    Yoda.call("datarequest_schema_get", {schema_name: "evaluation"})
+    .then(response => {
+        let evaluationSchema = response.schema;
+        let evaluationUiSchema = response.uischema;
+
+        render(<Container schema={evaluationSchema}
+                          uiSchema={evaluationUiSchema} />,
+               document.getElementById("evaluation"));
+    });
+
     var datarequestSchema = {};
     var datarequestUiSchema = {};
     var datarequestFormData = {};
@@ -31,17 +42,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                                   formData={datarequestFormData} />,
                document.getElementById("datarequest")
         );
-    });
-
-    // Get the schema of the data request evaluation form
-    Yoda.call("datarequest_schema_get", {schema_name: "evaluation"})
-    .then(response => {
-        let evaluationSchema = response.schema;
-        let evaluationUiSchema = response.uischema;
-
-        render(<Container schema={evaluationSchema}
-                          uiSchema={evaluationUiSchema} />,
-               document.getElementById("evaluation"));
     });
 });
 
