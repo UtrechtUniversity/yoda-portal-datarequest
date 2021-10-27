@@ -62,6 +62,7 @@ let getFolderContents = (() => {
             let result = await Yoda.call('datarequest_browse',
                                          {'offset':     args.start,
                                           'limit':      batchSize,
+                                          'archived':   archived,
                                           'sort_order': args.order[0].dir,
                                           'sort_on':    ['name', 'modified'][args.order[0].column]});
 

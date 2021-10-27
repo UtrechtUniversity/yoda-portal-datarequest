@@ -34,13 +34,18 @@ class Datarequest extends MY_Controller
         }
     }
 
-    public function index() {
+    public function archive() {
+        $this->index($archived = True);
+    }
+
+    public function index($archived = False) {
         $this->config->load('config');
         $items = $this->config->item('browser-items-per-page');
 
         # Check if user is allowed to submit data request
         $roles             = $this->api->call('datarequest_roles_get')->data;
         $submissionAllowed = (!in_array("PM", $roles) and !in_array("DM", $roles));
+        $isDMCMember       = in_array("DMC", $roles);
 
         $viewParams = array(
             'styleIncludes'       => array(
@@ -53,8 +58,10 @@ class Datarequest extends MY_Controller
                 'js/datarequest/index.js',
             ),
             'items'               => $items,
+            'archived'            => $archived,
             'activeModule'        => 'datarequest',
             'submissionAllowed'   => $submissionAllowed,
+            'isDMCMember'         => $isDMCMember,
             'help_contact_name'   => $this->config->item('datarequest_help_contact_name'),
             'help_contact_email'  => $this->config->item('datarequest_help_contact_email')
         );
