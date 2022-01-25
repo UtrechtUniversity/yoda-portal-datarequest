@@ -146,8 +146,14 @@ const CustomDescriptionField = ({id, description}) => {
   return <div id={id} dangerouslySetInnerHTML={{ __html: description }}></div>;
 };
 
+const CustomTitleField = ({id, title}) => {
+  title = "<h5>" + title + "</h5><hr class='border-0 bg-secondary' style='height: 1px;'>";
+  return <div id={id} dangerouslySetInnerHTML={{ __html: title}}></div>;
+};
+
 const fields = {
   DescriptionField: CustomDescriptionField,
+  TitleField: CustomTitleField,
   DataSelection: DataSelectionCart
 };
 

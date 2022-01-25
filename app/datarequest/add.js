@@ -156,8 +156,14 @@ const CustomDescriptionField = ({id, description}) => {
   return <div id={id} dangerouslySetInnerHTML={{ __html: description }}></div>;
 };
 
+const CustomTitleField = ({id, title}) => {
+  title = "<h5>" + title + "</h5><hr class='border-0 bg-secondary' style='height: 1px;'>";
+  return <div id={id} dangerouslySetInnerHTML={{ __html: title}}></div>;
+};
+
 const fields = {
   DescriptionField: CustomDescriptionField,
+  TitleField: CustomTitleField,
   DataSelection: DataSelectionTable
 };
 
@@ -177,7 +183,7 @@ function transformErrors(errors) {
     // https://github.com/rjsf-team/react-jsonschema-form/issues/1791
     if (errors.length !== 0) {
         let first_error_property = errors[0].property;
-        let elem_id = "yoda" + first_error_property.replace(/\./g, '_');
+        let elem_id = "yoda" + first_error_property.replace(/\./g, '_').replace(/\[/, '_').replace(/\]/, '').replace(/_array$/, '_array__title');
         let elem = document.getElementById(elem_id) !== null ? document.getElementById(elem_id) : document.getElementsByName(elem_id)[0].parentElement.parentElement;
         elem.parentElement.scrollIntoView();
     }

@@ -73,40 +73,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     datarequestStatusInt = 7;
                     break;
             }
-        } else if (datarequestType == "PRIVATE") {
-            switch(datarequestStatus) {
-                case 'SUBMITTED':
-                case 'PRELIMINARY_ACCEPT':
-                case 'PRELIMINARY_REJECT':
-                case 'PRELIMINARY_RESUBMIT':
-                case 'DATAMANAGER_ACCEPT':
-                case 'DATAMANAGER_REJECT':
-                case 'DATAMANAGER_RESUBMIT':
-                    datarequestStatusInt = 0;
-                    break;
-                case 'UNDER_REVIEW':
-                case 'REJECTED_AFTER_DATAMANAGER_REVIEW':
-                case 'RESUBMIT_AFTER_DATAMANAGER_REVIEW':
-                    datarequestStatusInt = 1;
-                    break;
-                case 'REVIEWED':
-                case 'REJECTED':
-                case 'RESUBMIT':
-                    datarequestStatusInt = 2;
-                    break;
-                case 'APPROVED_PRIVATE':
-                    datarequestStatusInt = 3;
-                    break;
-                case 'DTA_READY':
-                    datarequestStatusInt = 4;
-                    break;
-                case 'DTA_SIGNED':
-                    datarequestStatusInt = 5;
-                    break;
-                case 'DATA_READY':
-                    datarequestStatusInt = 6;
-                    break;
-            }
         } else if (datarequestType == "DAO") {
             switch(datarequestStatus) {
                 case 'DAO_SUBMITTED':
@@ -243,7 +209,13 @@ const CustomDescriptionField = ({id, description}) => {
   return <div id={id} dangerouslySetInnerHTML={{ __html: description }}></div>;
 };
 
+const CustomTitleField = ({id, title}) => {
+  title = "<h5>" + title + "</h5><hr class='border-0 bg-secondary' style='height: 1px;'>";
+  return <div id={id} dangerouslySetInnerHTML={{ __html: title}}></div>;
+};
+
 const fields = {
   DescriptionField: CustomDescriptionField,
+  TitleField: CustomTitleField,
   DataSelection: DataSelectionCart
 };

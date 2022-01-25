@@ -429,7 +429,6 @@ class Datarequest extends MY_Controller
     public function upload_dta($requestId) {
         # Check permissions
         if (!$this->permission_check($requestId, ["DM"], ["PREREGISTRATION_CONFIRMED",
-                                                          "APPROVED_PRIVATE",
                                                           "DAO_APPROVED"])) { return; }
 
         # Load Filesystem model and PathLibrary library
