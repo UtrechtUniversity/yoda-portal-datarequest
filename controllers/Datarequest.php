@@ -45,7 +45,7 @@ class Datarequest extends MY_Controller
         # Check if user is allowed to submit data request
         $roles             = $this->api->call('datarequest_roles_get')->data;
         $submissionAllowed = (!in_array("PM", $roles) and !in_array("DM", $roles));
-        $isDMCMember       = in_array("DMC", $roles);
+        $isDACMember       = in_array("DAC", $roles);
 
         $viewParams = array(
             'styleIncludes'       => array(
@@ -61,7 +61,7 @@ class Datarequest extends MY_Controller
             'archived'            => $archived,
             'activeModule'        => 'datarequest',
             'submissionAllowed'   => $submissionAllowed,
-            'isDMCMember'         => $isDMCMember,
+            'isDACMember'         => $isDACMember,
             'help_contact_name'   => $this->config->item('datarequest_help_contact_name'),
             'help_contact_email'  => $this->config->item('datarequest_help_contact_email')
         );
@@ -75,12 +75,12 @@ class Datarequest extends MY_Controller
                                                 ["request_id" => $requestId])->data;
         $isProjectManager    = in_array("PM", $roles);
         $isDatamanager       = in_array("DM", $roles);
-        $isDMCMember         = in_array("DMC", $roles);
+        $isDACMember         = in_array("DAC", $roles);
         $isRequestOwner      = in_array("OWN", $roles);
         $isReviewer          = in_array("REV", $roles);
 
         # If the user is neither of the above, return a 403
-        if (!$isProjectManager && !$isDatamanager && !$isDMCMember && !$isRequestOwner) {
+        if (!$isProjectManager && !$isDatamanager && !$isDACMember && !$isRequestOwner) {
             $this->output->set_status_header('403');
             return;
         }
@@ -234,7 +234,7 @@ class Datarequest extends MY_Controller
 
     public function download_attachment($requestId) {
         # Check permissions
-        if (!$this->permission_check($requestId, ["PM", "ED", "DM", "DMC", "OWN"], null)) { return; }
+        if (!$this->permission_check($requestId, ["PM", "ED", "DM", "DAC", "OWN"], null)) { return; }
 
         # Get file path
         $this->load->library('pathlibrary');
