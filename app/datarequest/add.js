@@ -194,11 +194,16 @@ function transformErrors(errors) {
 function submitData(data)
 {
     // Disable button
+    //
+    // When saving a draft
     if (save) {
         $("#saveButton").text("Saving...");
         $("#saveButton").attr("disabled", "disabled");
+        $("#submitButton").attr("disabled", "disabled");
+    // When submitting the data request
     } else {
         $("#submitButton").text("Submitting...");
+        $("#saveButton").attr("disabled", "disabled");
         $("#submitButton").attr("disabled", "disabled");
     }
 
@@ -223,6 +228,7 @@ function submitData(data)
             } else {
                 $("#saveButton").text("Save as draft");
                 $('#saveButton').attr("disabled", false);
+                $("#submitButton").attr("disabled", false);
             }
         // If attachments should be added, redirect to attachment upload page
         } else if  (response !== null && response.hasOwnProperty('pendingAttachments')) {
