@@ -394,6 +394,10 @@ class Datarequest extends MY_Controller
         # Check permissions
         if (!$this->permission_check($requestId, ["PM"], ["PREREGISTRATION_SUBMITTED"])) { return; }
 
+        # Get OSF preregistration URL
+        $osfUrl= json_decode($this->api->call('datarequest_preregistration_get',
+                                              ['request_id' => $requestId])->data)->preregistration_url;
+
         # Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
         $tokenHash = $this->security->get_csrf_hash();
@@ -404,6 +408,7 @@ class Datarequest extends MY_Controller
             'activeModule'  => 'datarequest',
             'requestId'     => $requestId,
             'attachments'   => $this->get_attachments($requestId),
+            'osfUrl'       => $osfUrl,
             'styleIncludes' => array(
                 'css/datarequest/forms.css'
             )

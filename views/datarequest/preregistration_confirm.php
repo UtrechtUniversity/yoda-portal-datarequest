@@ -5,7 +5,8 @@
 
 <div class="row">
     <div class=col-md-12>
-        <a href="/datarequest/confirm_preregistration/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Confirm preregistration</a>
+        <a id="confirmPreregistration" href="/datarequest/confirm_preregistration/<?php echo html_escape($requestId) ?>" class="disabled btn btn-primary mb-3 float-right">Confirm preregistration</a>
+        <a id="visitPreregistration" target="_blank" href="<?php echo html_escape($osfUrl) ?>" class="btn btn-primary mb-3 mr-1 float-right">Visit OSF preregistration</a>
     </div>
     <div class="col-md-12">
         <div class="card">

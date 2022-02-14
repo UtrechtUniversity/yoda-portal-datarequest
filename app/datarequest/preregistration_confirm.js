@@ -5,6 +5,11 @@ import DataSelection, { DataSelectionCart } from "./DataSelection.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
+    // Enable "Confirm registration" button after OSF preregistration has been visited
+    $("#visitPreregistration").click(function () { 
+        $("#confirmPreregistration").removeClass("disabled");
+    });
+
     var preregistrationSchema = {};
     var preregistrationUiSchema = {};
     var preregistrationFormData = {};
