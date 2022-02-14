@@ -449,6 +449,12 @@ class Datarequest extends MY_Controller
         $filePath    = $pathStart . '/datarequests-research/' . $requestId . '/dta/';
         $rodsaccount = $this->rodsuser->getRodsAccount();
 
+        # Verify that uploaded file is a PDF
+        if (mime_content_type($_FILES["file"]['tmp_name']) != "application/pdf") {
+            http_response_code(400);
+            return;
+        }
+
         # Upload the document
         $this->api->call('datarequest_dta_upload_permission', ['request_id' => $requestId,
                                                                'action' => 'grant'])->data;
@@ -487,6 +493,12 @@ class Datarequest extends MY_Controller
         $pathStart   = $this->pathlibrary->getPathStart($this->config);
         $filePath    = $pathStart . '/datarequests-research/' . $requestId . '/signed_dta/';
         $rodsaccount = $this->rodsuser->getRodsAccount();
+
+        # Verify that uploaded file is a PDF
+        if (mime_content_type($_FILES["file"]['tmp_name']) != "application/pdf") {
+            http_response_code(400);
+            return;
+        }
 
         # Upload the document
         $this->api->call('datarequest_signed_dta_upload_permission', ['request_id' => $requestId,

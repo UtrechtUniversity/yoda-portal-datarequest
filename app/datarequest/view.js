@@ -145,9 +145,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Prepare XHR
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/datarequest/datarequest/upload_dta/" + requestId);
-        // Reload page after DTA upload
-        xhr.onload = location.reload();
-
+        // Check if file has PDF mimetype. Reload page if upload has succeeded
+        xhr.onload = function () {
+            if (this.status == 400) {
+                $("#dta-non-pdf-warning").removeClass("hidden");
+            } else if (this.status == 200) {
+                $("#uploadDTA").modal("hide");
+                xhr.onload = location.reload();
+            }
+        }
         // Send DTA
         xhr.send(fd);
     });
@@ -165,8 +171,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Prepare XHR
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/datarequest/datarequest/upload_signed_dta/" + requestId);
-        // Reload page after signed DTA upload
-        xhr.onload = location.reload();
+        // Check if file has PDF mimetype. Reload page if upload has succeeded
+        xhr.onload = function () {
+            if (this.status == 400) {
+                $("#signed-dta-non-pdf-warning").removeClass("hidden");
+            } else if (this.status == 200) {
+                $("#uploadSignedDTA").modal("hide");
+                xhr.onload = location.reload();
+            }
+        }
 
         // Send signed DTA
         xhr.send(fd);

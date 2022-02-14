@@ -13,11 +13,14 @@
                         <input type="file" accept=".pdf,application/pdf" name="file" id="file" />
                     </form>
                 </div>
+                <div id="dta-non-pdf-warning" class="hidden">
+                    <p class="text-danger">File must be an actual PDF.</p>
+                </div>
             </div>
 
             <div class="modal-footer">
                 <button class="btn btn-secondary grey cancel" data-dismiss="modal">Close</button>
-                <button class="btn btn-secondary grey submit_dta" data-dismiss="modal">Upload</button>
+                <button class="btn btn-secondary grey submit_dta">Upload</button>
             </div>
         </div>
     </div>
@@ -34,11 +37,14 @@
                         <input type="file" accept=".pdf,application/pdf" name="file" id="file" />
                     </form>
                 </div>
+                <div id="signed-dta-non-pdf-warning" class="hidden">
+                    <p class="text-danger">File must be an actual PDF.</p>
+                </div>
             </div>
 
             <div class="modal-footer">
                 <button class="btn btn-secondary grey cancel" data-dismiss="modal">Close</button>
-                <button class="btn btn-secondary grey submit_signed_dta" data-dismiss="modal">Upload</button>
+                <button class="btn btn-secondary grey submit_signed_dta">Upload</button>
             </div>
         </div>
     </div>
