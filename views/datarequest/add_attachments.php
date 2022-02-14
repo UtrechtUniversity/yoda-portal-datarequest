@@ -25,7 +25,7 @@
                 <div class="form-group">
                     <p>Currently attached files</p>
                     <ul>
-                        <?php foreach($attachments as $attachment) { echo "<li>" . html_escape($attachment) . "</li>"; } ?>
+                        <?php $i=0; foreach($attachments as $attachment) { echo "<li><a href=\"/datarequest/download_attachment/" . html_escape($requestId) . "?file=" . $i . "\">" . html_escape($attachment) . "</a></li>"; $i++; } ?>
                     </ul>
                 </div>
                 <hr class="border-0 bg-secondary" style="height: 1px;">
