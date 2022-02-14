@@ -2,6 +2,20 @@
     var requestId = <?php echo $requestId; ?>;
 </script>
 
+<?php if ($approvalConditions): ?>
+<div class="row">
+    <div class="col-md-12">
+        <div class="border border-danger">
+            <h5 class="text-danger">Caution: approval conditions apply!</h5>
+            <p>The YOUth project manager has approved your data request, but has added one or more approval conditions. Please note that by proceeding, you will consent to these conditions.</p>
+            <p class="font-weight-bold">Approval conditions:</p>
+            <p><?php echo nl2br(html_escape($approvalConditions)) ?></p>
+        </div>
+    </div>
+</div>
+<br/>
+<?php endif ?>
+
 <div class="row">
     <div class="col-md-12">
         <div id="preregister" class="metadata-form"

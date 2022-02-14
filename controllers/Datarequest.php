@@ -372,17 +372,21 @@ class Datarequest extends MY_Controller
         # Check permissions
         if (!$this->permission_check($requestId, ["OWN"], ["APPROVED"])) { return; }
 
+        # Get approval conditions (if any)
+        $approvalConditions= json_decode($this->api->call('datarequest_approval_conditions_get',
+                                         ['request_id' => $requestId])->data);
+
         # Load CSRF token
         $tokenName = $this->security->get_csrf_token_name();
         $tokenHash = $this->security->get_csrf_hash();
 
         $viewParams = array(
-            'tokenName'     => $tokenName,
-            'tokenHash'     => $tokenHash,
-            'activeModule'  => 'datarequest',
-            'requestId'     => $requestId,
-            'attachments'   => $this->get_attachments($requestId),
-            'styleIncludes' => array(
+            'tokenName'          => $tokenName,
+            'tokenHash'          => $tokenHash,
+            'activeModule'       => 'datarequest',
+            'requestId'          => $requestId,
+            'approvalConditions' => $approvalConditions, 
+            'styleIncludes'      => array(
                 'css/datarequest/forms.css'
             )
         );
