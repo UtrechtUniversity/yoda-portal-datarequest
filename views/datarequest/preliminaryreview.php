@@ -38,7 +38,7 @@
                     <span class="text-collapsed">Show</span>
                     <span class="text-expanded">Hide</span>
                 </a>
-                <h5 class="card-header float-left">Attachments</h5>
+                <h5 class="card-header float-left">Attachments (<?php echo count($attachments) ?>)</h5>
             </div>
             <div id="attachmentsDiv" class="card-body collapse show">
                 <ul>
