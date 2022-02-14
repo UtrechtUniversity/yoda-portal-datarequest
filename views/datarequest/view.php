@@ -65,7 +65,7 @@
 <?php elseif (in_array($requestStatus, ["APPROVED"]) && $isRequestOwner): ?>
     <a href="/datarequest/preregister/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Preregister study</a>
 <?php elseif (in_array($requestStatus, ["PREREGISTRATION_SUBMITTED"]) && $isProjectManager): ?>
-    <a href="/datarequest/preregistration_confirm/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Confirm pregistration</a>
+    <a href="/datarequest/preregistration_confirm/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Confirm preregistration</a>
 
 <?php elseif (in_array($requestStatus, ["PREREGISTRATION_CONFIRMED", "DAO_APPROVED"]) && $isDatamanager): ?>
     <button type="button" class="btn btn-primary mb-3 float-right upload_dta" data-path="">Upload DTA</button>
