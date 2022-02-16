@@ -38,7 +38,11 @@ class Datarequest extends MY_Controller
         $this->index($archived = True);
     }
 
-    public function index($archived = False) {
+    public function dacrequests() {
+        $this->index($archived = False, $dacrequests = True);
+    }
+
+    public function index($archived = False, $dacrequests = False) {
         $this->config->load('config');
         $items = $this->config->item('browser-items-per-page');
 
@@ -59,6 +63,7 @@ class Datarequest extends MY_Controller
             ),
             'items'               => $items,
             'archived'            => $archived,
+            'dacrequests'         => $dacrequests,
             'activeModule'        => 'datarequest',
             'submissionAllowed'   => $submissionAllowed,
             'isDACMember'         => $isDACMember,

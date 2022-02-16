@@ -1,6 +1,7 @@
 <script>
     var browsePageItems = <?php echo $items; ?>;
-    var archived = <?php echo json_encode($archived); ?>;
+    var archived        = <?php echo json_encode($archived); ?>;
+    var dacrequests     = <?php echo json_encode($dacrequests); ?>;
 </script>
 
 <div class="row">
@@ -13,6 +14,12 @@
         <?php endif ?>
         <?php if (!$isDACMember and $archived): ?>
         <a href="/datarequest" class="btn btn-primary mb-3 mr-1 float-right" role="button">View active requests</a>
+        <?php endif ?>
+        <?php if ($isDACMember and !$dacrequests): ?>
+        <a href="/datarequest/dacrequests" class="btn btn-primary mb-3 mr-1 float-right" role="button">View own requests</a>
+        <?php endif ?>
+        <?php if ($isDACMember and $dacrequests): ?>
+        <a href="/datarequest" class="btn btn-primary mb-3 mr-1 float-right" role="button">View reviewable requests</a>
         <?php endif ?>
     </div>
 </div>
