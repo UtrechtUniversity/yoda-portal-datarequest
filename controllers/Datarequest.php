@@ -502,12 +502,12 @@ class Datarequest extends MY_Controller
 
         # Upload the document
         $this->api->call('datarequest_signed_dta_upload_permission', ['request_id' => $requestId,
-                                                               'action' => 'grant'])->data;
+                                                                      'action' => 'grant'])->data;
         $this->filesystem->upload($rodsaccount, $filePath, $_FILES["file"]);
         $this->api->call('datarequest_signed_dta_post_upload_actions',
                          ['request_id' => $requestId, 'filename' => $_FILES["file"]["name"]]);
         $this->api->call('datarequest_signed_dta_upload_permission', ['request_id' => $requestId,
-                                                               'action' => 'grantread'])->data;
+                                                                      'action' => 'grantread'])->data;
     }
 
     public function download_signed_dta($requestId) {
