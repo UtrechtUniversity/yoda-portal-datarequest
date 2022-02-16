@@ -1,5 +1,5 @@
 <script>
-    var requestId = <?php echo $requestId; ?>;
+    var requestId = "<?php echo $requestId; ?>";
 </script>
 
 <div class="modal" id="uploadDTA">

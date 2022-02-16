@@ -1,5 +1,5 @@
 <script>
-    var requestId = <?php echo $requestId; ?>;
+    var requestId = "<?php echo $requestId; ?>";
     var username = "<?php echo $username; ?>";
 </script>
 
