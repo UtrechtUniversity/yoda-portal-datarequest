@@ -10,11 +10,39 @@ document.addEventListener("DOMContentLoaded", async () => {
         $("#confirmPreregistration").removeClass("disabled");
     });
 
+    var datarequestSchema = {};
+    var datarequestUiSchema = {};
+    var datarequestFormData = {};
+
+    // Get data request
+    await Yoda.call('datarequest_get',
+        {request_id: requestId},
+        {errorPrefix: "Could not get datarequest"})
+    .then(datarequest => {
+        datarequestFormData = JSON.parse(datarequest.requestJSON);
+    })
+    // Get data request schema and uischema
+    .then(async () => {
+        await Yoda.call("datarequest_schema_get", {schema_name: "datarequest"})
+        .then(response => {
+            datarequestSchema   = response.schema;
+            datarequestUiSchema = response.uischema;
+        })
+    })
+    // Render data request as disabled form
+    .then(() => {
+        render(<ContainerReadonly schema={datarequestSchema}
+                                  uiSchema={datarequestUiSchema}
+                                  formData={datarequestFormData} />,
+               document.getElementById("datarequest")
+        );
+    });
+
     var preregistrationSchema = {};
     var preregistrationUiSchema = {};
     var preregistrationFormData = {};
 
-    // Get data request
+    // Get preregistration form 
     Yoda.call('datarequest_preregistration_get',
         {request_id: requestId},
         {errorPrefix: "Could not get preregistration"})
