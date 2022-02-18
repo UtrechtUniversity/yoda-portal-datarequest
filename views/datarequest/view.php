@@ -1,5 +1,6 @@
 <script>
     var requestId = "<?php echo $requestId; ?>";
+    var availableDocuments = <?php echo $availableDocuments; ?>;
 </script>
 
 <div class="modal" id="uploadDTA">
@@ -52,41 +53,65 @@
 
 <div class="row">
     <div class=col-md-12>
-<?php if ($requestStatus == "DRAFT" && $isRequestOwner): ?>
-    <a href="/datarequest/add_from_draft/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Resume draft data request</a>
-<?php elseif ($requestStatus == "PENDING_ATTACHMENTS" && $isRequestOwner): ?>
-    <a href="/datarequest/add_attachments/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Add attachments</a>
-<?php elseif ($requestStatus == "SUBMITTED" && $isProjectManager): ?>
-    <a href="/datarequest/preliminary_review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Preliminary review</a>
-<?php elseif ($requestStatus == "PRELIMINARY_ACCEPT" && $isDatamanager): ?>
-    <a href="/datarequest/datamanager_review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Data manager review</a>
+        <?php if ($requestStatus == "DRAFT" && $isRequestOwner): ?>
+        <a href="/datarequest/add_from_draft/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Resume draft data request</a>
+        <?php endif ?>
 
-<?php elseif (in_array($requestStatus, ["DATAMANAGER_ACCEPT", "DATAMANAGER_REJECT", "DATAMANAGER_RESUBMIT"]) && $isProjectManager): ?>
-    <a href="/datarequest/assign/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Review / assign</a>
-<?php elseif ($requestStatus == "UNDER_REVIEW" && $isReviewer): ?>
-    <a href="/datarequest/review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Review data request</a>
-<?php elseif (in_array($requestStatus, ["DAO_SUBMITTED", "REVIEWED"]) && $isProjectManager): ?>
-    <a href="/datarequest/evaluate/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Evaluate data request</a>
+        <?php if ($requestStatus == "PENDING_ATTACHMENTS" && $isRequestOwner): ?>
+        <a href="/datarequest/add_attachments/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Add attachments</a>
+        <?php endif ?>
 
-<?php elseif (in_array($requestStatus, ["APPROVED"]) && $isRequestOwner): ?>
-    <a href="/datarequest/preregister/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Preregister study</a>
-<?php elseif (in_array($requestStatus, ["PREREGISTRATION_SUBMITTED"]) && $isProjectManager): ?>
-    <a href="/datarequest/preregistration_confirm/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Confirm preregistration</a>
+        <?php if($requestStatus == "SUBMITTED" && $isProjectManager): ?>
+        <a href="/datarequest/preliminary_review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Preliminary review</a>
+        <?php endif ?>
 
-<?php elseif (in_array($requestStatus, ["PREREGISTRATION_CONFIRMED", "DAO_APPROVED"]) && $isDatamanager): ?>
-    <button type="button" class="btn btn-primary mb-3 float-right upload_dta" data-path="">Upload DTA</button>
-<?php elseif ($requestStatus == "DTA_READY" && $isRequestOwner): ?>
-    <a href="/datarequest/download_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 mr-1 float-right">Download DTA</a>
-    <button type="button" class="btn btn-primary mb-3 mr-1 float-right upload_signed_dta" data-path="">Upload signed DTA</button>
-<?php elseif ($requestStatus == "DTA_SIGNED" && $isDatamanager): ?>
-    <a href="/datarequest/download_signed_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right">Download signed DTA</a>
-    <a href="/datarequest/data_ready/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 mr-1 float-right" role="button">Data ready</a>
-<?php elseif (in_array($requestStatus, array("DTA_SIGNED", "DATA_READY")) && ($isProjectManager || $isRequestOwner || $isDatamanager)): ?>
-    <a href="/datarequest/download_signed_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right">Download signed DTA</a>
+        <?php if($requestStatus == "PRELIMINARY_ACCEPT" && $isDatamanager): ?>
+        <a href="/datarequest/datamanager_review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Data manager review</a>
+        <?php endif ?>
 
-<?php elseif (in_array($requestStatus, array("PRELIMINARY_RESUBMIT", "RESUBMIT_AFTER_DATAMANAGER_REVIEW", "RESUBMIT")) && $isRequestOwner): ?>
-    <a href="/datarequest/add/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Resubmit</a>
-<?php endif ?>
+        <?php if(in_array($requestStatus, ["DATAMANAGER_ACCEPT", "DATAMANAGER_REJECT", "DATAMANAGER_RESUBMIT"]) && $isProjectManager): ?>
+        <a href="/datarequest/assign/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Review / assign</a>
+        <?php endif ?>
+
+        <?php if($requestStatus == "UNDER_REVIEW" && $isReviewer): ?>
+        <a href="/datarequest/review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Review data request</a>
+        <?php endif ?>
+
+        <?php if(in_array($requestStatus, ["DAO_SUBMITTED", "REVIEWED"]) && $isProjectManager): ?>
+        <a href="/datarequest/evaluate/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Evaluate data request</a>
+        <?php endif ?>
+
+        <?php if (in_array($requestStatus, ["APPROVED"]) && $isRequestOwner): ?>
+        <a href="/datarequest/preregister/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Preregister study</a>
+        <?php endif ?>
+
+        <?php if (in_array($requestStatus, ["PREREGISTRATION_SUBMITTED"]) && $isProjectManager): ?>
+        <a href="/datarequest/preregistration_confirm/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Confirm preregistration</a>
+        <?php endif ?>
+
+        <?php if (in_array($requestStatus, ["PREREGISTRATION_CONFIRMED", "DAO_APPROVED"]) && $isDatamanager): ?>
+        <button type="button" class="btn btn-primary mb-3 float-right upload_dta" data-path="">Upload DTA</button>
+        <?php endif ?>
+
+        <?php if ($requestStatus == "DTA_READY" && $isRequestOwner): ?>
+        <button type="button" class="btn btn-primary mb-3 ml-1 float-right upload_signed_dta" data-path="">Upload signed DTA</button>
+        <?php endif ?>
+
+        <?php if ($requestStatus == "DTA_SIGNED" && $isDatamanager): ?>
+        <a href="/datarequest/data_ready/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 ml-1 float-right" role="button">Data ready</a>
+        <?php endif ?>
+
+        <?php if (in_array($requestStatus, array("PRELIMINARY_RESUBMIT", "RESUBMIT_AFTER_DATAMANAGER_REVIEW", "RESUBMIT")) && $isRequestOwner): ?>
+        <a href="/datarequest/add/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Resubmit</a>
+        <?php endif ?>
+
+        <?php if (in_array($requestStatus, array("DTA_SIGNED", "DATA_READY")) && ($isRequestOwner || $isProjectManager || $isDatamanager)): ?>
+        <a href="/datarequest/download_signed_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 ml-1 float-right">Download signed DTA</a>
+        <?php endif ?>
+
+        <?php if (in_array($requestStatus, array("DTA_READY", "DTA_SIGNED", "DATA_READY")) && ($isRequestOwner || $isProjectManager || $isDatamanager)): ?>
+        <a href="/datarequest/download_dta/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 ml-1 float-right">Download DTA</a>
+        <?php endif ?>
     </div>
 </div>
 
@@ -94,7 +119,7 @@
     <div class=col-md-12>
         <div class="card">
             <div class="card-header clearfix">
-                <h5 class="card-header float-left">Data request: <?php echo html_escape($requestId) ?></h5>
+                <h5 class="card-header float-left">Summary and progress</h5>
                 <div class="float-right">
                     <a class="btn btn-secondary" href="/datarequest">Back</a>
                 </div>
@@ -203,6 +228,26 @@
 
                 <hr />
 
+                <p><b>Title: </b><?php echo $request['datarequest']['study_information']['title']; ?></p>
+                <p><b>Status: </b><?php echo $humanRequestStatus; ?></p>
+                <p><b>Requestee: </b><?php echo $request['owner']; ?></p>
+                <p><b>Purpose: </b><?php echo $request['datarequest']['purpose']; ?>
+                <?php if ($requestType == "REGULAR") echo "<p><b>Publication type: </b>" . $request['datarequest']['publication_type'] . "</p>"; ?></p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#datarequestDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
+                <h5 class="card-header float-left">Data request</h5>
+            </div>
+            <div id="datarequestDiv" class="card-body collapse">
                 <div id="datarequest" class="metadata-form"
                      data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
                      data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
@@ -210,5 +255,123 @@
                 </div>
             </div>
         </div>
+
+        <?php if(count($attachments) > 0): ?>
+        <div class="card">
+            <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#attachmentsDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
+                <h5 class="card-header float-left">Attachments (<?php echo count($attachments) ?>)</h5>
+            </div>
+            <div id="attachmentsDiv" class="card-body collapse">
+                <ul>
+                    <?php $i=0; foreach($attachments as $attachment) { echo "<li><a href=\"/datarequest/download_attachment/" . html_escape($requestId) . "?file=" . $i . "\">" . html_escape($attachment) . "</a></li>"; $i++; } ?>
+                </ul>
+            </div>
+        </div>
+        <?php endif ?>
+
+        <?php if ($requestType == "REGULAR" and in_array($requestStatus, ["PRELIMINARY_ACCEPT", "PRELIMINARY_REJECT", "PRELIMINARY_RESUBMIT", "DATAMANAGER_ACCEPT", "DATAMANAGER_REJECT", "DATAMANAGER_RESUBMIT", "UNDER_REVIEW", "REJECTED_AFTER_DATAMANAGER_REVIEW", "RESUBMIT_AFTER_DATAMANAGER_REVIEW", "REVIEWED", "APPROVED", "REJECTED", "RESUBMIT", "RESUBMITTED", "DAO_APPROVED", "PREREGISTRATION_SUBMITTED", "PREREGISTRATION_CONFIRMED", "DTA_READY", "DTA_SIGNED", "DATA_READY"]) && ($isProjectManager || $isDatamanager || $isReviewer)): ?>
+        <div class="card">
+            <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#preliminaryReviewDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
+                <h5 class="card-header float-left">Project manager's preliminary review</h5>
+            </div>
+            <div id="preliminaryReviewDiv" class="card-body collapse">
+                <div id="preliminaryReview" class="metadata-form"
+                     data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
+                     data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
+                    <p>Loading metadata <i class="fa fa-spinner fa-spin fa-fw"></i></p>
+                </div>
+            </div>
+        </div>
+        <?php endif ?>
+
+        <?php if ($requestType == "REGULAR" and in_array($requestStatus, ["DATAMANAGER_ACCEPT", "DATAMANAGER_REJECT", "DATAMANAGER_RESUBMIT", "UNDER_REVIEW", "REJECTED_AFTER_DATAMANAGER_REVIEW", "RESUBMIT_AFTER_DATAMANAGER_REVIEW", "REVIEWED", "APPROVED", "REJECTED", "RESUBMIT", "RESUBMITTED", "DAO_APPROVED", "PREREGISTRATION_SUBMITTED", "PREREGISTRATION_CONFIRMED", "DTA_READY", "DTA_SIGNED", "DATA_READY"]) && ($isProjectManager || $isDatamanager || $isReviewer)): ?>
+        <div class="card">
+            <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#datamanagerReviewDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
+                <h5 class="card-header float-left">Data manager review</h5>
+            </div>
+            <div id="datamanagerReviewDiv" class="card-body collapse">
+                <div id="datamanagerReview" class="metadata-form"
+                     data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
+                     data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
+                    <p>Loading metadata <i class="fa fa-spinner fa-spin fa-fw"></i></p>
+                </div>
+            </div>
+        </div>
+        <?php endif ?>
+
+        <?php if ($requestType == "REGULAR" and in_array($requestStatus, ["UNDER_REVIEW", "REJECTED_AFTER_DATAMANAGER_REVIEW", "RESUBMIT_AFTER_DATAMANAGER_REVIEW", "REVIEWED", "APPROVED", "REJECTED", "RESUBMIT", "RESUBMITTED", "DAO_APPROVED", "PREREGISTRATION_SUBMITTED", "PREREGISTRATION_CONFIRMED", "DTA_READY", "DTA_SIGNED", "DATA_READY"]) && ($isProjectManager || $isReviewer)): ?>
+        <div class="card">
+            <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#assignDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
+                <h5 class="card-header float-left">Assignment</h5>
+            </div>
+            <div id="assignDiv" class="card-body collapse">
+                <div id="assign" class="metadata-form"
+                    data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
+                    data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
+                    <p>Loading metadata <i class="fa fa-spinner fa-spin fa-fw"></i></p>
+                </div>
+            </div>
+        </div>
+        <?php endif ?>
+    </div>
+
+    <?php if ($requestType == "REGULAR" and in_array($requestStatus, ["UNDER_REVIEW", "REVIEWED", "APPROVED", "REJECTED", "RESUBMIT", "RESUBMITTED", "DAO_APPROVED", "PREREGISTRATION_SUBMITTED", "PREREGISTRATION_CONFIRMED", "DTA_READY", "DTA_SIGNED", "DATA_READY"]) && ($isProjectManager || $isReviewer)): ?>
+    <div class="col-md-12" id="reviews"></div>
+    <?php endif ?>
+
+    <div class="col-md-12">
+        <?php if (in_array($requestStatus, ["APPROVED", "REJECTED", "RESUBMIT", "RESUBMITTED", "DAO_APPROVED", "PREREGISTRATION_SUBMITTED", "PREREGISTRATION_CONFIRMED", "DTA_READY", "DTA_SIGNED", "DATA_READY"]) && ($isProjectManager || $isReviewer)): ?>
+        <div class="card">
+            <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#evaluationDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
+                <h5 class="card-header float-left">Evaluation</h5>
+            </div>
+            <div id="evaluationDiv" class="card-body collapse">
+                <div id="evaluation" class="metadata-form"
+                    data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
+                    data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
+                    <p>Loading metadata <i class="fa fa-spinner fa-spin fa-fw"></i></p>
+                </div>
+            </div>
+        </div>
+        <?php endif ?>
+
+        <?php if ($requestType == "REGULAR" and in_array($requestStatus, ["PREREGISTRATION_SUBMITTED", "PREREGISTRATION_CONFIRMED", "DTA_READY", "DTA_SIGNED", "DATA_READY"]) && ($isRequestOwner || $isProjectManager)): ?>
+        <div class="card">
+            <div class="card-header clearfix">
+                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#preregistrationDiv" role="button" aria-expanded="false">
+                    <span class="text-collapsed">Show</span>
+                    <span class="text-expanded">Hide</span>
+                </a>
+                <h5 class="card-header float-left">Preregistration</h5>
+            </div>
+            <div id="preregistrationDiv" class="card-body collapse">
+                <div id="preregistration" class="metadata-form"
+                    data-csrf_token_name="<?php echo rawurlencode($tokenName); ?>"
+                    data-csrf_token_hash="<?php echo rawurlencode($tokenHash); ?>">
+                    <p>Loading metadata <i class="fa fa-spinner fa-spin fa-fw"></i></p>
+                </div>
+            </div>
+        </div>
+        <?php endif ?>
     </div>
 </div>

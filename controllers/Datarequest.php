@@ -15,12 +15,69 @@ class Datarequest extends MY_Controller
         $this->load->library('api');
     }
 
-    protected function datarequest_info($requestId) {
-        $datarequest = $this->api->call('datarequest_get', ['request_id' => $requestId])->data;
-        $status      = $datarequest->requestStatus;
-        $type        = $datarequest->requestType;
+    protected function human_readable_status($status) {
+        switch($status) {
+            case "DRAFT":
+                return "In draft";
+            case "PENDING_ATTACHMENTS":
+                return "Pending attachments";
+            case "DAO_SUBMITTED":
+                return "Submitted (data assessment)";
+            case "SUBMITTED":
+                return "Submitted";
+            case "PRELIMINARY_ACCEPT":
+                return "Preliminary accept";
+            case "PRELIMINARY_REJECT":
+                return "Rejected at preliminary review";
+            case "PRELIMINARY_RESUBMIT":
+                return "Rejected (resubmit) at preliminary review";
+            case "DATAMANAGER_ACCEPT":
+                return "Datamanager accept";
+            case "DATAMANAGER_REJECT":
+                return "Datamanager reject";
+            case "DATAMANAGER_RESUBMIT":
+                return "Datamanager reject (resubmit)";
+            case "UNDER_REVIEW":
+                return "Under review";
+            case "REJECTED_AFTER_DATAMANAGER_REVIEW":
+                return "Rejected after datamanager review";
+            case "RESUBMIT_AFTER_DATAMANAGER_REVIEW":
+                return "Rejected (resubmit) after datamanager review";
+            case "REVIEWED":
+                return "Reviewed";
+            case "APPROVED":
+                return "Approved";
+            case "REJECTED":
+                return "Rejected";
+            case "RESUBMIT":
+                return "Rejected (resubmit)";
+            case "RESUBMITTED":
+                return "Resubmitted";
+            case "DAO_APPROVED":
+                return "Approved (data assessment)";
+            case "PREREGISTRATION_SUBMITTED":
+                return "Preregistration submitted";
+            case "PREREGISTRATION_CONFIRMED":
+                return "Preregistration confirmed";
+            case "DTA_READY":
+                return "DTA ready";
+            case "DTA_SIGNED":
+                return "DTA signed";
+            case "DATA_READY":
+                return "Data ready";
+        }
+    }
 
-        return ['type' => $type, 'status' => $status];
+    protected function datarequest_info($requestId) {
+        $datarequest        = $this->api->call('datarequest_get', ['request_id' => $requestId])->data;
+        $availableDocuments = $datarequest->requestAvailableDocuments;
+        $status             = $datarequest->requestStatus;
+        $humanStatus        = $this->human_readable_status($status);
+        $type               = $datarequest->requestType;
+        $request            = $datarequest->requestJSON;
+
+        return ['type' => $type, 'status' => $status, 'humanStatus' => $humanStatus,
+                'request' => $request, 'availableDocuments' => $availableDocuments];
     }
 
     protected function permission_check($requestId, $roles, $statuses) {
@@ -95,9 +152,12 @@ class Datarequest extends MY_Controller
         $tokenHash = $this->security->get_csrf_hash();
 
 	# Get datarequest status
-        $requestInfo   = $this->datarequest_info($requestId);
-        $requestStatus = $requestInfo['status'];
-        $requestType   = $requestInfo['type'];
+        $requestInfo        = $this->datarequest_info($requestId);
+        $requestStatus      = $requestInfo['status'];
+        $availableDocuments = $requestInfo['availableDocuments'];
+        $humanRequestStatus = $requestInfo['humanStatus'];
+        $requestType        = $requestInfo['type'];
+        $request            = json_decode($requestInfo['request'], true);
 
         # Set view params and render the view
         $viewParams = array(
@@ -106,15 +166,20 @@ class Datarequest extends MY_Controller
             'requestId'           => $requestId,
             'requestType'         => $requestType,
             'requestStatus'       => $requestStatus,
+            'availableDocuments'  => json_encode($availableDocuments),
+            'humanRequestStatus'  => $humanRequestStatus,
+            'request'             => $request,
             'isReviewer'          => $isReviewer,
             'isProjectManager'    => $isProjectManager,
             'isDatamanager'       => $isDatamanager,
             'isRequestOwner'      => $isRequestOwner,
+            'attachments'         => $this->get_attachments($requestId),
             'activeModule'        => 'datarequest',
             'scriptIncludes'      => array(
                 'js/datarequest/view.js'
             ),
             'styleIncludes'       => array(
+                'css/datarequest/forms.css',
                 'css/datarequest/view.css'
             )
         );

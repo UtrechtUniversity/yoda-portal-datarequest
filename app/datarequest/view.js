@@ -18,10 +18,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     var datarequestUiSchema = {};
     var datarequestFormData = {};
     var datarequestStatus = {};
+    var datarequestStatusInt = null;
     var datarequestType = "";
 
     // Get data request
-    Yoda.call('datarequest_get',
+    await Yoda.call('datarequest_get',
         {request_id: requestId},
         {errorPrefix: "Could not get datarequest"})
     .then(datarequest => {
@@ -31,7 +32,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
     // Set progress bar according to status of data request
     .then(() => {
-        let datarequestStatusInt = null;
         let datarequestRejected  = false;
 
         // Get progress
@@ -131,6 +131,198 @@ document.addEventListener("DOMContentLoaded", async () => {
                document.getElementById("datarequest")
         );
     });
+    if (availableDocuments.includes("assignment")) {
+        var assignSchema   = {};
+        var assignUiSchema = {};
+        var assignFormData = {};
+    
+        // Get assignment
+        Yoda.call("datarequest_assignment_get",
+                  {request_id: requestId},
+                  {errorPrefix: "Could not get assignment"})
+        .then(response => {
+            assignFormData = JSON.parse(response);
+        })
+        // Get assignment schema and uischema
+        .then(async () => {
+            await Yoda.call("datarequest_schema_get", {schema_name: "assignment"})
+            .then(response => {
+                assignSchema   = response.schema;
+                assignUiSchema = response.uischema;
+            })
+        })
+        // Render assignment as disabled form
+        .then(() => {
+            render(<ContainerReadonly schema={assignSchema}
+                                      uiSchema={assignUiSchema}
+                                      formData={assignFormData} />,
+                   document.getElementById("assign"));
+        });
+    }
+
+    if (availableDocuments.includes("datamanager_review")) {
+        var dmrSchema   = {};
+        var dmrUiSchema = {};
+        var dmrFormData = {};
+
+        // Get data manager review
+        Yoda.call("datarequest_datamanager_review_get",
+                  {request_id: requestId},
+                  {errorPrefix: "Could not get datamanager review"})
+        .then(response => {
+            dmrFormData = JSON.parse(response);
+        })
+        // Get data manager review schema and uischema
+        .then(async () => {
+            await Yoda.call("datarequest_schema_get", {schema_name: "datamanager_review"})
+            .then(response => {
+                dmrSchema   = response.schema;
+                dmrUiSchema = response.uischema;
+            })
+        })
+        // Render data manager review as disabled form
+        .then(() => {
+            render(<ContainerReadonly schema={dmrSchema}
+                                      uiSchema={dmrUiSchema}
+                                      formData={dmrFormData} />,
+                   document.getElementById("datamanagerReview"));
+        });
+    }
+
+    if (availableDocuments.includes("preliminary_review")) {
+        var prSchema   = {};
+        var prUiSchema = {};
+        var prFormData = {};
+    
+        // Get preliminary review
+        Yoda.call('datarequest_preliminary_review_get',
+            {request_id: requestId},
+            {errorPrefix: "Could not get preliminary review"})
+        .then(response => {
+            prFormData = JSON.parse(response);
+        })
+        // Get preliminary review schema and uischema
+        .then(async () => {
+            await Yoda.call("datarequest_schema_get", {schema_name: "preliminary_review"})
+            .then(response => {
+                prSchema   = response.schema;
+                prUiSchema = response.uischema;
+            })
+        })
+        // Render preliminary review as disabled form
+        .then(() => {
+            render(<ContainerReadonly schema={prSchema}
+                                      uiSchema={prUiSchema}
+                                      formData={prFormData} />,
+                   document.getElementById("preliminaryReview"));
+        });
+    }
+
+    if (availableDocuments.includes("evaluation")) {
+        var evalSchema   = {};
+        var evalUiSchema = {};
+        var evalFormData = {};
+
+        // Get evaluation
+        Yoda.call('datarequest_evaluation_get',
+            {request_id: requestId},
+            {errorPrefix: "Could not get evaluation"})
+        .then(response => {
+            evalFormData = JSON.parse(response);
+        })
+        // Get evaluation schema and uischema
+        .then(async () => {
+            await Yoda.call("datarequest_schema_get", {schema_name: "evaluation"})
+            .then(response => {
+                evalSchema   = response.schema;
+                evalUiSchema = response.uischema;
+            })
+        })
+        // Render evaluation as disabled form
+        .then(() => {
+            render(<ContainerReadonly schema={evalSchema}
+                                      uiSchema={evalUiSchema}
+                                      formData={evalFormData} />,
+                   document.getElementById("evaluation"));
+        });
+    }
+
+    if (availableDocuments.includes("review")) {
+        var reviewSchema = {};
+        var reviewUiSchema = {};
+        var reviewFormData = {};
+
+        // Get the reviews and render them in as disabled forms
+        Yoda.call("datarequest_reviews_get",
+                  {request_id: requestId},
+                  {errorPrefix: "Could not get reviews"})
+        .then(response => {
+            reviewFormData = JSON.parse(response);
+        })
+        // Get review schema and uischema
+        .then(async () => {
+            await Yoda.call("datarequest_schema_get", {schema_name: "review"})
+            .then(response => {
+                reviewSchema   = response.schema;
+                reviewUiSchema = response.uischema;
+            })
+        })
+        .then(() => {
+            var reviews = reviewFormData.map((line, i) => {
+              let reviewDiv="review" + [i] + "Div";
+              return(
+                <div class="card">
+                    <div class="card-header clearfix">
+                    <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href={"#" + reviewDiv} role="button" aria-expanded="false">
+                        <span class="text-collapsed">Show</span>
+                        <span class="text-expanded">Hide</span>
+                    </a>
+                        <h5 class="card-header float-left">
+                            Review by {reviewFormData[i].username}
+                        </h5>
+                    </div>
+                    <div id={reviewDiv} class="card-body collapse">
+                        <ContainerReadonly schema={reviewSchema}
+                                           uiSchema={reviewUiSchema}
+                                           formData={reviewFormData[i]} />
+                    </div>
+                </div>
+              );
+            });
+
+            render(<div>{reviews}</div>, document.getElementById("reviews"));
+        });
+    }
+
+    if (availableDocuments.includes("preregistration")) {
+        var preregistrationSchema = {};
+        var preregistrationUiSchema = {};
+        var preregistrationFormData = {};
+
+        // Get preregistration form 
+        Yoda.call('datarequest_preregistration_get',
+            {request_id: requestId},
+            {errorPrefix: "Could not get preregistration"})
+        .then(response => {
+            preregistrationFormData = JSON.parse(response);
+        })
+        // Get preregistration schema and uischema
+        .then(async () => {
+            await Yoda.call("datarequest_schema_get", {schema_name: "preregistration"})
+            .then(response => {
+                preregistrationSchema   = response.schema;
+                preregistrationUiSchema = response.uischema;
+            })
+        })
+        // Render preregistration as disabled form
+        .then(() => {
+            render(<ContainerReadonly schema={preregistrationSchema}
+                                      uiSchema={preregistrationUiSchema}
+                                      formData={preregistrationFormData} />,
+                   document.getElementById("preregistration")
+            );
+        });
+    }
 
     // Render and show the modal for uploading a DTA
     $("body").on("click", "button.upload_dta", () => {
