@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     var reviewUiSchema = {};
     var reviewFormData = {};
 
-    // Get the reviews and render them in as dissabled forms
+    // Get the reviews and render them in as disabled forms
     Yoda.call("datarequest_reviews_get",
               {request_id: requestId},
               {errorPrefix: "Could not get reviews"})
