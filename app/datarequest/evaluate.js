@@ -36,27 +36,44 @@ document.addEventListener("DOMContentLoaded", async () => {
         })
     })
     .then(() => {
-        var reviews = reviewFormData.map((line, i) => {
-          let reviewDiv="review" + [i] + "Div";
-          return(
-            <div class="card">
-                <div class="card-header clearfix">
-                <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href={"#" + reviewDiv} role="button" aria-expanded="true">
-                    <span class="text-collapsed">Show</span>
-                    <span class="text-expanded">Hide</span>
-                </a>
-                    <h5 class="card-header float-left">
-                        Review by {reviewFormData[i].username}
-                    </h5>
-                </div>
-                <div id={reviewDiv} class="card-body collapse show">
-                    <ContainerReadonly schema={reviewSchema}
-                                       uiSchema={reviewUiSchema}
-                                       formData={reviewFormData[i]} />
-                </div>
-            </div>
-          );
-        });
+        if (reviewFormData.length < 1) {
+          var reviews = <div class="card">
+                  <div class="card-header clearfix">
+                  <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href="#reviewDiv" role="button" aria-expanded="true">
+                      <span class="text-collapsed">Show</span>
+                      <span class="text-expanded">Hide</span>
+                  </a>
+                      <h5 class="card-header float-left">
+                        Reviews
+                      </h5>
+                  </div>
+                  <div id="reviewDiv" class="card-body collapse show">
+                    No reviews were given.
+                  </div>
+              </div>;
+        } else {
+          var reviews = reviewFormData.map((line, i) => {
+            let reviewDiv="review" + [i] + "Div";
+            return(
+              <div class="card">
+                  <div class="card-header clearfix">
+                  <a class="btn btn-secondary float-left collapse-buttons" data-toggle="collapse" href={"#" + reviewDiv} role="button" aria-expanded="true">
+                      <span class="text-collapsed">Show</span>
+                      <span class="text-expanded">Hide</span>
+                  </a>
+                      <h5 class="card-header float-left">
+                          Review by {reviewFormData[i].username}
+                      </h5>
+                  </div>
+                  <div id={reviewDiv} class="card-body collapse show">
+                      <ContainerReadonly schema={reviewSchema}
+                                         uiSchema={reviewUiSchema}
+                                         formData={reviewFormData[i]} />
+                  </div>
+              </div>
+            );
+          });
+        }
 
         render(<div>{reviews}</div>, document.getElementById("reviews"));
     });
