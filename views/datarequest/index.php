@@ -1,6 +1,7 @@
 <script>
     var browsePageItems = <?php echo $items; ?>;
-    var archived = <?php echo json_encode($archived); ?>;
+    var archived        = <?php echo json_encode($archived); ?>;
+    var dacrequests     = <?php echo json_encode($dacrequests); ?>;
 </script>
 
 <div class="row">
@@ -8,11 +9,22 @@
         <?php if ($submissionAllowed): ?>
         <a href="/datarequest/add" class="btn btn-primary mb-3 float-right" role="button">Submit data request</a>
         <?php endif ?>
-        <?php if (!$isDMCMember and !$archived): ?>
+
+        <?php if (!$isDACMember and !$archived): ?>
         <a href="/datarequest/archive" class="btn btn-primary mb-3 mr-1 float-right" role="button">View archived requests</a>
         <?php endif ?>
-        <?php if (!$isDMCMember and $archived): ?>
+        <?php if (!$isDACMember and $archived): ?>
         <a href="/datarequest" class="btn btn-primary mb-3 mr-1 float-right" role="button">View active requests</a>
+        <?php endif ?>
+
+        <?php if ($isDACMember and !$dacrequests): ?>
+        <a href="/datarequest/dacrequests" class="btn btn-primary mb-3 mr-1 float-right" role="button">View own requests</a>
+        <?php endif ?>
+        <?php if ($isDACMember and !$archived): ?>
+        <a href="/datarequest/archive" class="btn btn-primary mb-3 mr-1 float-right" role="button">View archived reviews</a>
+        <?php endif ?>
+        <?php if ($isDACMember and ($dacrequests or $archived)): ?>
+        <a href="/datarequest" class="btn btn-primary mb-3 mr-1 float-right" role="button">View reviewable requests</a>
         <?php endif ?>
     </div>
 </div>
@@ -101,12 +113,12 @@
     <tr>
         <td><img src=/datarequest/static/img/button.png></img></td>
         <td>Under review</td>
-        <td>The YOUth data manager has assigned the data request for review to one or more members of the YOUth Data Management Committee</td>
+        <td>The YOUth data manager has assigned the data request for review to one or more members of the YOUth Data Access Committee</td>
     </tr>
     <tr>
         <td><img src=/datarequest/static/img/button.png></img></td>
         <td>Reviewed</td>
-        <td>The data request has been reviewed by the YOUth Data Management Committee</td>
+        <td>The data request has been reviewed by the YOUth Data Access Committee</td>
     </tr>
     <tr>
         <td><img src=/datarequest/static/img/button.png></img></td>

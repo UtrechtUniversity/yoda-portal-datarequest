@@ -12,7 +12,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         let preliminaryReviewUiSchema = response.uischema;
 
         render(<Container schema={preliminaryReviewSchema}
-                          uiSchema={preliminaryReviewUiSchema} />,
+                          uiSchema={preliminaryReviewUiSchema}
+                          validate={validate} />,
                document.getElementById("preliminaryReview"));
     });
 
@@ -60,6 +61,7 @@ class Container extends React.Component {
         <div>
           <YodaForm schema={this.props.schema}
                     uiSchema={this.props.uiSchema}
+                    validate={validate}
                     ref={(form) => {this.form=form;}} />
           <YodaButtons submitButton={this.submitForm} />
         </div>
@@ -89,6 +91,7 @@ class YodaForm extends React.Component {
             <Form className="form"
                   schema={this.props.schema}
                   uiSchema={this.props.uiSchema}
+                  validate={validate}
                   idPrefix={"yoda"}
                   onSubmit={onSubmit}
                   showErrorList={false}
@@ -146,10 +149,32 @@ const CustomDescriptionField = ({id, description}) => {
   return <div id={id} dangerouslySetInnerHTML={{ __html: description }}></div>;
 };
 
+const CustomTitleField = ({id, title}) => {
+  title = "<h5>" + title + "</h5><hr class='border-0 bg-secondary' style='height: 1px;'>";
+  return <div id={id} dangerouslySetInnerHTML={{ __html: title}}></div>;
+};
+
 const fields = {
   DescriptionField: CustomDescriptionField,
+  TitleField: CustomTitleField,
   DataSelection: DataSelectionCart
 };
+
+function validate(formData, errors) {
+    // The data request cannot be accepted if the conditions specified by the checkboxes haven't
+    // been met. In the code below, an error is added to the checkboxes if the data request is
+    // set to be accepted and the checkboxes are not checked.
+    if (formData.preliminary_review == "Accepted for data manager review") {
+        if (!formData.framework_and_ic_fit) {
+            errors.framework_and_ic_fit.addError("If the data request is to be accepted, this checkbox must be checked.");
+        }
+        if (!formData.requestee_credentials) {
+            errors.requestee_credentials.addError("If the data request is to be accepted, this checkbox must be checked.");
+        }
+    }
+
+    return errors;
+}
 
 function submitData(data)
 {

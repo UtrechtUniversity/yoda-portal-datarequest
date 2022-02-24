@@ -5,11 +5,44 @@ import DataSelection, { DataSelectionCart } from "./DataSelection.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
+    // Enable "Confirm registration" button after OSF preregistration has been visited
+    $("#visitPreregistration").click(function () { 
+        $("#confirmPreregistration").removeClass("disabled");
+    });
+
+    var datarequestSchema = {};
+    var datarequestUiSchema = {};
+    var datarequestFormData = {};
+
+    // Get data request
+    await Yoda.call('datarequest_get',
+        {request_id: requestId},
+        {errorPrefix: "Could not get datarequest"})
+    .then(datarequest => {
+        datarequestFormData = JSON.parse(datarequest.requestJSON);
+    })
+    // Get data request schema and uischema
+    .then(async () => {
+        await Yoda.call("datarequest_schema_get", {schema_name: "datarequest"})
+        .then(response => {
+            datarequestSchema   = response.schema;
+            datarequestUiSchema = response.uischema;
+        })
+    })
+    // Render data request as disabled form
+    .then(() => {
+        render(<ContainerReadonly schema={datarequestSchema}
+                                  uiSchema={datarequestUiSchema}
+                                  formData={datarequestFormData} />,
+               document.getElementById("datarequest")
+        );
+    });
+
     var preregistrationSchema = {};
     var preregistrationUiSchema = {};
     var preregistrationFormData = {};
 
-    // Get data request
+    // Get preregistration form 
     Yoda.call('datarequest_preregistration_get',
         {request_id: requestId},
         {errorPrefix: "Could not get preregistration"})
@@ -135,8 +168,14 @@ const CustomDescriptionField = ({id, description}) => {
   return <div id={id} dangerouslySetInnerHTML={{ __html: description }}></div>;
 };
 
+const CustomTitleField = ({id, title}) => {
+  title = "<h5>" + title + "</h5><hr class='border-0 bg-secondary' style='height: 1px;'>";
+  return <div id={id} dangerouslySetInnerHTML={{ __html: title}}></div>;
+};
+
 const fields = {
   DescriptionField: CustomDescriptionField,
+  TitleField: CustomTitleField,
   DataSelection: DataSelectionCart
 };
 

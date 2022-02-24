@@ -156,8 +156,14 @@ const CustomDescriptionField = ({id, description}) => {
   return <div id={id} dangerouslySetInnerHTML={{ __html: description }}></div>;
 };
 
+const CustomTitleField = ({id, title}) => {
+  title = "<h5>" + title + "</h5><hr class='border-0 bg-secondary' style='height: 1px;'>";
+  return <div id={id} dangerouslySetInnerHTML={{ __html: title}}></div>;
+};
+
 const fields = {
   DescriptionField: CustomDescriptionField,
+  TitleField: CustomTitleField,
   DataSelection: DataSelectionTable
 };
 
@@ -177,7 +183,7 @@ function transformErrors(errors) {
     // https://github.com/rjsf-team/react-jsonschema-form/issues/1791
     if (errors.length !== 0) {
         let first_error_property = errors[0].property;
-        let elem_id = "yoda" + first_error_property.replace(/\./g, '_');
+        let elem_id = "yoda" + first_error_property.replace(/\./g, '_').replace(/\[/, '_').replace(/\]/, '').replace(/_array$/, '_array__title');
         let elem = document.getElementById(elem_id) !== null ? document.getElementById(elem_id) : document.getElementsByName(elem_id)[0].parentElement.parentElement;
         elem.parentElement.scrollIntoView();
     }
@@ -188,11 +194,16 @@ function transformErrors(errors) {
 function submitData(data)
 {
     // Disable button
+    //
+    // When saving a draft
     if (save) {
         $("#saveButton").text("Saving...");
         $("#saveButton").attr("disabled", "disabled");
+        $("#submitButton").attr("disabled", "disabled");
+    // When submitting the data request
     } else {
         $("#submitButton").text("Submitting...");
+        $("#saveButton").attr("disabled", "disabled");
         $("#submitButton").attr("disabled", "disabled");
     }
 
@@ -217,6 +228,7 @@ function submitData(data)
             } else {
                 $("#saveButton").text("Save as draft");
                 $('#saveButton').attr("disabled", false);
+                $("#submitButton").attr("disabled", false);
             }
         // If attachments should be added, redirect to attachment upload page
         } else if  (response !== null && response.hasOwnProperty('pendingAttachments')) {

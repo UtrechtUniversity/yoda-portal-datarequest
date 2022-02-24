@@ -60,11 +60,12 @@ let getFolderContents = (() => {
             // Nope, load new data via the API.
             let j = ++i;
             let result = await Yoda.call('datarequest_browse',
-                                         {'offset':     args.start,
-                                          'limit':      batchSize,
-                                          'archived':   archived,
-                                          'sort_order': args.order[0].dir,
-                                          'sort_on':    ['name', 'modified'][args.order[0].column]});
+                                         {'offset':      args.start,
+                                          'limit':       batchSize,
+                                          'archived':    archived,
+                                          'dacrequests': dacrequests,
+                                          'sort_order':  args.order[0].dir,
+                                          'sort_on':     ['name', 'modified'][args.order[0].column]});
 
             // If another requests has come while we were waiting, simply drop this one.
             if (i !== j) return null;

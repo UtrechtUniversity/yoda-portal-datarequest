@@ -14,12 +14,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         assignSchema   = response.schema;
         assignUiSchema = response.uischema;
     })
-    // Insert DMC members
+    // Insert DAC members
     .then(async () => {
-        await Yoda.call('datarequest_dmc_members_get', {}, {errorPrefix: "Could not get DMC members"})
-        .then(dmc_members => {
-            assignSchema.dependencies.decision.oneOf[0].properties.assign_to.items.enum = dmc_members;
-            assignSchema.dependencies.decision.oneOf[0].properties.assign_to.items.enumNames = dmc_members;
+        await Yoda.call('datarequest_dac_members_get', {}, {errorPrefix: "Could not get DAC members"})
+        .then(dac_members => {
+            assignSchema.dependencies.decision.oneOf[0].properties.assign_to.items.enum = dac_members;
+            assignSchema.dependencies.decision.oneOf[0].properties.assign_to.items.enumNames = dac_members;
         })
     })
     // Render form
@@ -212,8 +212,14 @@ const CustomDescriptionField = ({id, description}) => {
   return <div id={id} dangerouslySetInnerHTML={{ __html: description }}></div>;
 };
 
+const CustomTitleField = ({id, title}) => {
+  title = "<h5>" + title + "</h5><hr class='border-0 bg-secondary' style='height: 1px;'>";
+  return <div id={id} dangerouslySetInnerHTML={{ __html: title}}></div>;
+};
+
 const fields = {
   DescriptionField: CustomDescriptionField,
+  TitleField: CustomTitleField,
   DataSelection: DataSelectionCart
 };
 
