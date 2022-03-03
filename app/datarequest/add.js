@@ -168,6 +168,11 @@ const fields = {
 };
 
 function transformErrors(errors) {
+    // Don't report any errors when saving as draft
+    if (save) {
+        return [];
+    }
+
     // Filter out incorrect errors. These are erroneously added because of edge cases to do with
     // nesting, conditionals and the use of oneOf.
     var filtered_errors = [];
