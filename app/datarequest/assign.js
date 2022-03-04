@@ -16,7 +16,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
     // Insert DAC members
     .then(async () => {
-        await Yoda.call('datarequest_dac_members_get', {}, {errorPrefix: "Could not get DAC members"})
+        await Yoda.call('datarequest_dac_members_get',
+                        {request_id: requestId},
+                        {errorPrefix: "Could not get DAC members"})
         .then(dac_members => {
             assignSchema.dependencies.decision.oneOf[0].properties.assign_to.items.enum = dac_members;
             assignSchema.dependencies.decision.oneOf[0].properties.assign_to.items.enumNames = dac_members;
