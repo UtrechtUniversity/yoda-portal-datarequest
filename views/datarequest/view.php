@@ -73,7 +73,7 @@
         <a href="/datarequest/assign/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Review / assign</a>
         <?php endif ?>
 
-        <?php if($requestStatus == "UNDER_REVIEW" && $isReviewer): ?>
+        <?php if($requestStatus == "UNDER_REVIEW" && $isPendingReviewer): ?>
         <a href="/datarequest/review/<?php echo html_escape($requestId) ?>" class="btn btn-primary mb-3 float-right" role="button">Review data request</a>
         <?php endif ?>
 

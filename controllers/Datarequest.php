@@ -140,6 +140,7 @@ class Datarequest extends MY_Controller
         $isDACMember         = in_array("DAC", $roles);
         $isRequestOwner      = in_array("OWN", $roles);
         $isReviewer          = in_array("REV", $roles);
+        $isPendingReviewer   = in_array("PENREV", $roles);
 
         # If the user is neither of the above, return a 403
         if (!$isProjectManager && !$isDatamanager && !$isDACMember && !$isRequestOwner) {
@@ -170,6 +171,7 @@ class Datarequest extends MY_Controller
             'humanRequestStatus'  => $humanRequestStatus,
             'request'             => $request,
             'isReviewer'          => $isReviewer,
+            'isPendingReviewer'   => $isPendingReviewer,
             'isProjectManager'    => $isProjectManager,
             'isDatamanager'       => $isDatamanager,
             'isRequestOwner'      => $isRequestOwner,
