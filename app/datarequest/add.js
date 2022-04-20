@@ -212,6 +212,11 @@ function submitData(data)
         $("#submitButton").attr("disabled", "disabled");
     }
 
+    // If no data has been selected, set selectedRows to an empty array
+    if (data['datarequest']['data']['selectedRows'] == undefined) {
+        data['datarequest']['data']['selectedRows'] = [];
+    }
+
     // Submit form
     Yoda.call("datarequest_submit",
         {data: data,
